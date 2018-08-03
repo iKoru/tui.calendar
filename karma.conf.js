@@ -119,9 +119,10 @@ module.exports = function(config) {
             'jasmine'
         ],
         files: [
+            'test/global.js',
             'node_modules/tui-code-snippet/dist/tui-code-snippet.js',
-            'test/fixtures/**/*',
-            'test/index.js'
+            'test/index.js',
+            'test/fixtures/**/*'
         ],
         preprocessors: {
             'src/**/*.js': ['webpack', 'sourcemap'],

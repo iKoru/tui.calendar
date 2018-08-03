@@ -4,7 +4,23 @@
 /* eslint-env jquery */
 /* global moment, tui, chance */
 /* global findCalendar, CalendarList, ScheduleList, generateSchedule */
+/* eslint-disable */
+function Test(){
 
+};
+Test.prototype.emit = function(){
+
+};
+var NMNS = {
+    info: {
+        bizBeginTime: '0000',
+        bizEndTime: '2359'
+    },
+    socket: new Test()
+};
+var dashContact = function dashContact(contact){
+    return contact;
+};
 (function(window, Calendar) {
     var cal, resizeThrottled;
     var useCreationPopup = true;
