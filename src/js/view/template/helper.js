@@ -119,6 +119,14 @@ Handlebars.registerHelper({
     },
 
     /**
+     * @param {string} contact - contact
+     * @returns {string} dashed contact
+     */
+    'dash-contact': function(contact) {
+        return dashContact(contact);
+    },
+
+    /**
      * Get hhmm formatted time str
      * @param {Date} date - date object
      * @returns {string} formatted value

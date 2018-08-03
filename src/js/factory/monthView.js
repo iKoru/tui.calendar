@@ -135,17 +135,17 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
 
             detailView.render(eventData);
             // NMNS CUSTOMIZING START
-            $('.detailPopupLabel').off('mouseenter').on('mouseenter', function(e) {
+            $('.detailPopupLabel').off('mouseenter').on('mouseenter', function() {
                 if (!$(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
                 }
             });
-            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function(e) {
+            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function() {
                 if ($(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
                 }
             });
-            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function(e) {
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function() {
                 var status = $(this).data('badge');
                 if (status === 'light') {// delete
                     creationHandler.fire('beforeDeleteSchedule', eventData);

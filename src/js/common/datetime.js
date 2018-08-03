@@ -398,7 +398,7 @@ datetime = {
         var d = new TZDate(date.getTime());
         // NMNS CUSTOMIZING START
         d.setHours((NMNS.info && NMNS.info.bizEndTime ? parseInt(NMNS.info.bizEndTime.substring(0, 2), 10) : 23),
-            (NMNS.info && NMNS.info.bizEndTime ? parseInt(NMNS.info.bizEndTime.substring(2), 10) : 50), 0, 0);
+            (NMNS.info && NMNS.info.bizEndTime ? parseInt(NMNS.info.bizEndTime.substring(2), 10) : 0), 59, 0);
 
         // NMNS CUSTOMIZING END
         return d;
@@ -436,7 +436,7 @@ datetime = {
 
         startDate.setDate(1);
         // NMNS CUSTOMIZING START
-        this.start(startDate);
+        startDate = this.start(startDate);
 
         // NMNS CUSTOMIZING END
         return startDate;
@@ -453,7 +453,7 @@ datetime = {
         endDate.setMonth(endDate.getMonth() + 1);
         endDate.setDate(endDate.getDate() - 1);
         // NMNS CUSTOMIZING START
-        this.end(endDate);
+        endDate = this.end(endDate);
 
         // NMNS CUSTOMIZING END
         return endDate;
