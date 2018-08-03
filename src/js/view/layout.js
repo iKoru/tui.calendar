@@ -18,6 +18,13 @@ var View = require('./view');
  * @param {Theme} theme - theme instance
  */
 function Layout(container, theme) {
+    // NMNS CUSTOMIZING START
+    domutil.appendHTMLElement('div', container, config.classname('screen')).addEventListener('click', function() {
+        domutil.find('.' + config.classname('screen'), container.parentNode).style.opacity = 0;// disappear when clicked
+        domutil.find('.' + config.classname('screen'), container.parentNode).style.visibility = 'hidden';// disappear when clicked
+
+        return false;
+    });// NMNS CUSTOMIZING END
     container = domutil.appendHTMLElement('div', container, config.classname('layout'));
 
     /**

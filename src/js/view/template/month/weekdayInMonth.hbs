@@ -9,7 +9,7 @@
         {{#unless @last}}
         border-right:{{@root.styles.borderLeft}};
         {{/unless}}
-        ">
+        " data-date="{{date}}">
         <div class="{{CSS_PREFIX}}weekday-grid-header">
             <span style="color: {{color}};">{{{monthGridHeader-tmpl this}}}</span>
             {{#if hiddenSchedules}}

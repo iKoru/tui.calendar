@@ -994,6 +994,12 @@ Calendar.prototype._onBeforeCreate = function(createScheduleData) {
         if (this._showCreationPopup) {
             this._showCreationPopup(createScheduleData);
 
+            // NMNS CUSTOMIZING START
+            document.body.classList.add('modal-open');
+            document.getElementsByClassName(config.classname('screen'))[0].style.visibility = 'visible';// show screen
+            document.getElementsByClassName(config.classname('screen'))[0].style.opacity = 0.5;// show screen
+
+            // NMNS CUSTOMIZING END
             return;
         }
     }
@@ -1387,6 +1393,29 @@ Calendar.prototype.getViewName = function() {
 Calendar.prototype.setCalendars = function(calendars) {
     this._controller.setCalendars(calendars);
     this.render();
+};
+
+/**
+ * NMNS CUSTOMIZING
+ * Set calendar
+ * @param {Calendar} calendarId - calendar id
+ * @param {Object} data - data
+ * @param {boolean} silent - render it or not
+ */
+Calendar.prototype.setCalendar = function(calendarId, data, silent) {
+    this._controller.setCalendar(calendarId, data);
+    if (!silent) {
+        this.render();
+    }
+};
+
+/**
+ * NMNS CUSTOMIZING
+ * Get calendar list
+ * @returns {Array.<Object>} calendar list
+ */
+Calendar.prototype.getCalendars = function() {
+    return this._controller.getCalendars();
 };
 
 /**

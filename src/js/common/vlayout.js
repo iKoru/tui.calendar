@@ -315,7 +315,8 @@ VLayout.prototype._onDrag = function(e) {
 VLayout.prototype._onDragEnd = function(e) {
     var dragData = this._dragData,
         asideMinMax = this._getMouseYAdditionalLimit(dragData.splPanel),
-        mouseY = domevent.getMousePosition(e.originEvent, this.container)[1];
+        mouseY = domevent.getMousePosition(e.originEvent, this.container)[1],
+        area = $('.tui-full-calendar-timegrid-container');
 
     // mouseY value can't exceed summation of splitter height and panel's minimum height based on target splitter.
     mouseY = common.limit(
@@ -339,6 +340,15 @@ VLayout.prototype._onDragEnd = function(e) {
     this._clearGuideElement(dragData.guideElement);
     dragData.splPanel.removeClass(config.classname('splitter-focused'));
     domutil.removeClass(document.body, config.classname('resizing'));
+    // NMNS CUSTOMIZING START
+    if (area) {
+        if (area.data('scroll')) {
+            area.data('scroll').update();
+        } else {
+            area.data('scroll', new PerfectScrollbar('.tui-full-calendar-timegrid-container', {suppressScrollX: true}));
+        }
+    }
+    // NMNS CUSTOMIZING END
 };
 
 /**********
@@ -368,9 +378,13 @@ VLayout.prototype.refresh = function() {
 
     remainHeight = (layoutHeight - usedHeight) / panelToFillHeight.length;
 
-    util.forEach(panelToFillHeight, function(panel) {
-        panel.setHeight(null, remainHeight);
-    });
+    // NMNS CUSTOMIZING START
+    if (remainHeight > 0) {
+        util.forEach(panelToFillHeight, function(panel) {
+            panel.setHeight(null, remainHeight);
+        });
+    }
+    // NMNS CUSTOMIZING END
 };
 
 /**

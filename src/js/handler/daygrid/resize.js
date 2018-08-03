@@ -191,11 +191,13 @@ DayGridResize.prototype._updateSchedule = function(scheduleData) {
      * @event DayGridResize#beforeUpdateSchedule
      * @type {object}
      * @property {Schedule} schedule - schedule instance to update
+     * @property {Calendar} calendar - schedule calendar information
      * @property {date} start - start time to update
      * @property {date} end - end time to update
      */
     this.fire('beforeUpdateSchedule', {
         schedule: schedule,
+        calendar: {id: schedule.calendarId}, // NMNS CUSTOMIZING
         start: schedule.getStarts(),
         end: newEnds
     });

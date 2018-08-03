@@ -87,13 +87,16 @@ var timeCore = {
          */
         return util.bind(function(startDate, endDate) {
             var gridY, timeY, nearestGridY, nearestGridTimeY, nearestGridEndY, nearestGridEndTimeY;
-
-            gridY = startDate.getHours() + getNearestHour(startDate.getMinutes());
-            timeY = viewTime + datetime.millisecondsFrom('hour', gridY);
+            // NMNS CUSTOMIZING START
+            gridY = startDate.getHours() + getNearestHour(startDate.getMinutes())
+             - (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 0);
+            timeY = viewTime + startDate.getHours() + getNearestHour(startDate.getMinutes());
             nearestGridY = gridY;
-            nearestGridTimeY = viewTime + datetime.millisecondsFrom('hour', nearestGridY);
-            nearestGridEndY = endDate.getHours() + getNearestHour(endDate.getMinutes());
-            nearestGridEndTimeY = viewTime + datetime.millisecondsFrom('hour', nearestGridEndY);
+            nearestGridTimeY = viewTime + datetime.millisecondsFrom('hour', timeY - viewTime);
+            nearestGridEndY = endDate.getHours() + getNearestHour(endDate.getMinutes())
+             - (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 0);
+            nearestGridEndTimeY = viewTime + datetime.millisecondsFrom('hour', endDate.getHours() + getNearestHour(endDate.getMinutes()));
+            // NMNS CUSTOMIZING END
 
             return util.extend({
                 target: timeView,

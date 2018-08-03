@@ -50,7 +50,9 @@ ScheduleDetailPopup.prototype._onMouseDown = function(mouseDownEvent) {
     if (popupLayer) {
         return;
     }
-
+    // NMNS CUSTOMIZING START
+    domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+    // NMNS CUSTOMIZING END
     this.hide();
 };
 
@@ -91,7 +93,11 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
             triggerEventName: 'click',
             target: this._scheduleEl
         });
-
+        // NMNS CUSTOMIZING START
+        document.body.classList.add('modal-open');
+        domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
+        domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
+        // NMNS CUSTOMIZING END
         this.hide();
     }
 };
@@ -107,7 +113,9 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
         this.fire('beforeDeleteSchedule', {
             schedule: this._schedule
         });
-
+        // NMNS CUSTOMIZING START
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+        // NMNS CUSTOMIZING END
         this.hide();
     }
 };
@@ -155,8 +163,13 @@ ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(even
         top: parentRect.top
     };
     var scheduleEl = event.target || event.srcElement;
-    var scheduleBound = scheduleEl.getBoundingClientRect();
-    var pos;
+    // NMNS CUSTOMIZING START
+    var pos, scheduleBound;
+    if ($(scheduleEl).hasClass('tui-full-calendar-weekday-schedule-title')) {
+        scheduleEl = scheduleEl.parentElement;
+    }
+    scheduleBound = scheduleEl.getBoundingClientRect();
+    // NMNS CUSTOMIZING END
 
     this._scheduleEl = scheduleEl;
 

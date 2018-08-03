@@ -153,7 +153,7 @@ Base.prototype.updateSchedule = function(schedule, options) {
         schedule.set('title', options.title);
     }
 
-    if (options.isAllDay) {
+    if (typeof options.isAllDay !== 'undefined') {// NMNS CUSTOMIZING
         schedule.set('isAllDay', options.isAllDay);
     }
 
@@ -188,11 +188,23 @@ Base.prototype.updateSchedule = function(schedule, options) {
     if (!util.isUndefined(options.isFocused)) {
         schedule.set('isFocused', options.isFocused);
     }
-
-    if (options.location) {
-        schedule.set('location', options.location);
+    // NMNS CUSTOMIZING START
+    if (options.raw && options.raw.contents) {
+        schedule.setRaw('contents', options.raw.contents);
     }
 
+    if (options.raw && options.raw.contact) {
+        schedule.setRaw('contact', options.raw.contact);
+    }
+
+    if (options.raw && options.raw.etc) {
+        schedule.setRaw('etc', options.raw.etc);
+    }
+
+    if (options.raw && options.raw.status) {
+        schedule.setRaw('status', options.raw.status);
+    }
+    // NMNS CUSTOMIZING END
     if (options.state) {
         schedule.set('state', options.state);
     }
@@ -382,6 +394,30 @@ Base.prototype.setTheme = function(theme) {
  */
 Base.prototype.setCalendars = function(calendars) {
     this.calendars = calendars;
+};
+
+/**
+ * NMNS CUSTOMIZING
+ * set calendar
+ * @param {string} calendarId - calendar id
+ * @param {Object} calendar - calendar data object
+ */
+Base.prototype.setCalendar = function(calendarId, calendar) {
+    var self = this;
+    this.calendars.forEach(function(item, index) {
+        if (item.id === calendarId) {
+            self.calendars[index] = util.extend(self.calendars[index], calendar);
+        }
+    });
+};
+
+/**
+ * NMNS CUSTOMIZING
+ * get calendars
+ * @returns {Array.<Calendars>} 
+ */
+Base.prototype.getCalendars = function() {
+    return this.calendars;
 };
 
 // mixin

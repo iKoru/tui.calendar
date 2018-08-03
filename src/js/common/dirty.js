@@ -62,6 +62,44 @@ var dirty = {
     },
 
     /**
+     * NMNS CUSTOMIZING
+     * set raw property value with dirty flagging.
+     * @param {string} propName - property name in raw object.
+     * @param {*} value - property value in raw object.
+     */
+    setRaw: function(propName, value) {
+        var originValue = this.raw[propName];
+
+        if (originValue === value) {
+            return;
+        }
+
+        this.raw[propName] = value;
+
+        if (!this._changed) {
+            /**
+             * Save changed properties.
+             * @memberof dirty
+             * @name _changed
+             * @type {Object}
+             */
+            this._changed = {};
+        }
+        if (!this._changed.raw) {
+            this._changed.raw = {};
+        }
+
+        this._changed.raw[propName] = true;
+
+        /**
+         * Dirty flag
+         * @type {Boolean}
+         * @name _dirty
+         * @memberof dirty
+         */
+        this._dirty = true;
+    },
+    /**
      * Check dirty flag.
      * @returns {boolean} Property is changed.
      */

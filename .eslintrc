@@ -2,6 +2,17 @@
     "extends": "tui",
     "globals": {
         "chance": true,
-        "moment": true
+        "moment": true,
+        "NMNS":true,
+        "$": true,
+        "PerfectScrollbar":true,
+        "getColorFromBackgroundColor":true,
+        "filterNonNumericCharacter":true,
+        "dashContact":true,
+        "flatpickr":true
+    },
+    "rules": {
+        "complexity":"off",
+        "camelcase":"off"
     }
 }

@@ -202,7 +202,12 @@ TimeGrid.prototype._beforeDestroy = function() {
     if (this._autoScroll) {
         this._autoScroll.destroy();
     }
-
+    // NMNS CUSTOMIZING START
+    if ($(config.classname('.timegrid-container')).data('scroll')) {
+        $(config.classname('.timegrid-container')).data('scroll').destroy();
+        $(config.classname('.timegrid-container')).data('scroll', null);
+    }
+    // NMNS CUSTOMIZING END
     this._autoScroll = this.hourmarkers = this.intervalID = this.timerID = this._cacheParentViewModel = null;
 };
 
@@ -458,10 +463,13 @@ TimeGrid.prototype.render = function(viewModel) {
      **********/
     this.hourmarkers = domutil.find(config.classname('.timegrid-hourmarker'), container, true);
 
-    if (!this._scrolled) {
+    // NMNS CUSTOMIZING START
+    $('#mainCalendar').height(($('.tui-full-calendar-week-container').is(':visible') ? ($('.tui-full-calendar-week-container').height()) : ($('.tui-full-calendar-layout').height())) + 'px');
+    /* if (!this._scrolled) {
         this._scrolled = true;
         this.scrollToNow();
-    }
+    }*/
+    // NMNS CUSTOMIZING END
 };
 
 TimeGrid.prototype.renderStickyContainer = function(baseViewModel) {

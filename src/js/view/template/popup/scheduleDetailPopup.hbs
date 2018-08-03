@@ -1,3 +1,82 @@
+<div id="detailPopup" class="{{CSS_PREFIX}}popup {{CSS_PREFIX}}popup-detail">
+	  	<div class="{{CSS_PREFIX}}popup-container">
+	  		<div class="{{CSS_PREFIX}}popup-section {{CSS_PREFIX}}section-header">
+	  			<div title="고객이름">
+	  				<span class="{{CSS_PREFIX}}schedule-title">{{#if schedule.title}}{{schedule.title}}{{else if schedule.raw.contents}}{{schedule.raw.contents}}{{else}}dashContact({{schedule.raw.contact}}){{/if}}</span>
+  				</div>
+  				<div class="{{CSS_PREFIX}}popup-detail-date {{CSS_PREFIX}}content" title="예약 시간">{{popupDetailDate-tmpl schedule.isAllDay schedule.start schedule.end}}</div>
+    		</div>
+    		<div class="{{CSS_PREFIX}}section-detail">
+    		<div class="{{CSS_PREFIX}}popup-detail-item" title="고객 연락처">
+    			<i class="fas fa-phone fa-rotate-90 fa-fw align-middle"></i>
+    			<span class="{{CSS_PREFIX}}content">dashContact({{schedule.raw.contact}})</span>
+        </div>
+        {{#if schedule.raw.contents}}
+    		<div class="{{CSS_PREFIX}}popup-detail-item" title="예약 내용">
+    			<i class="fas fa-list-ul fa-fw align-middle"></i>
+    			<span class="{{CSS_PREFIX}}content">{{schedule.raw.contents}}</span>
+  			</div>
+        {{/if}}
+        {{#if schedule.raw.etc}}
+  			<div class="{{CSS_PREFIX}}popup-detail-item" title="고객메모">
+  				<i class="far fa-bookmark fa-fw align-middle"></i>
+  				<span class="{{CSS_PREFIX}}content">{{schedule.raw.etc}}</span>
+    		</div>
+        {{/if}}
+        {{#if calendar}}
+        <div class="{{CSS_PREFIX}}popup-detail-item">
+			  	<span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{schedule.bgColor}}"></span>
+					<span class="{{CSS_PREFIX}}content">{{calendar.name}}</span>
+		    </div>
+        {{/if}}
+	    </div>
+	    <div class="{{CSS_PREFIX}}section-button">
+	    	<button class="{{CSS_PREFIX}}popup-edit">
+	    		<span class="{{CSS_PREFIX}}content">
+	    			<i class="fas fa-edit fa-fw"></i>
+	    			{{popupEdit-tmpl}}
+	    		</span>
+    		</button>
+    		<div class="detailPopupLabel dropup d-inline-block text-center">
+    			<span id="detailPopupLabelDropdown" class="{{CSS_PREFIX}}content dropdown-toggle dropdown-toggle-up" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+            {{fi status '===' 'NOSHOW'}}
+            <span class="badge badge-danger">노쇼</span>
+            {{/fi}}
+            {{fi status '===' 'RESERVED'}}
+            <span class="badge badge-success">정상</span>
+            {{/fi}}
+            {{fi status '===' 'CANCELED'}}
+            <span class="badge badge-secondary">취소</span>
+            {{/fi}}
+            {{fi status '===' 'CUSTOMERCANCELED'}}
+            <span class="badge badge-secondary">취소</span>
+            {{/fi}}
+            {{fi status '===' 'DELETED'}}
+            <span class="badge badge-light">삭제</span>
+            {{/fi}}
+	    		</span>
+	    		<div class="dropdown-menu text-center" aria-labelledby="detailPopupLabelDropdown">
+	    			<a href="#" class="dropdown-item" data-badge="light"><span class="badge badge-light">삭제</span></a>
+	    			<a href="#" class="dropdown-item" data-badge="danger"><span class="badge badge-danger">노쇼</span></a>
+	    			<a href="#" class="dropdown-item" data-badge="secondary"><span class="badge badge-secondary">취소</span></a>
+	    			<a href="#" class="dropdown-item" data-badge="success"><span class="badge badge-success">정상</span></a>
+    			</div>
+    		</div>
+    		<button class="{{CSS_PREFIX}}popup-delete">
+    			<span class="{{CSS_PREFIX}}content">
+    				<i class="fas fa-trash fa-fw"></i>{{popupDelete-tmpl}}</span>
+    		</button>
+  		</div>
+		</div>
+		<div class="{{CSS_PREFIX}}popup-top-line" style="background-color: {{schedule.bgColor}}"></div>
+		<div id="{{CSS_PREFIX}}popup-arrow" class="{{CSS_PREFIX}}popup-arrow {{CSS_PREFIX}}arrow-left">
+			<div class="{{CSS_PREFIX}}popup-arrow-border">
+				<div class="{{CSS_PREFIX}}popup-arrow-fill"></div>
+			</div>
+		</div>
+	</div>
+
+{{!-- 
 <div class="{{CSS_PREFIX}}popup {{CSS_PREFIX}}popup-detail">
   <div class="{{CSS_PREFIX}}popup-container">
     <div class="{{CSS_PREFIX}}popup-section {{CSS_PREFIX}}section-header">
@@ -30,4 +109,4 @@
         <div class="{{CSS_PREFIX}}popup-arrow-fill"></div>
     </div>
   </div>
-</div>
+</div> --}}

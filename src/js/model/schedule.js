@@ -259,9 +259,11 @@ Schedule.prototype.setAllDayPeriod = function(start, end) {
     }
 
     this.start = start;
-    this.start.setHours(0, 0, 0);
+    // NMNS CUSTOMIZING START
+    datetime.start(this.start);
     this.end = end || new TZDate(this.start);
-    this.end.setHours(23, 59, 59);
+    datetime.end(this.end);
+    // NMNS CUSTOMIZING END
 };
 
 Schedule.prototype.setTimePeriod = function(start, end) {

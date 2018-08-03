@@ -375,26 +375,32 @@ datetime = {
     },
 
     /**
-     * Return 00:00:00 supplied date.
+     * Return biz begin time supplied date.
      * @param {TZDate} date date.
      * @returns {TZDate} start date.
      */
     start: function(date) {
         var d = new TZDate(date.getTime());
-        d.setHours(0, 0, 0, 0);
+        // NMNS CUSTOMIZING START
+        d.setHours((NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 9),
+            (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(2), 10) : 0), 0, 0);
 
+        // NMNS CUSTOMIZING END
         return d;
     },
 
     /**
-     * Return 23:59:59 supplied date.
+     * Return biz end time supplied date.
      * @param {TZDate} date date.
      * @returns {TZDate} end date.
      */
     end: function(date) {
         var d = new TZDate(date.getTime());
-        d.setHours(23, 59, 59, 0);
+        // NMNS CUSTOMIZING START
+        d.setHours((NMNS.info && NMNS.info.bizEndTime ? parseInt(NMNS.info.bizEndTime.substring(0, 2), 10) : 23),
+            (NMNS.info && NMNS.info.bizEndTime ? parseInt(NMNS.info.bizEndTime.substring(2), 10) : 50), 0, 0);
 
+        // NMNS CUSTOMIZING END
         return d;
     },
 
@@ -429,8 +435,10 @@ datetime = {
         var startDate = new TZDate(Number(date));
 
         startDate.setDate(1);
-        startDate.setHours(0, 0, 0, 0);
+        // NMNS CUSTOMIZING START
+        this.start(startDate);
 
+        // NMNS CUSTOMIZING END
         return startDate;
     },
 
@@ -444,8 +452,10 @@ datetime = {
 
         endDate.setMonth(endDate.getMonth() + 1);
         endDate.setDate(endDate.getDate() - 1);
-        endDate.setHours(23, 59, 59);
+        // NMNS CUSTOMIZING START
+        this.end(endDate);
 
+        // NMNS CUSTOMIZING END
         return endDate;
     },
 

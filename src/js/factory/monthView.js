@@ -134,6 +134,42 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
             }
 
             detailView.render(eventData);
+            // NMNS CUSTOMIZING START
+            $('.detailPopupLabel').off('mouseenter').on('mouseenter', function(e) {
+                if (!$(this).hasClass('show')) {
+                    $('.dropdown-toggle', this).dropdown('toggle');
+                }
+            });
+            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function(e) {
+                if ($(this).hasClass('show')) {
+                    $('.dropdown-toggle', this).dropdown('toggle');
+                }
+            });
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function(e) {
+                var status = $(this).data('badge');
+                if (status === 'light') {// delete
+                    creationHandler.fire('beforeDeleteSchedule', eventData);
+                } else {
+                    switch (status) {
+                        case 'success':
+                            eventData.schedule.status = 'RESERVED';
+                            break;
+                        case 'secondary':
+                            eventData.schedule.status = 'CANCELED';
+                            break;
+                        case 'danger':
+                            eventData.schedule.status = 'NOSHOW';
+                            break;
+                        default:
+                            eventData.schedule.status = 'RESERVED';
+                            break;
+                    }
+                    creationHandler.fire('beforeUpdateSchedule', eventData);
+                }
+                domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+            });
+            domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
+            // NMNS CUSTOMIZING END
         };
         onDeleteSchedule = function(eventData) {
             if (creationHandler) {

@@ -81,12 +81,14 @@ MonthMove.prototype.updateSchedule = function(scheduleCache) {
     /**
      * @event MonthMove#beforeUpdateSchedule
      * @type {object}
-     * @property {Schedule} schedule - schedule instance to update
+     * @property {Schedule} schedule - schedule instance to 
+     * @property {Calendar} calendar - schedule calendar informaion
      * @property {Date} start - start time to update
      * @property {Date} end - end time to update
      */
     this.fire('beforeUpdateSchedule', {
         schedule: schedule,
+        calendar: {id: schedule.calendarId}, // NMNS CUSTOMIZING
         start: newStartDate,
         end: new TZDate(newStartDate.getTime() + duration)
     });

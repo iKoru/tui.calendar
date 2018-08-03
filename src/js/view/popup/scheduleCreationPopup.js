@@ -7,12 +7,10 @@
 var View = require('../../view/view');
 var FloatingLayer = require('../../common/floatingLayer');
 var util = require('tui-code-snippet');
-var DatePicker = require('tui-date-picker');
 var TZDate = require('../../common/timezone').Date;
 var config = require('../../config'),
     domevent = require('../../common/domevent'),
-    domutil = require('../../common/domutil'),
-    common = require('../../common/common');
+    domutil = require('../../common/domutil');
 var tmpl = require('../template/popup/scheduleCreationPopup.hbs');
 var MAX_WEEK_OF_MONTH = 6;
 var ARROW_WIDTH_HALF = 8;
@@ -63,10 +61,11 @@ ScheduleCreationPopup.prototype._onMouseDown = function(mouseDownEvent) {
     var target = (mouseDownEvent.target || mouseDownEvent.srcElement),
         popupLayer = domutil.closest(target, config.classname('.floating-layer'));
 
-    if (popupLayer) {
+    // NMNS CUSTOMIZING START
+    if (popupLayer || domutil.closest(target, '.autocomplete-suggestions') || domutil.closest(target, '.tooltip') || domutil.closest(target, '.flatpickr-calendar')) {
         return;
     }
-
+    // NMNS CUSTOMIZING END
     this.hide();
 };
 
@@ -104,7 +103,12 @@ ScheduleCreationPopup.prototype._closePopup = function(target) {
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
         this.hide();
+        // NMNS CUSTOMIZING START
+        document.body.classList.remove('modal-open');
+        domutil.find(config.classname('.screen')).style.opacity = 0;// hide screen
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
 
+        // NMNS CUSTOMIZING END
         return true;
     }
 
@@ -160,32 +164,23 @@ ScheduleCreationPopup.prototype._openDropdownMenuView = function(dropdown) {
  * @returns {boolean} whether
  */
 ScheduleCreationPopup.prototype._selectDropdownMenuItem = function(target) {
-    var itemClassName = config.classname('dropdown-menu-item');
-    var iconClassName = config.classname('icon');
-    var contentClassName = config.classname('content');
+    // NMNS CUSTOMIZING START
+    var itemClassName = config.classname('dropdown-item');
     var selectedItem = domutil.hasClass(target, itemClassName) ? target : domutil.closest(target, '.' + itemClassName);
-    var bgColor, title, dropdown, dropdownBtn;
-
+    var selectedCalendarId;
     if (!selectedItem) {
         return false;
     }
+    selectedCalendarId = domutil.getData(selectedItem, 'calendarId');
+    this._selectedCal = this.calendars.find(function(cal) {
+        return (cal.id === selectedCalendarId);
+    });
+    /* common.find(this.calendars, function(cal) {
+      return cal.id === selectedCalendarId;
+    });*/
+    $('#creationPopupManager').html($(selectedItem).html()).data('calendarid', selectedCalendarId);
 
-    bgColor = domutil.find('.' + iconClassName, selectedItem).style.backgroundColor || 'transparent';
-    title = domutil.find('.' + contentClassName, selectedItem).innerHTML;
-
-    dropdown = domutil.closest(selectedItem, config.classname('.dropdown'));
-    dropdownBtn = domutil.find(config.classname('.dropdown-button'), dropdown);
-    domutil.find('.' + contentClassName, dropdownBtn).innerText = title;
-
-    if (domutil.hasClass(dropdown, config.classname('section-calendar'))) {
-        domutil.find('.' + iconClassName, dropdownBtn).style.backgroundColor = bgColor;
-        this._selectedCal = common.find(this.calendars, function(cal) {
-            return cal.id === domutil.getData(selectedItem, 'calendarId');
-        });
-    }
-
-    domutil.removeClass(dropdown, config.classname('open'));
-
+    // NMNS CUSTOMIZING END
     return true;
 };
 
@@ -194,8 +189,9 @@ ScheduleCreationPopup.prototype._selectDropdownMenuItem = function(target) {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether event target is allday section or not
  */
-ScheduleCreationPopup.prototype._toggleIsAllday = function(target) {
-    var className = config.classname('section-allday');
+ScheduleCreationPopup.prototype._toggleIsAllday = function() {
+    // NMNS CUSTOMIZING START
+    /* var className = config.classname('section-allday');
     var alldaySection = domutil.hasClass(target, className) ? target : domutil.closest(target, '.' + className);
     var checkbox;
 
@@ -204,8 +200,8 @@ ScheduleCreationPopup.prototype._toggleIsAllday = function(target) {
         checkbox.checked = !checkbox.checked;
 
         return true;
-    }
-
+    }*/
+    // NMNS CUSTOMIZING END
     return false;
 };
 
@@ -238,69 +234,100 @@ ScheduleCreationPopup.prototype._toggleIsPrivate = function(target) {
  * @returns {boolean} whether save button is clicked or not
  */
 ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
-    var className = config.classname('popup-save');
-    var cssPrefix = config.cssPrefix;
-    var title, isPrivate, location, isAllDay, startDate, endDate, state;
-    var start, end, calendarId;
-
-    if (!domutil.hasClass(target, className) && !domutil.closest(target, '.' + className)) {
+    // NMNS CUSTOMIZING START
+    var title, isAllDay, startDate, endDate, contents, contact, etc, calendarId, manager;
+    if (!$(target).is('#creationPopupSave')) {
         return false;
     }
-
-    title = domutil.get(cssPrefix + 'schedule-title');
-    startDate = new TZDate(this.rangePicker.getStartDate());
-    endDate = new TZDate(this.rangePicker.getEndDate());
-
-    if (!title.value) {
-        title.focus();
+    if (!this.validator) {
+        this.validator = $('#creationPopupForm').validate({
+            rules: {
+                contact: {
+                    required: true,
+                    digits: true
+                },
+                start: {
+                    required: true
+                },
+                end: {
+                    required: true
+                }
+            },
+            messages: {
+                contact: {
+                    required: '연락처를 입력해주세요.',
+                    digits: '숫자만 입력해주세요.'
+                },
+                start: '시작시간을 입력해주세요.',
+                end: '종료시간을 입력해주세요.'
+            },
+            errorElement: 'p',
+            errorClass: 'message text-danger my-1 pl-4 pl-sm-0 ml-3',
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent());
+            },
+            highlight: function(element, errorClass) {
+                $(element).removeClass(errorClass);
+            }
+        });
+    }
+    if (!this.validator.form()) {
+        this.validator.showErrors();
 
         return true;
     }
+    calendarId = $('#creationPopupManager').data('calendarid');
+    manager = this.calendars.find(function(cal) {
+        return cal.id === calendarId;
+    });
+
+    startDate = new TZDate($('#tui-full-calendar-schedule-start-date')[0]._flatpickr.selectedDates[0]);
+    endDate = new TZDate($('#tui-full-calendar-schedule-end-date')[0]._flatpickr.selectedDates[0]);
 
     if (!startDate && !endDate) {
         return true;
     }
 
-    isPrivate = !domutil.hasClass(domutil.get(cssPrefix + 'schedule-private'), config.classname('public'));
-    location = domutil.get(cssPrefix + 'schedule-location');
-    state = domutil.get(cssPrefix + 'schedule-state');
-    isAllDay = !!domutil.get(cssPrefix + 'schedule-allday').checked;
+    title = $('#creationPopupName').val();
+    contents = $('#creationPopupContents').val();
+    contact = $('#creationPopupContact').val();
+    etc = $('#creationPopupEtc').val();
+    isAllDay = $('#creationPopupAllDay').is(':checked');
 
-    if (isAllDay) {
-        startDate.setHours(0);
-        startDate.setMinutes(0);
-        startDate.setSeconds(0);
-        endDate.setHours(23);
-        endDate.setMinutes(59);
-        endDate.setSeconds(59);
-    }
-
-    start = new TZDate(startDate);
-    end = new TZDate(endDate);
-
-    if (this._selectedCal) {
-        calendarId = this._selectedCal.id;
+    if (manager) {
+        calendarId = manager.id;
     }
 
     if (this._isEditMode) {
         this.fire('beforeUpdateSchedule', {
             schedule: {
+                id: this._scheduleId,
                 calendarId: calendarId,
-                title: title.value,
-                location: location.value,
+                title: title,
                 raw: {
-                    class: isPrivate ? 'private' : 'public'
+                    contents: contents,
+                    contact: contact,
+                    etc: etc,
+                    status: this._viewModel.status
                 },
-                start: start,
-                end: end,
+                start: startDate,
+                end: endDate,
                 isAllDay: isAllDay,
-                state: state.innerText,
-                triggerEventName: 'click',
-                id: this._scheduleId
+                manager: calendarId,
+                name: title,
+                contents: contents,
+                contact: contact,
+                etc: etc,
+                status: this._viewModel.status,
+                color: manager.color,
+                bgColor: manager.bgColor,
+                borderColor: manager.borderColor,
+                dragBgColor: manager.bgColor
             },
-            start: start,
-            end: end,
-            calendar: this._selectedCal,
+            history: this._viewModel,
+            start: startDate,
+            end: endDate,
+            calendar: manager,
             triggerEventName: 'click'
         });
     } else {
@@ -311,18 +338,43 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
          */
         this.fire('beforeCreateSchedule', {
             calendarId: calendarId,
-            title: title.value,
-            location: location.value,
+            title: title,
+            name: title,
             raw: {
-                class: isPrivate ? 'private' : 'public'
+                'class': 'public',
+                location: '',
+                contents: contents,
+                contact: contact,
+                etc: etc,
+                status: 'RESERVED'
             },
-            start: new TZDate(startDate),
-            end: new TZDate(endDate),
+            start: startDate,
+            end: endDate,
             isAllDay: isAllDay,
-            state: state.innerText
+            state: 'Busy',
+            category: isAllDay ? 'allday' : 'time',
+            dueDateClass: '',
+            attendees: [],
+            recurrenceRule: false,
+            isPending: false,
+            isFocused: false,
+            isVisible: true,
+            isReadOnly: false,
+            isPrivate: false,
+            customStyle: '',
+            location: '',
+            bgColor: manager ? manager.bgColor : '#b2dfdb',
+            borderColor: manager ? manager.borderColor : '#b2dfdb',
+            color: getColorFromBackgroundColor(manager ? manager.bgColor : '#b2dfdb'),
+            dragBgColor: manager ? manager.bgColor : '#b2dfdb',
+            manager: calendarId,
+            contents: contents,
+            contact: contact,
+            etc: etc,
+            status: 'RESERVED'
         });
     }
-
+    // NMNS CUSTOMIZING END
     this.hide();
 
     return true;
@@ -333,10 +385,21 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
  * @param {object} viewModel - view model from factory/monthView
  */
 ScheduleCreationPopup.prototype.render = function(viewModel) {
+    // NMNS CUSTOMIZING START
+    var timeout;
     var calendars = this.calendars;
     var layer = this.layer;
     var self = this;
-    var boxElement, guideElements;
+    /**
+     * event triggered when contact input has been blured
+     */
+    function onContactBlur() {
+        clearTimeout(timeout);
+        if ($('#creationPopupContact').val().length > 9) {
+            NMNS.socket.emit('get customer', {contact: $('#creationPopupContact').val()});
+        }
+    }
+    // NMNS CUSTOMIZING END
 
     viewModel.zIndex = this.layer.zIndex + 5;
     viewModel.calendars = calendars;
@@ -344,25 +407,131 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
         viewModel.selectedCal = this._selectedCal = calendars[0];
     }
 
+    // NMNS CUSTOMIZING START
     this._isEditMode = viewModel.schedule && viewModel.schedule.id;
     if (this._isEditMode) {
-        boxElement = viewModel.target;
-        viewModel = this._makeEditModeData(viewModel);
+        // boxElement = viewModel.target;
+        this._viewModel = viewModel = this._makeEditModeData(viewModel);
     } else {
         this.guide = viewModel.guide;
-        guideElements = this._getGuideElements(this.guide);
-        boxElement = guideElements.length ? guideElements[0] : null;
+        // guideElements = this._getGuideElements(this.guide);
+        // boxElement = guideElements.length ? guideElements[0] : null;
     }
-    layer.setContent(tmpl(viewModel));
-    this._createDatepicker(viewModel.start, viewModel.end);
-    layer.show();
+    if ($('#creationPopup').length) {// already inited
+        this._updatePopup(viewModel);
+        $('#creationPopupName').autocomplete().clearCache();
+        $('#creationPopupContact').autocomplete().clearCache();
+        $('#creationPopupContact').tooltip('dispose');
+        this._createDatepicker(viewModel.start.toDate ? viewModel.start.toDate() : viewModel.start,
+            viewModel.end.toDate ? viewModel.end.toDate() : viewModel.end);
+    } else {// need init
+        layer.setContent(tmpl(viewModel));
+        document.getElementById('creationPopupForm').onsubmit = function() {
+            return false;
+        };
+        this._createDatepicker(viewModel.start.toDate ? viewModel.start.toDate() : viewModel.start,
+            viewModel.end.toDate ? viewModel.end.toDate() : viewModel.end);
+        $('#creationPopupName').autocomplete({
+            serviceUrl: 'get customer info',
+            paramName: 'name',
+            zIndex: 1060,
+            maxHeight: 150,
+            triggerSelectOnValidInput: false,
+            transformResult: function(response) {
+                response.forEach(function(item) {
+                    item.data = item.contact;
+                    item.value = item.name;
+                    delete item.contact;
+                    delete item.name;
+                });
 
-    this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
+                return {suggestions: response};
+            },
+            onSearchComplete: function() {},
+            formatResult: function(suggestion) {
+                return suggestion.value + ' (' + dashContact(suggestion.data) + ')';
+            },
+            onSearchError: function() {},
+            onSelect: function(suggestion) {
+                $('#creationPopupContact').val(suggestion.data).trigger('blur');
+            }
+        }, NMNS.socket);
+
+        $('#creationPopupContact').autocomplete({
+            serviceUrl: 'get customer info',
+            paramName: 'contact',
+            zIndex: 1060,
+            maxHeight: 150,
+            triggerSelectOnValidInput: false,
+            transformResult: function(response) {
+                response.forEach(function(item) {
+                    item.data = item.name;
+                    item.value = item.contact;
+                    delete item.contact;
+                    delete item.name;
+                });
+
+                return {suggestions: response};
+            },
+            onSearchComplete: function() {},
+            formatResult: function(suggestion) {
+                return suggestion.value + ' (' + dashContact(suggestion.data) + ')';
+            },
+            onSearchError: function() {},
+            onSelect: function(suggestion) {
+                $('#creationPopupName').val(suggestion.data);
+                onContactBlur();
+            }
+        }, NMNS.socket).on('blur', function() {
+            filterNonNumericCharacter($(this));
+        });
+
+        $('#creationPopupContact').on('blur', function() {
+            filterNonNumericCharacter($('#creationPopupContact'));
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                onContactBlur();
+            }, 500);
+        });
+    }
+    layer.show();
+    if (this._isEditMode) {
+        $('#creationPopup').data('contact', viewModel.raw.contact);
+        onContactBlur();
+    }
+    // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
+    // NMNS CUSTOMIZING END
 
     util.debounce(function() {
         domevent.on(document.body, 'mousedown', self._onMouseDown, self);
     })();
 };
+
+// NMNS CUSTOMIZING START
+/**
+ * update popup form data
+ * @param {ViewModel} viewModel - viewmodel
+ */
+ScheduleCreationPopup.prototype._updatePopup = function(viewModel) {
+    var dropdown = '';
+    document.getElementById('tui-full-calendar-schedule-start-date')._flatpickr.destroy();
+    document.getElementById('tui-full-calendar-schedule-end-date')._flatpickr.destroy();
+    $('#creationPopupName').val(viewModel.title || '');
+    $('#creationPopupContents').val(viewModel.raw ? viewModel.raw.contents : (viewModel.contents || ''));
+    $('#creationPopupContact').val(viewModel.raw ? viewModel.raw.contact : (viewModel.contact || ''));
+    $('#creationPopupEtc').val(viewModel.raw ? viewModel.raw.etc : (viewModel.etc || ''));
+    $('#creationPopupAllDay').attr('checked', viewModel.isAllDay);
+    this._selectedCal = this._selectedCal || this.calendars[0];
+    this.calendars.forEach(function(item) {
+        var escapedCssPrefix = 'tui-full-calendar-';
+        dropdown += '<button type="button" class="dropdown-item ' + escapedCssPrefix + 'dropdown-item" data-calendar-id="' + item.id + '">\n'
+            + '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.bgColor + '"></span>\n'
+            + '<span class="' + escapedCssPrefix + 'content">' + item.name + '</span>\n'
+            + '</button>\n';
+    });
+    $('#creationPopupManager').html($('#creationPopupManager').next().html(dropdown).find("button[data-calendar-id='" + this._selectedCal.id + "']").html()).data('calendarid', this._selectedCal.id);
+};
+// NMNS CUSTOMIZING END
 
 /**
  * Make view model for edit mode
@@ -370,24 +539,30 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
  * @returns {object} - edit mode view model
  */
 ScheduleCreationPopup.prototype._makeEditModeData = function(viewModel) {
+    // NMNS CUSTOMIZING START
     var schedule = viewModel.schedule;
-    var title, isPrivate, location, startDate, endDate, isAllDay, state;
+    var title, startDate, endDate, isAllDay, state, contact, etc, contents, status;
     var raw = schedule.raw || {};
     var calendars = this.calendars;
+    var calendarIndex;
 
     var id = schedule.id;
     title = schedule.title;
-    isPrivate = raw['class'] === 'private';
-    location = schedule.location;
     startDate = schedule.start;
     endDate = schedule.end;
     isAllDay = schedule.isAllDay;
     state = schedule.state;
+    contact = raw.contact;
+    contents = raw.contents;
+    etc = raw.etc;
+    status = raw.status;
 
-    viewModel.selectedCal = this._selectedCal = common.find(this.calendars, function(cal) {
-        return cal.id === viewModel.schedule.calendarId;
+    calendarIndex = calendars.findIndex(function(calendar) {
+        return calendar.id === viewModel.schedule.calendarId;
     });
+    calendarIndex = calendarIndex < 0 ? 0 : calendarIndex;
 
+    viewModel.selectedCal = this._selectedCal = calendars[calendarIndex];
     this._scheduleId = id;
 
     return {
@@ -395,18 +570,27 @@ ScheduleCreationPopup.prototype._makeEditModeData = function(viewModel) {
         selectedCal: this._selectedCal,
         calendars: calendars,
         title: title,
-        isPrivate: isPrivate,
-        location: location,
+        isPrivate: false,
+        location: '',
         isAllDay: isAllDay,
         state: state,
         start: startDate,
         end: endDate,
+        contact: contact,
+        contents: contents,
+        etc: etc,
+        status: status,
         raw: {
-            class: isPrivate ? 'private' : 'public'
+            location: '',
+            'class': 'public',
+            contact: contact,
+            contents: contents,
+            etc: etc,
+            status: status
         },
         zIndex: this.layer.zIndex + 5,
         isEditMode: this._isEditMode
-    };
+    };// NMNS CUSTOMIZING END
 };
 
 /**
@@ -556,24 +740,39 @@ ScheduleCreationPopup.prototype._setArrowDirection = function(arrow) {
  * @param {TZDate} end - end date
  */
 ScheduleCreationPopup.prototype._createDatepicker = function(start, end) {
-    var cssPrefix = config.cssPrefix;
-    this.rangePicker = DatePicker.createRangePicker({
-        startpicker: {
-            date: new TZDate(start.getTime()).toDate(),
-            input: '#' + cssPrefix + 'schedule-start-date',
-            container: '#' + cssPrefix + 'startpicker-container'
+    // NMNS CUSTOMIZING START
+    var beginTime = moment((NMNS.info.bizBeginTime || '0900'), 'HHmm').format('HH:mm');
+    var endTime = moment((NMNS.info.bizEndTime || '2300'), 'HHmm').format('HH:mm');
+
+    flatpickr('#tui-full-calendar-schedule-start-date', {
+        format: 'Y-m-d H:i',
+        enableTime: true,
+        defaultDate: start,
+        locale: 'ko',
+        onChange: function(a) {
+            document.getElementById('tui-full-calendar-schedule-end-date')._flatpickr.set('minDate', moment(a[0]).add(10, 'm').toDate());
         },
-        endpicker: {
-            date: new TZDate(end.getTime()).toDate(),
-            input: '#' + cssPrefix + 'schedule-end-date',
-            container: '#' + cssPrefix + 'endpicker-container'
+        minuteIncrement: 10,
+        maxDate: moment(end).subtract(10, 'm').toDate(),
+        minTime: beginTime,
+        maxTime: endTime,
+        time_24hr: true
+    }).setDate(start);
+    flatpickr('#tui-full-calendar-schedule-end-date', {
+        format: 'Y-m-d H:i',
+        enableTime: true,
+        defaultDate: end,
+        locale: 'ko',
+        onChange: function(a) {
+            document.getElementById('tui-full-calendar-schedule-start-date')._flatpickr.set('maxDate', moment(a[0]).subtract(10, 'm').toDate());
         },
-        format: 'yyyy-MM-dd HH:mm',
-        timepicker: {
-            showMeridiem: false
-        },
-        usageStatistics: true
-    });
+        minuteIncrement: 10,
+        minDate: moment(start).add(10, 'm').toDate(),
+        minTime: beginTime,
+        maxTime: endTime,
+        time_24hr: true
+    }).setDate(end);
+    // NMNS CUSTOMIZING END
 };
 
 /**
@@ -586,7 +785,11 @@ ScheduleCreationPopup.prototype.hide = function() {
         this.guide.clearGuideElement();
         this.guide = null;
     }
-
+    // NMNS CUSTOMIZING START
+    document.body.classList.remove('modal-open');
+    domutil.find(config.classname('.screen')).style.opacity = 0;// hide screen
+    domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+    // NMNS CUSTOMIZING END
     domevent.off(document.body, 'mousedown', this._onMouseDown, this);
 };
 

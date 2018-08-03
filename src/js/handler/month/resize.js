@@ -77,11 +77,13 @@ MonthResize.prototype._updateSchedule = function(scheduleCache) {
      * @event MonthResize#beforeUpdateSchedule
      * @type {object}
      * @property {Schedule} schedule - schedule instance to update
+     * @property {Calendar} calendar - schedule calendar information
      * @property {Date} start - start time to update
      * @property {Date} end - end time to update
      */
     this.fire('beforeUpdateSchedule', {
         schedule: schedule,
+        calendar: {id: schedule.calendarId}, // NMNS CUSTOMIZING
         start: new TZDate(Number(schedule.getStarts())),
         end: newEnd
     });
