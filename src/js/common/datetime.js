@@ -480,7 +480,7 @@ datetime = {
             cursor, week,
             calendar = [],
             startDayOfWeek = options.startDayOfWeek,
-            isAlways6Week = options.isAlways6Week,
+            isAlways6Week = util.isUndefined(options.isAlways6Week) ? true : options.isAlways6Week,
             visibleWeeksCount = options.visibleWeeksCount,
             workweek = options.workweek;
 

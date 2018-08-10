@@ -54,7 +54,6 @@ function generateTime(schedule, renderStart, renderEnd) {
     var endDate = moment(renderEnd.getTime());
     var diffDate = endDate.diff(startDate, 'days');
 
-
     schedule.isAllday = chance.bool({likelihood: 30});
     if (schedule.isAllday) {
         schedule.category = 'allday';
@@ -124,7 +123,7 @@ function generateSchedule(viewName, renderStart, renderEnd) {
     CalendarList.forEach(function(calendar) {
         var i = 0, length = 10;
         if (viewName === 'month') {
-            length = 15;
+            length = 3;
         } else if (viewName === 'day') {
             length = 4;
         }
