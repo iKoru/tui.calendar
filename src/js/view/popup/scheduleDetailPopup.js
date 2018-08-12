@@ -88,15 +88,21 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
     var className = config.classname('popup-edit');
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
-        this.fire('beforeUpdateSchedule', {
-            schedule: this._schedule,
-            triggerEventName: 'click',
-            target: this._scheduleEl
-        });
         // NMNS CUSTOMIZING START
-        document.body.classList.add('modal-open');
-        domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
-        domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
+        if (this._schedule.category !== 'task') {
+            this.fire('beforeUpdateSchedule', {
+                schedule: this._schedule,
+                triggerEventName: 'click',
+                target: this._scheduleEl
+            });
+            document.body.classList.add('modal-open');
+            domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
+            domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
+        } else {
+            NMNS.initTaskModal(this._schedule);
+            domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+            $('#taskModal').modal('show');
+        }
         // NMNS CUSTOMIZING END
         this.hide();
     }

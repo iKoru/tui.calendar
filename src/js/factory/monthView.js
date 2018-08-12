@@ -167,6 +167,7 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
                     creationHandler.fire('beforeUpdateSchedule', eventData);
                 }
                 domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+                detailView.hide();
             });
             domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
             // NMNS CUSTOMIZING END

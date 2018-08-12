@@ -62,7 +62,7 @@ var DEFAULT_PANELS = [
         maxHeight: 120,
         showExpandableButton: true,
         maxExpandableHeight: 210,
-        handlers: ['click', 'move'],
+        handlers: ['click', 'move', 'creation'], // NMNS CUSTOMIZING
         show: true
     },
     {

@@ -10,6 +10,7 @@ var util = require('tui-code-snippet');
 var TZDate = require('../../common/timezone').Date;
 var config = require('../../config'),
     domevent = require('../../common/domevent'),
+    datetime = require('../../common/datetime'),
     domutil = require('../../common/domutil');
 var tmpl = require('../template/popup/scheduleCreationPopup.hbs');
 var MAX_WEEK_OF_MONTH = 6;
@@ -286,6 +287,9 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
 
     if (!startDate && !endDate) {
         return true;
+    }
+    if (datetime.compare(startDate, endDate) > 0) {// swap two dates
+        startDate = [endDate, endDate = startDate][0];
     }
 
     title = $('#creationPopupName').val();
@@ -749,11 +753,7 @@ ScheduleCreationPopup.prototype._createDatepicker = function(start, end) {
         enableTime: true,
         defaultDate: start,
         locale: 'ko',
-        onChange: function(a) {
-            document.getElementById('tui-full-calendar-schedule-end-date')._flatpickr.set('minDate', moment(a[0]).add(10, 'm').toDate());
-        },
         minuteIncrement: 10,
-        maxDate: moment(end).subtract(10, 'm').toDate(),
         minTime: beginTime,
         maxTime: endTime,
         time_24hr: true
@@ -763,11 +763,7 @@ ScheduleCreationPopup.prototype._createDatepicker = function(start, end) {
         enableTime: true,
         defaultDate: end,
         locale: 'ko',
-        onChange: function(a) {
-            document.getElementById('tui-full-calendar-schedule-start-date')._flatpickr.set('maxDate', moment(a[0]).subtract(10, 'm').toDate());
-        },
         minuteIncrement: 10,
-        minDate: moment(start).add(10, 'm').toDate(),
         minTime: beginTime,
         maxTime: endTime,
         time_24hr: true
