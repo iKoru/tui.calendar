@@ -29,7 +29,7 @@ var config = require('../config'),
  * @returns {object} view model
  */
 function getViewModelForMoreLayer(date, target, schedules, daynames) {
-    schedules.each(function(schedule) {
+    schedules.each(function (schedule) {
         var model = schedule.model;
         schedule.hasMultiDates = !datetime.isSameDate(model.start, model.end);
     });
@@ -69,20 +69,20 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
         moveHandler = new MonthMove(dragHandler, monthView, baseController);
     }
 
-    clearSchedulesHandler = function() {
+    clearSchedulesHandler = function () {
         if (moreView) {
             moreView.hide();
         }
     };
 
-    onUpdateSchedule = function() {
+    onUpdateSchedule = function () {
         if (moreView) {
             moreView.refresh();
         }
     };
 
     // binding +n click schedule
-    clickHandler.on('clickMore', function(clickMoreSchedule) {
+    clickHandler.on('clickMore', function (clickMoreSchedule) {
         var date = clickMoreSchedule.date,
             target = clickMoreSchedule.target,
             schedules = util.pick(baseController.findByDateRange(
@@ -90,19 +90,19 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
                 datetime.end(date)
             ), clickMoreSchedule.ymd);
 
-        schedules.items = util.filter(schedules.items, function(item) {
+        schedules.items = util.filter(schedules.items, function (item) {
             return options.month.scheduleFilter(item.model);
         });
 
         if (schedules && schedules.length) {
             moreView.render(getViewModelForMoreLayer(date, target, schedules, monthView.options.daynames));
 
-            schedules.each(function(scheduleViewModel) {
+            schedules.each(function (scheduleViewModel) {
                 if (scheduleViewModel) {
                     /**
                      * @event More#afterRenderSchedule
                      */
-                    monthView.fire('afterRenderSchedule', {schedule: scheduleViewModel.model});
+                    monthView.fire('afterRenderSchedule', { schedule: scheduleViewModel.model });
                 }
             });
         }
@@ -112,7 +112,7 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
     if (options.useCreationPopup) {
         createView = new ScheduleCreationPopup(layoutContainer, baseController.calendars);
 
-        onSaveNewSchedule = function(scheduleData) {
+        onSaveNewSchedule = function (scheduleData) {
             creationHandler.fire('beforeCreateSchedule', util.extend(scheduleData, {
                 useCreationPopup: true
             }));
@@ -123,29 +123,36 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
     // binding popup for schedule detail
     if (options.useDetailPopup) {
         detailView = new ScheduleDetailPopup(layoutContainer, baseController.calendars);
-        onShowDetailPopup = function(eventData) {
+        onShowDetailPopup = function (eventData) {
             var scheduleId = eventData.schedule.calendarId;
-            eventData.calendar = common.find(baseController.calendars, function(calendar) {
+            eventData.calendar = common.find(baseController.calendars, function (calendar) {
                 return calendar.id === scheduleId;
             });
 
+            // NMNS CUSTOMIZING START
+            if (!eventData.calendar) {
+                eventData.calendar = {
+                    name: '삭제된 담당자'
+                };
+            }
+            // NMNS CUSTOMIZING END
             if (options.isReadOnly) {
-                eventData.schedule = util.extend({}, eventData.schedule, {isReadOnly: true});
+                eventData.schedule = util.extend({}, eventData.schedule, { isReadOnly: true });
             }
 
             detailView.render(eventData);
             // NMNS CUSTOMIZING START
-            $('.detailPopupLabel').off('mouseenter').on('mouseenter', function() {
+            $('.detailPopupLabel').off('mouseenter').on('mouseenter', function () {
                 if (!$(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
                 }
             });
-            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function() {
+            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function () {
                 if ($(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
                 }
             });
-            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function() {
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function () {
                 var status = $(this).data('badge');
                 if (status === 'light') {// delete
                     creationHandler.fire('beforeDeleteSchedule', eventData);
@@ -172,12 +179,12 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
             domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
             // NMNS CUSTOMIZING END
         };
-        onDeleteSchedule = function(eventData) {
+        onDeleteSchedule = function (eventData) {
             if (creationHandler) {
                 creationHandler.fire('beforeDeleteSchedule', eventData);
             }
         };
-        onEditSchedule = function(eventData) {
+        onEditSchedule = function (eventData) {
             moveHandler.fire('beforeUpdateSchedule', eventData);
         };
 
@@ -186,7 +193,7 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
         detailView.on('beforeDeleteSchedule', onDeleteSchedule);
 
         if (options.useCreationPopup) {
-            onShowEditPopup = function(eventData) {
+            onShowEditPopup = function (eventData) {
                 createView.setCalendars(baseController.calendars);
                 createView.render(eventData);
             };
@@ -204,7 +211,7 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
     baseController.on('updateSchedule', onUpdateSchedule);
 
     if (moveHandler) {
-        moveHandler.on('monthMoveStart_from_morelayer', function() {
+        moveHandler.on('monthMoveStart_from_morelayer', function () {
             moreView.hide();
         });
     }
@@ -229,13 +236,13 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
         });
     }
 
-    monthView._beforeDestroy = function() {
+    monthView._beforeDestroy = function () {
         moreView.destroy();
         baseController.off('clearSchedules', clearSchedulesHandler);
         baseController.off('updateSchedule', onUpdateSchedule);
 
-        util.forEach(monthView.handler, function(type) {
-            util.forEach(type, function(handler) {
+        util.forEach(monthView.handler, function (type) {
+            util.forEach(type, function (handler) {
                 handler.off();
                 handler.destroy();
             });
@@ -266,21 +273,21 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
 
     return {
         view: monthView,
-        refresh: function() {
+        refresh: function () {
             monthView.vLayout.refresh();
         },
-        openCreationPopup: function(schedule) {
+        openCreationPopup: function (schedule) {
             if (createView && creationHandler) {
                 creationHandler.invokeCreationClick(Schedule.create(schedule));
             }
         },
-        showCreationPopup: function(eventData) {
+        showCreationPopup: function (eventData) {
             if (createView) {
                 createView.setCalendars(baseController.calendars);
                 createView.render(eventData);
             }
         },
-        hideMoreView: function() {
+        hideMoreView: function () {
             if (moreView) {
                 moreView.hide();
             }

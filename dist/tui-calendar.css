@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Sun Aug 12 2018
+ * @version 1.7.0 | Mon Aug 13 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -207,7 +207,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding-left: 3px;
-  font-weight: bold;
+  font-weight: normal;
 }
 .tui-full-calendar-weekday-schedule-title-focused {
   padding-left: 16px;

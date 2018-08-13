@@ -3,16 +3,18 @@
     "globals": {
         "chance": true,
         "moment": true,
-        "NMNS":true,
+        "NMNS": true,
         "$": true,
-        "PerfectScrollbar":true,
-        "getColorFromBackgroundColor":true,
-        "filterNonNumericCharacter":true,
-        "dashContact":true,
-        "flatpickr":true
+        "PerfectScrollbar": true,
+        "getColorFromBackgroundColor": true,
+        "filterNonNumericCharacter": true,
+        "dashContact": true,
+        "flatpickr": true
     },
     "rules": {
-        "complexity":"off",
-        "camelcase":"off"
+        "complexity": "off",
+        "camelcase": "off",
+        "space-before-function-paren": "off",
+        "object-curly-spacing": "off"
     }
 }

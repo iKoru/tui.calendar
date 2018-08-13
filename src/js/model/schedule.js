@@ -241,10 +241,10 @@ Schedule.prototype.init = function(options) {
         this.setTimePeriod(options.start, options.end);
     }
 
-    if (options.category === SCHEDULE_CATEGORY.MILESTONE ||
+    /* if (options.category === SCHEDULE_CATEGORY.MILESTONE ||
         options.category === SCHEDULE_CATEGORY.TASK) {
         this.start = new TZDate(this.end);
-    }
+    }*/ // NMNS CUSTOMIZING
 
     this.raw = options.raw || null;
 };

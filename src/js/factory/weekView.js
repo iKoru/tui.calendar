@@ -62,7 +62,7 @@ var DEFAULT_PANELS = [
         maxHeight: 120,
         showExpandableButton: true,
         maxExpandableHeight: 210,
-        handlers: ['click', 'move', 'creation'], // NMNS CUSTOMIZING
+        handlers: ['click', 'move', 'creation', 'resize'], // NMNS CUSTOMIZING
         show: true
     },
     {
@@ -85,7 +85,7 @@ var DEFAULT_PANELS = [
 ];
 
 /* eslint-disable complexity*/
-module.exports = function(baseController, layoutContainer, dragHandler, options) {
+module.exports = function (baseController, layoutContainer, dragHandler, options) {
     var panels = [],
         vpanels = [];
     var weekView, dayNameContainer, dayNameView, vLayoutContainer, vLayout;
@@ -101,7 +101,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
     };
 
     // Make panels by view sequence and visibilities
-    util.forEach(DEFAULT_PANELS, function(panel) {
+    util.forEach(DEFAULT_PANELS, function (panel) {
         var name = panel.name;
 
         panel = util.extend({}, panel);
@@ -126,7 +126,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
         lastVPanel.maxHeight = null;
         lastVPanel.showExpandableButton = false;
 
-        util.forEach(panels, function(panel) {
+        util.forEach(panels, function (panel) {
             if (panel.name === lastVPanel.name) {
                 panel.showExpandableButton = false;
 
@@ -137,7 +137,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
         });
     }
 
-    util.extend(options.week, {panels: panels});
+    util.extend(options.week, { panels: panels });
 
     weekView = new Week(null, options.week, layoutContainer, panels);
     weekView.handler = {
@@ -170,7 +170,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
 
     weekView.vLayout = vLayout;
 
-    util.forEach(panels, function(panel) {
+    util.forEach(panels, function (panel) {
         var name = panel.name;
         var handlers = panel.handlers;
         var view;
@@ -184,13 +184,13 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
              * Schedule panel by Grid
              **********/
             view = new DayGrid(name, options, vLayout.getPanelByName(panel.name).container, baseController.theme);
-            view.on('afterRender', function(viewModel) {
+            view.on('afterRender', function (viewModel) {
                 vLayout.getPanelByName(name).setHeight(null, viewModel.height);
             });
 
             weekView.addChild(view);
 
-            util.forEach(handlers, function(type) {
+            util.forEach(handlers, function (type) {
                 if (!options.isReadOnly || type === 'click') {
                     weekView.handler[type][name] =
                         new DAYGRID_HANDLDERS[type](dragHandler, view, baseController, options);
@@ -203,20 +203,20 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
              **********/
             view = new TimeGrid(name, options, vLayout.getPanelByName(name).container);
             weekView.addChild(view);
-            util.forEach(handlers, function(type) {
+            util.forEach(handlers, function (type) {
                 if (!options.isReadOnly || type === 'click') {
                     weekView.handler[type][name] =
                         new TIMEGRID_HANDLERS[type](dragHandler, view, baseController, options);
                 }
             });
 
-            view.on('clickTimezonesCollapsedBtn', function() {
+            view.on('clickTimezonesCollapsedBtn', function () {
                 var timezonesCollapsed = !weekView.state.timezonesCollapsed;
 
                 weekView.setState({
                     timezonesCollapsed: timezonesCollapsed
                 });
-                reqAnimFrame.requestAnimFrame(function() {
+                reqAnimFrame.requestAnimFrame(function () {
                     if (!weekView.invoke('clickTimezonesCollapseBtn', timezonesCollapsed)) {
                         weekView.render();
                     }
@@ -225,8 +225,8 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
         }
     });
 
-    vLayout.on('resize', function() {
-        reqAnimFrame.requestAnimFrame(function() {
+    vLayout.on('resize', function () {
+        reqAnimFrame.requestAnimFrame(function () {
             weekView.render();
         });
     });
@@ -235,7 +235,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
     if (options.useCreationPopup) {
         createView = new ScheduleCreationPopup(layoutContainer, baseController.calendars);
 
-        onSaveNewSchedule = function(scheduleData) {
+        onSaveNewSchedule = function (scheduleData) {
             util.extend(scheduleData, {
                 useCreationPopup: true
             });
@@ -248,7 +248,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
         createView.on('beforeCreateSchedule', onSaveNewSchedule);
     }
 
-    onSetCalendars = function(calendars) {
+    onSetCalendars = function (calendars) {
         if (createView) {
             createView.setCalendars(calendars);
         }
@@ -259,29 +259,36 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
     // binding popup for schedule detail
     if (options.useDetailPopup) {
         detailView = new ScheduleDetailPopup(layoutContainer, baseController.calendars);
-        onShowDetailPopup = function(eventData) {
+        onShowDetailPopup = function (eventData) {
             var scheduleId = eventData.schedule.calendarId;
-            eventData.calendar = common.find(baseController.calendars, function(calendar) {
+            eventData.calendar = common.find(baseController.calendars, function (calendar) {
                 return calendar.id === scheduleId;
             });
 
+            // NMNS CUSTOMIZING START
+            if (!eventData.calendar) {
+                eventData.calendar = {
+                    name: '삭제된 담당자'
+                };
+            }
+            // NMNS CUSTOMIZING END
             if (options.isReadOnly) {
-                eventData.schedule = util.extend({}, eventData.schedule, {isReadOnly: true});
+                eventData.schedule = util.extend({}, eventData.schedule, { isReadOnly: true });
             }
 
             detailView.render(eventData);
             // NMNS CUSTOMIZING START
-            $('.detailPopupLabel').off('mouseenter touch click').on('mouseenter touch click', function() {
+            $('.detailPopupLabel').off('mouseenter touch click').on('mouseenter touch click', function () {
                 if (!$(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
                 }
             });
-            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function() {
+            $('.detailPopupLabel').off('mouseleave').on('mouseleave', function () {
                 if ($(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
                 }
             });
-            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function() {
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function () {
                 var status = $(this).data('badge');
                 if (status === 'light') {// delete
                     if (eventData.schedule.isAllDay) {
@@ -316,14 +323,14 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
             domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
             // NMNS CUSTOMIZING END
         };
-        onDeleteSchedule = function(eventData) {
+        onDeleteSchedule = function (eventData) {
             if (eventData.isAllDay) {
                 weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);
             } else {
                 weekView.handler.creation.time.fire('beforeDeleteSchedule', eventData);
             }
         };
-        onEditSchedule = function(eventData) {
+        onEditSchedule = function (eventData) {
             if (eventData.isAllDay) {
                 weekView.handler.move.allday.fire('beforeUpdateSchedule', eventData);
             } else {
@@ -331,11 +338,11 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
             }
         };
 
-        util.forEach(weekView.handler.click, function(panel) {
+        util.forEach(weekView.handler.click, function (panel) {
             panel.on('clickSchedule', onShowDetailPopup);
         });
         if (options.useCreationPopup) {
-            onShowEditPopup = function(eventData) {
+            onShowEditPopup = function (eventData) {
                 var calendars = baseController.calendars;
                 eventData.isEditMode = true;
                 createView.setCalendars(calendars);
@@ -349,7 +356,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
         detailView.on('beforeDeleteSchedule', onDeleteSchedule);
     }
 
-    weekView.on('afterRender', function() {
+    weekView.on('afterRender', function () {
         var area = $('.tui-full-calendar-timegrid-container');
         vLayout.refresh();
         // NMNS CUSTOMIZING START
@@ -357,7 +364,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
             if (area.data('scroll')) {
                 area.data('scroll').update();
             } else {
-                area.data('scroll', new PerfectScrollbar('.tui-full-calendar-timegrid-container', {suppressScrollX: true}));
+                area.data('scroll', new PerfectScrollbar('.tui-full-calendar-timegrid-container', { suppressScrollX: true }));
             }
         }
         // NMNS CUSTOMIZING END
@@ -367,9 +374,9 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
     weekView.controller = baseController.Week;
 
     // add destroy
-    weekView._beforeDestroy = function() {
-        util.forEach(weekView.handler, function(type) {
-            util.forEach(type, function(handler) {
+    weekView._beforeDestroy = function () {
+        util.forEach(weekView.handler, function (type) {
+            util.forEach(type, function (handler) {
                 handler.off();
                 handler.destroy();
             });
@@ -390,7 +397,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
 
     return {
         view: weekView,
-        refresh: function() {
+        refresh: function () {
             var weekViewHeight = weekView.getViewBound().height,
                 daynameViewHeight = domutil.getBCRect(
                     dayNameView.container
@@ -400,14 +407,14 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
                 weekViewHeight - daynameViewHeight + 'px';
             vLayout.refresh();
         },
-        scrollToNow: function() {
-            weekView.children.each(function(childView) {
+        scrollToNow: function () {
+            weekView.children.each(function (childView) {
                 if (childView.scrollToNow) {
                     childView.scrollToNow();
                 }
             });
         },
-        openCreationPopup: function(schedule) {
+        openCreationPopup: function (schedule) {
             if (createView) {
                 if (schedule.isAllDay) {
                     weekView.handler.creation.allday.invokeCreationClick(Schedule.create(schedule));
@@ -416,7 +423,7 @@ module.exports = function(baseController, layoutContainer, dragHandler, options)
                 }
             }
         },
-        showCreationPopup: function(eventData) {
+        showCreationPopup: function (eventData) {
             if (createView) {
                 createView.setCalendars(baseController.calendars);
                 createView.render(eventData);

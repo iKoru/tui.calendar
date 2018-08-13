@@ -1,102 +1,110 @@
 <div id="creationPopup" class="{{CSS_PREFIX}}popup">
     <form id="creationPopupForm" class="{{CSS_PREFIX}}popup-container" autocomplete="off">
         <div class="row mb-2 mb-sm-3">
-        <label for="creationPopupName" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label">고객이름</label>
-        <div class="col-9 col-sm-5 input-group input-group-sm">
-            <div class="d-inline-block input-group-prepend d-sm-none">
-            <i id="creationPopupNameIcon" class="input-group-text fas fa-user" title="고객이름"></i>
+            <label for="creationPopupName" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label">고객이름</label>
+            <div class="col-9 col-sm-5 input-group input-group-sm">
+                <div class="d-inline-block input-group-prepend d-sm-none">
+                    <i id="creationPopupNameIcon" class="input-group-text fas fa-user" title="고객이름"></i>
+                </div>
+                <input type="text" class="form-control" id="creationPopupName" name="name" placeholder="고객이름" aria-describedby="creationPopupNameIcon"
+                    autocomplete="off" value="{{title}}">
             </div>
-            <input type="text" class="form-control" id="creationPopupName" name="name" placeholder="고객이름" aria-describedby="creationPopupNameIcon" autocomplete="off" value="{{title}}">
-        </div>
         </div>
         <div class="row mb-2 mb-sm-3">
-        <label for="creationPopupContact" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label compactLabel">고객연락처<span class="text-danger">*</span></label>
-        <div class="col-9 col-sm-5 input-group input-group-sm">
-            <div class="d-inline-block input-group-prepend d-sm-none">
-            <i id="creationPopupContactIcon" class="input-group-text fas fa-phone fa-rotate-90" title="고객 연락처"></i>
-            </div>
-            <input type="text" class="form-control" id="creationPopupContact" name="contact" aria-describedby="creationPopupContactIcon" placeholder="고객연락처" autocomplete="off" value="{{title}}">
-        </div>
-    </div>
-    
-    <div class="row mb-1 mb-sm-3">
-        <div id="creationPopupStartDate" class="input-group input-group-sm col-5 col-sm-4 pr-0 {{CSS_PREFIX}}section-start-date">
-            <div class="input-group-prepend">
-                <i id="creationPopupStartDateIcon" class="input-group-text far fa-calendar" title="예약 시작시간"></i>
+            <label for="creationPopupContact" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label compactLabel">고객연락처
+                <span class="text-danger">*</span>
+            </label>
+            <div class="col-9 col-sm-5 input-group input-group-sm">
+                <div class="d-inline-block input-group-prepend d-sm-none">
+                    <i id="creationPopupContactIcon" class="input-group-text fas fa-phone fa-rotate-90" title="고객 연락처"></i>
                 </div>
-            <input id="{{CSS_PREFIX}}schedule-start-date" name="start" class="form-control" aria-describedby="creationPopupStartDateIcon" placeholder="{{startDatePlaceholder-tmpl}}">
-        </div>
-        <span class="px-2 {{CSS_PREFIX}}dash">—</span>
-        <div id="creationPopupEndDate" class="input-group input-group-sm col-5 col-sm-4 pl-0 {{CSS_PREFIX}}section-end-date">
-            <div class="input-group-prepend">
-                <i id="creationPopupEndDateIcon" class="input-group-text far fa-calendar" title="예약 종료시간"></i>
-            </div>
-            <input id="{{CSS_PREFIX}}schedule-end-date" name="end" class="form-control" aria-describedby="creationPopupEndDateIcon" placeholder="{{endDatePlaceholder-tmpl}}">
-        </div>
-        <div class="{{CSS_PREFIX}}section-allday pl-4 pl-sm-0">
-            <input id="creationPopupAllDay" name="isAllDay" type="checkbox"{{#if isAllDay}} checked{{/if}}></input>
-            <label for="creationPopupAllDay"></label>
-            <label for="creationPopupAllDay">{{popupIsAllDay-tmpl}}</span>
-        </div>
-    </div>
-    
-    <div class="row mb-2 mb-sm-3">
-        <label for="creationPopupContents" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label">예약내용</label>
-        <div class="col-sm-9 input-group input-group-sm">
-            <div class="d-inline-block input-group-prepend d-sm-none">
-            <i id="creationPopupContentsIcon" class="input-group-text fas fa-list-ul" title="예약내용"></i>
-            </div>
-            <input type="text" class="form-control" id="creationPopupContents" name="content" aria-describedby="creationPopupContentsIcon" placeholder="예약내용" value="{{contents}}">
-        </div>
-    </div>
-    
-    
-    <div class="row mb-2 mb-sm-3">
-        <label for="creationPopupManager" class="col-2 pr-0 col-form-label d-sm-inline-block d-none">담당자</label>
-        <div class="input-group input-group-sm btn-group dropdown col-sm-9">
-            <div class="d-inline-block input-group-prepend d-sm-none">
-                <i id="creationPopupManagerIcon" class="input-group-text fas fa-user-tie" title="담당자"></i>
-            </div>
-            <button id="creationPopupManager" type="button" aria-describedby="creationPopupManagerIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm dropdown-toggle btn-flat form-control text-left">
-                <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{selectedCal.bgColor}}"></span>
-                <span>{{selectedCal.name}}</span> 
-            </button> 
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="creationPopupManager" role="menu">
-                {{#each calendars}}
-                <button type="button" class="dropdown-item {{CSS_PREFIX}}dropdown-item" data-calendar-id="{{id}}">
-                    <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{bgColor}}"></span>
-                    <span class="{{CSS_PREFIX}}content">{{name}}</span>
-                </button>
-                {{/each}}
+                <input type="text" class="form-control" id="creationPopupContact" name="contact" aria-describedby="creationPopupContactIcon"
+                    placeholder="고객연락처" autocomplete="off" value="{{contact}}">
             </div>
         </div>
-    </div>
-    
-    <div class="row mb-2 mb-sm-3">
-        <label for="creationPopupEtc" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label">고객메모</label>
-        <div class="col-sm-9 input-group input-group-sm">
-            <div class="d-inline-block input-group-prepend d-sm-none">
-            <i id="creationPopupEtcIcon" class="input-group-text far fa-bookmark" title="고객메모"></i>
-            </div>
-            <input type="text" class="form-control" id="creationPopupEtc" name="etc" aria-describedby="creationPopupEtcIcon" placeholder="고객메모" value="{{etc}}">
-        </div>
-    </div>
 
-    <div class="{{CSS_PREFIX}}button {{CSS_PREFIX}}popup-close">
-        <span class="fas fa-times"></span>
-    </div>
-    <div class="text-right">
-        <span id="creationPopupClose" class="btn btn-flat btn-light mr-2 {{CSS_PREFIX}}popup-close">닫기</span>
-        <span id="creationPopupSave" class="btn btn-primary btn-flat">저장</span>
-    </div>
+        <div class="row mb-1 mb-sm-3">
+            <div id="creationPopupStartDate" class="input-group input-group-sm col-5 col-sm-4 pr-0 {{CSS_PREFIX}}section-start-date">
+                <div class="input-group-prepend">
+                    <i id="creationPopupStartDateIcon" class="input-group-text far fa-calendar" title="예약 시작시간"></i>
+                </div>
+                <input id="{{CSS_PREFIX}}schedule-start-date" name="start" class="form-control" aria-describedby="creationPopupStartDateIcon"
+                    placeholder="{{startDatePlaceholder-tmpl}}">
+            </div>
+            <span class="px-2 {{CSS_PREFIX}}dash">—</span>
+            <div id="creationPopupEndDate" class="input-group input-group-sm col-5 col-sm-4 pl-0 {{CSS_PREFIX}}section-end-date">
+                <div class="input-group-prepend">
+                    <i id="creationPopupEndDateIcon" class="input-group-text far fa-calendar" title="예약 종료시간"></i>
+                </div>
+                <input id="{{CSS_PREFIX}}schedule-end-date" name="end" class="form-control" aria-describedby="creationPopupEndDateIcon" placeholder="{{endDatePlaceholder-tmpl}}">
+            </div>
+            <div class="{{CSS_PREFIX}}section-allday pl-4 pl-sm-0">
+                <input id="creationPopupAllDay" name="isAllDay" type="checkbox" {{#if isAllDay}} checked{{/if}}></input>
+                <label for="creationPopupAllDay"></label>
+                <label for="creationPopupAllDay">{{popupIsAllDay-tmpl}}</span>
+            </div>
+        </div>
+
+        <div class="row mb-2 mb-sm-3">
+            <label for="creationPopupContents" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label">예약내용</label>
+            <div class="col-sm-9 input-group input-group-sm">
+                <div class="d-inline-block input-group-prepend d-sm-none">
+                    <i id="creationPopupContentsIcon" class="input-group-text fas fa-list-ul" title="예약내용"></i>
+                </div>
+                <input type="text" class="form-control" id="creationPopupContents" name="content" aria-describedby="creationPopupContentsIcon"
+                    placeholder="예약내용" value="{{contents}}">
+            </div>
+        </div>
+
+
+        <div class="row mb-2 mb-sm-3">
+            <label for="creationPopupManager" class="col-2 pr-0 col-form-label d-sm-inline-block d-none">담당자</label>
+            <div class="input-group input-group-sm btn-group dropdown col-sm-9">
+                <div class="d-inline-block input-group-prepend d-sm-none">
+                    <i id="creationPopupManagerIcon" class="input-group-text fas fa-user-tie" title="담당자"></i>
+                </div>
+                <button id="creationPopupManager" type="button" aria-describedby="creationPopupManagerIcon" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false" class="btn btn-sm dropdown-toggle btn-flat form-control text-left">
+                    <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{selectedCal.bgColor}}"></span>
+                    <span>{{selectedCal.name}}</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="creationPopupManager" role="menu">
+                    {{#each calendars}}
+                    <button type="button" class="dropdown-item {{CSS_PREFIX}}dropdown-item" data-calendar-id="{{id}}">
+                        <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{bgColor}}"></span>
+                        <span class="{{CSS_PREFIX}}content">{{name}}</span>
+                    </button>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2 mb-sm-3">
+            <label for="creationPopupEtc" class="col-2 pr-sm-0 d-sm-inline-block d-none col-form-label">고객메모</label>
+            <div class="col-sm-9 input-group input-group-sm">
+                <div class="d-inline-block input-group-prepend d-sm-none">
+                    <i id="creationPopupEtcIcon" class="input-group-text far fa-bookmark" title="고객메모"></i>
+                </div>
+                <input type="text" class="form-control" id="creationPopupEtc" name="etc" aria-describedby="creationPopupEtcIcon" placeholder="고객메모"
+                    value="{{etc}}">
+            </div>
+        </div>
+
+        <div class="{{CSS_PREFIX}}button {{CSS_PREFIX}}popup-close">
+            <span class="fas fa-times"></span>
+        </div>
+        <div class="text-right">
+            <span id="creationPopupClose" class="btn btn-flat btn-light mr-2 {{CSS_PREFIX}}popup-close">닫기</span>
+            <span id="creationPopupSave" class="btn btn-primary btn-flat">저장</span>
+        </div>
     </form>
     <div id="{{CSS_PREFIX}}popup-arrow" class="{{CSS_PREFIX}}popup-arrow {{CSS_PREFIX}}arrow-bottom">
-    <div class="{{CSS_PREFIX}}popup-arrow-border">
-        <div class="{{CSS_PREFIX}}popup-arrow-fill"></div>
-    </div>
+        <div class="{{CSS_PREFIX}}popup-arrow-border">
+            <div class="{{CSS_PREFIX}}popup-arrow-fill"></div>
+        </div>
     </div>
 </div>
-{{!-- 
+{{!--
 <div class="{{CSS_PREFIX}}popup">
     <div class="{{CSS_PREFIX}}popup-container">
         <div class="{{CSS_PREFIX}}popup-section {{CSS_PREFIX}}dropdown {{CSS_PREFIX}}close {{CSS_PREFIX}}section-calendar{{#unless calendars.length}} {{CSS_PREFIX}}hide{{/unless}}">
@@ -108,42 +116,46 @@
             </button>
             <ul class="{{CSS_PREFIX}}dropdown-menu" style="z-index: {{zIndex}}">
                 {{#each calendars}}
-                    <li class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}dropdown-menu-item" data-calendar-id="{{id}}">
-                        <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{bgColor}}"></span>
-                        <span class="{{CSS_PREFIX}}content">{{name}}</span>
-                    </li>
+                <li class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}dropdown-menu-item" data-calendar-id="{{id}}">
+                    <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{bgColor}}"></span>
+                    <span class="{{CSS_PREFIX}}content">{{name}}</span>
+                </li>
                 {{/each}}
             </ul>
         </div>
         <div class="{{CSS_PREFIX}}popup-section">
             <div class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}section-title">
-            <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-title"></span>
-            <input id="{{CSS_PREFIX}}schedule-title" class="{{CSS_PREFIX}}content" placeholder="{{titlePlaceholder-tmpl}}" value="{{title}}"></span>
+                <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-title"></span>
+                <input id="{{CSS_PREFIX}}schedule-title" class="{{CSS_PREFIX}}content" placeholder="{{titlePlaceholder-tmpl}}" value="{{title}}">
+                </span>
             </div>
             <button id="{{CSS_PREFIX}}schedule-private" class="{{CSS_PREFIX}}button {{CSS_PREFIX}}section-private{{#unless isPrivate}} {{CSS_PREFIX}}public{{/unless}}">
-            <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-private"></span>
+                <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-private"></span>
             </button>
         </div>
         <div class="{{CSS_PREFIX}}popup-section">
             <div class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}section-location">
-            <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-location"></span>
-                <input id="{{CSS_PREFIX}}schedule-location" class="{{CSS_PREFIX}}content" placeholder="{{locationPlaceholder-tmpl}}" value="{{location}}"></span>
+                <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-location"></span>
+                <input id="{{CSS_PREFIX}}schedule-location" class="{{CSS_PREFIX}}content" placeholder="{{locationPlaceholder-tmpl}}" value="{{location}}">
+                </span>
             </div>
         </div>
         <div class="{{CSS_PREFIX}}popup-section">
             <div class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}section-start-date">
                 <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-date"></span>
-                <input id="{{CSS_PREFIX}}schedule-start-date" class="{{CSS_PREFIX}}content" placeholder="{{startDatePlaceholder-tmpl}}"></span>
+                <input id="{{CSS_PREFIX}}schedule-start-date" class="{{CSS_PREFIX}}content" placeholder="{{startDatePlaceholder-tmpl}}">
+                </span>
                 <div id="{{CSS_PREFIX}}startpicker-container" style="margin-left: -1px; position: relative"></div>
             </div>
             <span class="{{CSS_PREFIX}}section-date-dash">-</span>
             <div class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}section-end-date">
                 <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-date"></span>
-                <input id="{{CSS_PREFIX}}schedule-end-date" class="{{CSS_PREFIX}}content" placeholder="{{endDatePlaceholder-tmpl}}"></span>
+                <input id="{{CSS_PREFIX}}schedule-end-date" class="{{CSS_PREFIX}}content" placeholder="{{endDatePlaceholder-tmpl}}">
+                </span>
                 <div id="{{CSS_PREFIX}}endpicker-container" style="margin-left: -1px; position: relative"></div>
             </div>
             <div class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}section-allday">
-                <input id="{{CSS_PREFIX}}schedule-allday" type="checkbox" class="{{CSS_PREFIX}}checkbox-square"{{#if isAllDay}} checked{{/if}}></input>
+                <input id="{{CSS_PREFIX}}schedule-allday" type="checkbox" class="{{CSS_PREFIX}}checkbox-square" {{#if isAllDay}} checked{{/if}}></input>
                 <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-checkbox"></span>
                 <span class="{{CSS_PREFIX}}content">{{popupIsAllDay-tmpl}}</span>
             </div>
@@ -156,17 +168,23 @@
             </button>
             <ul class="{{CSS_PREFIX}}dropdown-menu" style="z-index: {{zIndex}}">
                 <li class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}dropdown-menu-item">
-                <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}none"></span>
-                <span class="{{CSS_PREFIX}}content">{{popupStateBusy-tmpl}}</span>
+                    <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}none"></span>
+                    <span class="{{CSS_PREFIX}}content">{{popupStateBusy-tmpl}}</span>
                 </li>
                 <li class="{{CSS_PREFIX}}popup-section-item {{CSS_PREFIX}}dropdown-menu-item">
-                <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}none"></span>
-                <span class="{{CSS_PREFIX}}content">{{popupStateFree-tmpl}}</span>
+                    <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}none"></span>
+                    <span class="{{CSS_PREFIX}}content">{{popupStateFree-tmpl}}</span>
                 </li>
             </ul>
         </div>
-        <button class="{{CSS_PREFIX}}button {{CSS_PREFIX}}popup-close"><span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-close"></span></button>
-        <div class="{{CSS_PREFIX}}section-button-save"><button class="{{CSS_PREFIX}}button {{CSS_PREFIX}}confirm {{CSS_PREFIX}}popup-save"><span>{{#if isEditMode}}{{popupUpdate-tmpl}}{{else}}{{popupSave-tmpl}}{{/if}}</span></button></div>
+        <button class="{{CSS_PREFIX}}button {{CSS_PREFIX}}popup-close">
+            <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}ic-close"></span>
+        </button>
+        <div class="{{CSS_PREFIX}}section-button-save">
+            <button class="{{CSS_PREFIX}}button {{CSS_PREFIX}}confirm {{CSS_PREFIX}}popup-save">
+                <span>{{#if isEditMode}}{{popupUpdate-tmpl}}{{else}}{{popupSave-tmpl}}{{/if}}</span>
+            </button>
+        </div>
     </div>
     <div id="{{CSS_PREFIX}}popup-arrow" class="{{CSS_PREFIX}}popup-arrow {{CSS_PREFIX}}arrow-bottom">
         <div class="{{CSS_PREFIX}}popup-arrow-border">
