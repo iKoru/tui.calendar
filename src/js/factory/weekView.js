@@ -281,15 +281,18 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
             $('.detailPopupLabel').off('mouseenter touch click').on('mouseenter touch click', function () {
                 if (!$(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
+                    $(this).addClass('show');
                 }
             });
             $('.detailPopupLabel').off('mouseleave').on('mouseleave', function () {
                 if ($(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
+                    $(this).removeClass('show');
                 }
             });
-            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function () {
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function (e) {
                 var status = $(this).data('badge');
+                e.preventDefault();
                 if (status === 'light') {// delete
                     if (eventData.schedule.isAllDay) {
                         weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);

@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Mon Aug 13 2018
+ * @version 1.7.0 | Wed Aug 15 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -9738,15 +9738,18 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
             $('.detailPopupLabel').off('mouseenter').on('mouseenter', function () {
                 if (!$(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
+                    $(this).addClass('show');
                 }
             });
             $('.detailPopupLabel').off('mouseleave').on('mouseleave', function () {
                 if ($(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
+                    $(this).removeClass('show');
                 }
             });
-            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function () {
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function (e) {
                 var status = $(this).data('badge');
+                e.preventDefault();
                 if (status === 'light') {// delete
                     creationHandler.fire('beforeDeleteSchedule', eventData);
                 } else {
@@ -10185,15 +10188,18 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
             $('.detailPopupLabel').off('mouseenter touch click').on('mouseenter touch click', function () {
                 if (!$(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
+                    $(this).addClass('show');
                 }
             });
             $('.detailPopupLabel').off('mouseleave').on('mouseleave', function () {
                 if ($(this).hasClass('show')) {
                     $('.dropdown-toggle', this).dropdown('toggle');
+                    $(this).removeClass('show');
                 }
             });
-            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function () {
+            $('.detailPopupLabel .dropdown-menu a').off('click touch').on('click touch', function (e) {
                 var status = $(this).data('badge');
+                e.preventDefault();
                 if (status === 'light') {// delete
                     if (eventData.schedule.isAllDay) {
                         weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);
@@ -19047,41 +19053,81 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
         return false;
     }
     if (!this.validator) {
-        this.validator = $('#creationPopupForm').validate({
-            rules: {
-                contact: {
-                    required: true,
-                    digits: true
+        if ($('#tui-full-calendar-schedule-start-date').attr('type') === 'hidden') { // mobile handling
+            this.validator = $('#creationPopupForm').validate({
+                rules: {
+                    contact: {
+                        required: true,
+                        digits: true
+                    }
                 },
-                start: {
-                    required: true
+                messages: {
+                    contact: {
+                        required: '연락처를 입력해주세요.',
+                        digits: '숫자만 입력해주세요.'
+                    }
                 },
-                end: {
-                    required: true
+                errorElement: 'p',
+                errorClass: 'message text-danger my-1 pl-4 pl-sm-0 ml-3',
+                errorPlacement: function (error, element) {
+                    error.appendTo(element.parent().parent());
+                },
+                highlight: function (element, errorClass) {
+                    $(element).removeClass(errorClass);
                 }
-            },
-            messages: {
-                contact: {
-                    required: '연락처를 입력해주세요.',
-                    digits: '숫자만 입력해주세요.'
+            });
+        } else {
+            this.validator = $('#creationPopupForm').validate({
+                rules: {
+                    contact: {
+                        required: true,
+                        digits: true
+                    },
+                    start: {
+                        required: true
+                    },
+                    end: {
+                        required: true
+                    }
                 },
-                start: '시작시간을 입력해주세요.',
-                end: '종료시간을 입력해주세요.'
-            },
-            errorElement: 'p',
-            errorClass: 'message text-danger my-1 pl-4 pl-sm-0 ml-3',
-            errorPlacement: function (error, element) {
-                error.appendTo(element.parent().parent());
-            },
-            highlight: function (element, errorClass) {
-                $(element).removeClass(errorClass);
-            }
-        });
+                messages: {
+                    contact: {
+                        required: '연락처를 입력해주세요.',
+                        digits: '숫자만 입력해주세요.'
+                    },
+                    start: '시작시간을 입력해주세요.',
+                    end: '종료시간을 입력해주세요.'
+                },
+                errorElement: 'p',
+                errorClass: 'message text-danger my-1 pl-4 pl-sm-0 ml-3',
+                errorPlacement: function (error, element) {
+                    error.appendTo(element.parent().parent());
+                },
+                highlight: function (element, errorClass) {
+                    $(element).removeClass(errorClass);
+                }
+            });
+        }
     }
-    if (!this.validator.form()) {
-        this.validator.showErrors();
+    try {
+        startDate = new TZDate($('#tui-full-calendar-schedule-start-date')[0]._flatpickr.selectedDates[0]);
+        endDate = new TZDate($('#tui-full-calendar-schedule-end-date')[0]._flatpickr.selectedDates[0]);
+        if (!this.validator.form()) {
+            this.validator.showErrors();
 
-        return true;
+            return true;
+        }
+    } catch (e) {
+        if (!startDate || !endDate) {
+            alert('시간을 입력해주세요!');
+
+            return true;
+        }
+        if ($('#creationPopupContact').val() === '') {
+            alert('연락처를 입력해주세요!');
+
+            return true;
+        }
     }
     calendarId = $('#creationPopupManager').data('calendarid');
     manager = this.calendars.find(function (cal) {
@@ -19097,10 +19143,10 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
             borderColor: '#b2dfdb'
         };
     }
-    startDate = new TZDate($('#tui-full-calendar-schedule-start-date')[0]._flatpickr.selectedDates[0]);
-    endDate = new TZDate($('#tui-full-calendar-schedule-end-date')[0]._flatpickr.selectedDates[0]);
 
-    if (!startDate && !endDate) {
+    if (!startDate || !endDate) {
+        alert('시간을 입력해주세요!');
+
         return true;
     }
     if (datetime.compare(startDate, endDate) > 0) {// swap two dates
@@ -19132,6 +19178,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
                 start: startDate,
                 end: endDate,
                 isAllDay: isAllDay,
+                category: isAllDay ? 'allday' : 'time',
                 manager: calendarId,
                 name: title,
                 contents: contents,
@@ -19578,7 +19625,8 @@ ScheduleCreationPopup.prototype._createDatepicker = function (start, end) {
         minuteIncrement: 10,
         minTime: beginTime,
         maxTime: endTime,
-        time_24hr: true
+        time_24hr: true,
+        applyBtn: true
     }).setDate(start);
     flatpickr('#tui-full-calendar-schedule-end-date', {
         format: 'Y-m-d H:i',
@@ -19588,7 +19636,8 @@ ScheduleCreationPopup.prototype._createDatepicker = function (start, end) {
         minuteIncrement: 10,
         minTime: beginTime,
         maxTime: endTime,
-        time_24hr: true
+        time_24hr: true,
+        applyBtn: true
     }).setDate(end);
     // NMNS CUSTOMIZING END
 };
