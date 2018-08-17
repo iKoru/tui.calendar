@@ -241,30 +241,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
         return false;
     }
     if (!this.validator) {
-        if ($('#tui-full-calendar-schedule-start-date').attr('type') === 'hidden') { // mobile handling
-            this.validator = $('#creationPopupForm').validate({
-                rules: {
-                    contact: {
-                        required: true,
-                        digits: true
-                    }
-                },
-                messages: {
-                    contact: {
-                        required: '연락처를 입력해주세요.',
-                        digits: '숫자만 입력해주세요.'
-                    }
-                },
-                errorElement: 'p',
-                errorClass: 'message text-danger my-1 pl-4 pl-sm-0 ml-3',
-                errorPlacement: function (error, element) {
-                    error.appendTo(element.parent().parent());
-                },
-                highlight: function (element, errorClass) {
-                    $(element).removeClass(errorClass);
-                }
-            });
-        } else {
+        if ($('#tui-full-calendar-schedule-start-date').attr('type') !== 'hidden') { // mobile handling
             this.validator = $('#creationPopupForm').validate({
                 rules: {
                     contact: {
@@ -300,7 +277,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
     try {
         startDate = new TZDate($('#tui-full-calendar-schedule-start-date')[0]._flatpickr.selectedDates[0]);
         endDate = new TZDate($('#tui-full-calendar-schedule-end-date')[0]._flatpickr.selectedDates[0]);
-        if (!this.validator.form()) {
+        if (this.validator && !this.validator.form()) {
             this.validator.showErrors();
 
             return true;
@@ -308,11 +285,6 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
     } catch (e) {
         if (!startDate || !endDate) {
             alert('시간을 입력해주세요!');
-
-            return true;
-        }
-        if ($('#creationPopupContact').val() === '') {
-            alert('연락처를 입력해주세요!');
 
             return true;
         }
@@ -349,6 +321,12 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
 
     if (manager) {
         calendarId = manager.id;
+    }
+
+    if (!(/^01([016789]?)([0-9]{3,4})([0-9]{4})$/.test(contact))) {
+        if (!confirm('입력하신 전화번호는 알림톡을 보낼 수 있는 전화번호가 아닙니다. 그래도 등록하시겠어요?')) {
+            return true;
+        }
     }
 
     if (this._isEditMode) {
