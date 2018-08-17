@@ -244,10 +244,6 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
         if ($('#tui-full-calendar-schedule-start-date').attr('type') !== 'hidden') { // mobile handling
             this.validator = $('#creationPopupForm').validate({
                 rules: {
-                    contact: {
-                        required: true,
-                        digits: true
-                    },
                     start: {
                         required: true
                     },
@@ -256,10 +252,6 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
                     }
                 },
                 messages: {
-                    contact: {
-                        required: '연락처를 입력해주세요.',
-                        digits: '숫자만 입력해주세요.'
-                    },
                     start: '시작시간을 입력해주세요.',
                     end: '종료시간을 입력해주세요.'
                 },
@@ -323,7 +315,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
         calendarId = manager.id;
     }
 
-    if (!(/^01([016789]?)([0-9]{3,4})([0-9]{4})$/.test(contact))) {
+    if (NMNS.info.alrimTalkInfo.useYn === 'Y' && !(/^01([016789]?)([0-9]{3,4})([0-9]{4})$/.test(contact))) {
         if (!confirm('입력하신 전화번호는 알림톡을 보낼 수 있는 전화번호가 아닙니다. 그래도 등록하시겠어요?')) {
             return true;
         }
@@ -527,6 +519,11 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
         });
     }
     layer.show();
+    if (NMNS.info.alrimTalkInfo.useYn === 'N') {
+        $('#alrimContactInfo').addClass('d-sm-inline-block');
+    } else {
+        $('#alrimContactInfo').removeClass('d-sm-inline-block');
+    }
     if (this._isEditMode) {
         $('#creationPopup').data('contact', viewModel.raw.contact);
         onContactBlur();
