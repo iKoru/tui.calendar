@@ -62,13 +62,13 @@
                     <i id="creationPopupManagerIcon" class="input-group-text fas fa-user-tie" title="담당자"></i>
                 </div>
                 <button id="creationPopupManager" type="button" aria-describedby="creationPopupManagerIcon" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false" class="btn btn-sm dropdown-toggle btn-flat form-control text-left">
+                    aria-expanded="false" class="btn btn-sm dropdown-toggle btn-flat form-control text-left" aria-label="담당자 선택">
                     <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{selectedCal.bgColor}}"></span>
                     <span>{{selectedCal.name}}</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="creationPopupManager" role="menu">
                     {{#each calendars}}
-                    <button type="button" class="dropdown-item {{CSS_PREFIX}}dropdown-item" data-calendar-id="{{id}}">
+                    <button type="button" class="dropdown-item {{CSS_PREFIX}}dropdown-item" data-calendar-id="{{id}}" aria-label="{{name}}">
                         <span class="{{CSS_PREFIX}}icon {{CSS_PREFIX}}calendar-dot" style="background-color: {{bgColor}}"></span>
                         <span class="{{CSS_PREFIX}}content">{{name}}</span>
                     </button>

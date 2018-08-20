@@ -34,7 +34,7 @@
       {{/if}}
     </div>
     <div class="{{CSS_PREFIX}}section-button">
-      <button class="{{CSS_PREFIX}}popup-edit">
+      <button class="{{CSS_PREFIX}}popup-edit" aria-label="수정">
         <span class="{{CSS_PREFIX}}content">
           <i class="fas fa-edit fa-fw"></i>
           {{popupEdit-tmpl}}
@@ -65,7 +65,7 @@
           <a href="#" class="dropdown-item" data-badge="success"><span class="badge badge-success">정상</span></a>
         </div>
       </div>
-      <button class="{{CSS_PREFIX}}popup-delete">
+      <button class="{{CSS_PREFIX}}popup-delete" aria-label="삭제">
         <span class="{{CSS_PREFIX}}content">
           <i class="fas fa-trash fa-fw"></i>{{popupDelete-tmpl}}</span>
       </button>
@@ -118,8 +118,8 @@
           {{/fi}}
         </span>
         <div class="dropdown-menu text-center" aria-labelledby="detailPopupLabelDropdown">
-          <a href="#" class="dropdown-item" data-badge="light"><span class="badge badge-light">삭제</span></a>
-          <a href="#" class="dropdown-item" data-badge="success"><span class="badge badge-success">정상</span></a>
+          <a href="#" class="dropdown-item" data-badge="light" aria-label="삭제"><span class="badge badge-light">삭제</span></a>
+          <a href="#" class="dropdown-item" data-badge="success" aria-label="정상"><span class="badge badge-success">정상</span></a>
         </div>
       </div>
       <button class="{{CSS_PREFIX}}popup-delete">
