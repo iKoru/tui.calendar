@@ -158,7 +158,9 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
                 var status = $(this).data('badge');
                 e.preventDefault();
                 if (status === 'light') {// delete
-                    creationHandler.fire('beforeDeleteSchedule', eventData);
+                    if (confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
+                        creationHandler.fire('beforeDeleteSchedule', eventData);
+                    }
                 } else {
                     switch (status) {
                         case 'success':
