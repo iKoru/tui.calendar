@@ -115,7 +115,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
 ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
     var className = config.classname('popup-delete');
 
-    if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
+    if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
         this.fire('beforeDeleteSchedule', {
             schedule: this._schedule
         });

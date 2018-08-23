@@ -294,10 +294,12 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
                 var status = $(this).data('badge');
                 e.preventDefault();
                 if (status === 'light') {// delete
-                    if (eventData.schedule.isAllDay) {
-                        weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);
-                    } else {
-                        weekView.handler.creation.time.fire('beforeDeleteSchedule', eventData);
+                    if (confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
+                        if (eventData.schedule.isAllDay) {
+                            weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);
+                        } else {
+                            weekView.handler.creation.time.fire('beforeDeleteSchedule', eventData);
+                        }
                     }
                 } else {
                     switch (status) {

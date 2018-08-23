@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Fri Aug 17 2018
+ * @version 1.7.0 | Thu Aug 23 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -1498,8 +1498,8 @@ if (util.sendHostname) {
 }
 
 // for jquery
-if (global.$) {
-    global.$.fn.tuiCalendar = function() {
+if (global.jQuery) {
+    global.jQuery.fn.tuiCalendar = function() {
         var options, instance;
 
         var el = this.get(0);
@@ -1508,7 +1508,7 @@ if (global.$) {
         if (el) {
             options = util.pick(args, 0) || {};
 
-            instance = global.$.data(el, 'tuiCalendar');
+            instance = global.jQuery.data(el, 'tuiCalendar');
 
             if (instance) {
                 if (typeof options === 'string' && instance[options]) {
@@ -1516,7 +1516,7 @@ if (global.$) {
                 }
             } else {
                 instance = new Calendar(el, options);
-                global.$.data(el, 'tuiCalendar', instance);
+                global.jQuery.data(el, 'tuiCalendar', instance);
             }
         }
 
@@ -9751,7 +9751,9 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
                 var status = $(this).data('badge');
                 e.preventDefault();
                 if (status === 'light') {// delete
-                    creationHandler.fire('beforeDeleteSchedule', eventData);
+                    if (confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
+                        creationHandler.fire('beforeDeleteSchedule', eventData);
+                    }
                 } else {
                     switch (status) {
                         case 'success':
@@ -10201,10 +10203,12 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
                 var status = $(this).data('badge');
                 e.preventDefault();
                 if (status === 'light') {// delete
-                    if (eventData.schedule.isAllDay) {
-                        weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);
-                    } else {
-                        weekView.handler.creation.time.fire('beforeDeleteSchedule', eventData);
+                    if (confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
+                        if (eventData.schedule.isAllDay) {
+                            weekView.handler.creation.allday.fire('beforeDeleteSchedule', eventData);
+                        } else {
+                            weekView.handler.creation.time.fire('beforeDeleteSchedule', eventData);
+                        }
                     }
                 } else {
                     switch (status) {
@@ -19782,7 +19786,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
 ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
     var className = config.classname('popup-delete');
 
-    if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
+    if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
         this.fire('beforeDeleteSchedule', {
             schedule: this._schedule
         });
@@ -21123,6 +21127,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "dropdown-item\" data-calendar-id=\""
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
+    + "\" aria-label=\""
+    + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
     + "\">\n                        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "icon "
@@ -21141,11 +21147,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup\">\n    <form id=\"creationPopupForm\" class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "popup-container\" autocomplete=\"off\">\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupName\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label\">고객이름</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupNameIcon\" class=\"input-group-text fas fa-user\" title=\"고객이름\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupName\" name=\"name\" placeholder=\"고객이름\" aria-describedby=\"creationPopupNameIcon\"\n                    autocomplete=\"off\" value=\""
+    + "popup-container\" autocomplete=\"off\">\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupName\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">고객이름</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupNameIcon\" class=\"input-group-text fas fa-user\" title=\"고객이름\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupName\" name=\"name\" placeholder=\"고객이름\" aria-describedby=\"creationPopupNameIcon\"\n                    autocomplete=\"off\" value=\""
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + "\">\n            </div>\n        </div>\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContact\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label compactLabel\">고객연락처</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContactIcon\" class=\"input-group-text fas fa-phone fa-rotate-90\" title=\"고객 연락처\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupContact\" name=\"contact\" aria-describedby=\"creationPopupContactIcon\"\n                    placeholder=\"고객연락처\" autocomplete=\"off\" value=\""
+    + "\">\n            </div>\n        </div>\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContact\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm compactLabel\">고객연락처</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContactIcon\" class=\"input-group-text fas fa-phone fa-rotate-90\" title=\"고객 연락처\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupContact\" name=\"contact\" aria-describedby=\"creationPopupContactIcon\"\n                    placeholder=\"고객연락처\" autocomplete=\"off\" value=\""
     + alias4(((helper = (helper = helpers.contact || (depth0 != null ? depth0.contact : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"contact","hash":{},"data":data}) : helper)))
-    + "\">\n            </div>\n            <small id=\"alrimContactInfo\" class=\"text-secondary d-none col-5 pl-0\"><span class=\"text-danger\">*</span>알림톡을 사용하도록 설정하시면<br/>고객에게 예약 알림톡을 보낼 수 있습니다!</small>\n        </div>\n\n        <div class=\"row mb-1 mb-sm-3\">\n            <div id=\"creationPopupStartDate\" class=\"input-group input-group-sm col-5 col-sm-4 pr-0 "
+    + "\">\n            </div>\n            <small id=\"alrimContactInfo\" class=\"text-secondary d-none col-5 pl-0\"><span class=\"text-danger\">*</span>알림톡을 사용하도록 설정하시면<br/>고객에게 예약알림을 보낼 수 있습니다!</small>\n        </div>\n\n        <div class=\"row mb-1 mb-sm-3\">\n            <div id=\"creationPopupStartDate\" class=\"input-group input-group-sm col-5 col-sm-4 pr-0 "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-start-date\">\n                <div class=\"input-group-prepend\">\n                    <i id=\"creationPopupStartDateIcon\" class=\"input-group-text far fa-calendar-alt\" title=\"예약 시작시간\"></i>\n                </div>\n                <input id=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
@@ -21165,9 +21171,9 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isAllDay : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "></input>\n                <label for=\"creationPopupAllDay\"></label>\n                <label for=\"creationPopupAllDay\">"
     + alias4(((helper = (helper = helpers["popupIsAllDay-tmpl"] || (depth0 != null ? depth0["popupIsAllDay-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupIsAllDay-tmpl","hash":{},"data":data}) : helper)))
-    + "</span>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContents\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label\">예약내용</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContentsIcon\" class=\"input-group-text fas fa-list-ul\" title=\"예약내용\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupContents\" name=\"content\" aria-describedby=\"creationPopupContentsIcon\"\n                    placeholder=\"예약내용\" value=\""
+    + "</span>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContents\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">예약내용</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContentsIcon\" class=\"input-group-text fas fa-list-ul\" title=\"예약내용\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupContents\" name=\"content\" aria-describedby=\"creationPopupContentsIcon\"\n                    placeholder=\"예약내용\" value=\""
     + alias4(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"contents","hash":{},"data":data}) : helper)))
-    + "\">\n            </div>\n        </div>\n\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupManager\" class=\"col-2 pr-0 col-form-label d-sm-inline-block d-none\">담당자</label>\n            <div class=\"input-group input-group-sm btn-group dropdown col-sm-9\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupManagerIcon\" class=\"input-group-text fas fa-user-tie\" title=\"담당자\"></i>\n                </div>\n                <button id=\"creationPopupManager\" type=\"button\" aria-describedby=\"creationPopupManagerIcon\" data-toggle=\"dropdown\" aria-haspopup=\"true\"\n                    aria-expanded=\"false\" class=\"btn btn-sm dropdown-toggle btn-flat form-control text-left\">\n                    <span class=\""
+    + "\">\n            </div>\n        </div>\n\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupManager\" class=\"col-2 pr-0 col-form-label col-form-label-sm d-sm-inline-block d-none\">담당자</label>\n            <div class=\"input-group input-group-sm btn-group dropdown col-sm-9\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupManagerIcon\" class=\"input-group-text fas fa-user-tie\" title=\"담당자\"></i>\n                </div>\n                <button id=\"creationPopupManager\" type=\"button\" aria-describedby=\"creationPopupManagerIcon\" data-toggle=\"dropdown\" aria-haspopup=\"true\"\n                    aria-expanded=\"false\" class=\"btn btn-sm dropdown-toggle btn-flat form-control text-left\" aria-label=\"담당자 선택\">\n                    <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "icon "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
@@ -21177,7 +21183,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.selectedCal : depth0)) != null ? stack1.name : stack1), depth0))
     + "</span>\n                </button>\n                <div class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"creationPopupManager\" role=\"menu\">\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.calendars : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "                </div>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupEtc\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label\">고객메모</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupEtcIcon\" class=\"input-group-text far fa-bookmark\" title=\"고객메모\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupEtc\" name=\"etc\" aria-describedby=\"creationPopupEtcIcon\" placeholder=\"고객메모\"\n                    value=\""
+    + "                </div>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupEtc\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">고객메모</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupEtcIcon\" class=\"input-group-text far fa-bookmark\" title=\"고객메모\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupEtc\" name=\"etc\" aria-describedby=\"creationPopupEtcIcon\" placeholder=\"고객메모\"\n                    value=\""
     + alias4(((helper = (helper = helpers.etc || (depth0 != null ? depth0.etc : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"etc","hash":{},"data":data}) : helper)))
     + "\">\n            </div>\n        </div>\n\n        <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
@@ -21236,7 +21242,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-button\">\n      <button class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "popup-edit\">\n        <span class=\""
+    + "popup-edit\" aria-label=\"수정\">\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content\">\n          <i class=\"fas fa-edit fa-fw\"></i>\n          "
     + alias4(((helper = (helper = helpers["popupEdit-tmpl"] || (depth0 != null ? depth0["popupEdit-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupEdit-tmpl","hash":{},"data":data}) : helper)))
@@ -21250,7 +21256,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","DELETED",{"name":"fi","hash":{},"fn":container.program(23, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </span>\n        <div class=\"dropdown-menu text-center\" aria-labelledby=\"detailPopupLabelDropdown\">\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"light\"><span class=\"badge badge-light\">삭제</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"danger\"><span class=\"badge badge-danger\">노쇼</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"secondary\"><span class=\"badge badge-secondary\">취소</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"success\"><span class=\"badge badge-success\">정상</span></a>\n        </div>\n      </div>\n      <button class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "popup-delete\">\n        <span class=\""
+    + "popup-delete\" aria-label=\"삭제\">\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content\">\n          <i class=\"fas fa-trash fa-fw\"></i>"
     + alias4(((helper = (helper = helpers["popupDelete-tmpl"] || (depth0 != null ? depth0["popupDelete-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupDelete-tmpl","hash":{},"data":data}) : helper)))
@@ -21365,7 +21371,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CANCELED",{"name":"fi","hash":{},"fn":container.program(21, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CUSTOMERCANCELED",{"name":"fi","hash":{},"fn":container.program(21, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","DELETED",{"name":"fi","hash":{},"fn":container.program(23, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "        </span>\n        <div class=\"dropdown-menu text-center\" aria-labelledby=\"detailPopupLabelDropdown\">\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"light\"><span class=\"badge badge-light\">삭제</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"success\"><span class=\"badge badge-success\">정상</span></a>\n        </div>\n      </div>\n      <button class=\""
+    + "        </span>\n        <div class=\"dropdown-menu text-center\" aria-labelledby=\"detailPopupLabelDropdown\">\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"light\" aria-label=\"삭제\"><span class=\"badge badge-light\">삭제</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"success\" aria-label=\"정상\"><span class=\"badge badge-success\">정상</span></a>\n        </div>\n      </div>\n      <button class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-delete\">\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
