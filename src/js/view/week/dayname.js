@@ -116,10 +116,10 @@ DayName.prototype._getDayNameColor = function(theme, day, isToday, isPastDay) {
     if (theme) {
         if (day === 0) {
             color = theme.common.holiday.color;
-        } else if (isPastDay) {
-            color = theme.week.pastDay.color || theme.common.dayname.color;
         } else if (day === 6) {
             color = theme.common.saturday.color;
+        } else if (isPastDay) {
+            color = theme.week.pastDay.color || theme.common.dayname.color;
         } else if (isToday) {
             color = theme.week.today.color || theme.common.today.color;
         } else {
