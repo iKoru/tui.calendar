@@ -74,7 +74,8 @@ DayName.prototype._getBaseViewModel = function(start, end, grids) {
             left: grids[i] ? grids[i].left : 0,
             width: grids[i] ? grids[i].width : 0,
             renderDate: datetime.format(d, 'YYYY-MM-DD'),
-            color: this._getDayNameColor(theme, day, isToday, isPastDay)
+            color: this._getDayNameColor(theme, day, isToday, isPastDay),
+            isPast: isPastDay
         };
     }, this);
 
