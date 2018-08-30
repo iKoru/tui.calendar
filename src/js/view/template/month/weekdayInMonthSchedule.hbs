@@ -26,7 +26,7 @@
         {{else ~}}
             {{#fi model.category '===' 'time'}}
                 <div data-schedule-id="{{model.id}}" data-calendar-id="{{model.calendarId}}" class="{{CSS_PREFIX}}weekday-schedule {{CSS_PREFIX}}weekday-schedule-time"
-                    style="height:{{@root.scheduleHeight}}px; line-height:{{@root.scheduleHeight}}px; {{model.customStyle}}">
+                    style="height:{{@root.scheduleHeight}}px; line-height:{{@root.scheduleHeight}}px; {{model.customStyle}}" title="{{model.title}}">
                     <span class="{{CSS_PREFIX}}weekday-schedule-bullet"
                         style="top: {{@root.styles.scheduleBulletTop}}px;
                             {{#if model.isFocused}}
@@ -61,7 +61,7 @@
                     {{else}}
                         color:{{model.color}}; background-color:{{model.bgColor}}; border-color:{{model.borderColor}};
                     {{/if}}
-                        {{model.customStyle}}">
+                        {{model.customStyle}}" title="{{model.title}}">
                     <span class="{{CSS_PREFIX}}weekday-schedule-title"
                                     data-title="{{model.title}}">{{{schedule-tmpl model}}}</span>
                 </div>

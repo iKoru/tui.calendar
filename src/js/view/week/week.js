@@ -84,6 +84,14 @@ function Week(controller, options, container, panels) {
     this.state = {
         timezonesCollapsed: this.options.timezonesCollapsed
     };
+
+    // NMNS CUSTOMIZING START
+    /**
+     * Week view container
+     * @type {object}
+     */
+    this.container = container;
+    // NMNS CUSTOMIZING END
 }
 
 util.inherit(Week, View);
@@ -110,6 +118,12 @@ Week.prototype.render = function() {
 
     renderStartDate = parseRangeDateString(options.renderStartDate);
     renderEndDate = parseRangeDateString(options.renderEndDate);
+
+    if (datetime.isSameDate(renderStartDate, renderEndDate)) {
+        domutil.addClass(this.container, config.classname('week-day'));
+    } else {
+        domutil.addClass(this.container, config.classname('week-week'));
+    }
 
     range = datetime.range(
         datetime.start(renderStartDate),

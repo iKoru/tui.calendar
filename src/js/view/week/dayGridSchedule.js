@@ -6,6 +6,7 @@
 
 var util = require('tui-code-snippet');
 var Weekday = require('../weekday'),
+    TZDate = require('../../common/timezone').Date, // NMNS CUSTOMIZING
     tmpl = require('../template/week/dayGridSchedule.hbs');
 var mmax = Math.max;
 
@@ -86,9 +87,20 @@ DayGridSchedule.prototype.getBaseViewModel = function(viewModel) {
     var maxScheduleInDay = this._getMaxScheduleInDay(matrices);
     var baseViewModel;
     var styles = this._getStyles(viewModel.theme);
+    var now = new TZDate();
 
     baseViewModel = Weekday.prototype.getBaseViewModel.call(this, viewModel);
-
+    // NMNS CUSTOMIZING START
+    util.forEach(matrices, function(matrix) {
+        util.forEach(matrix, function(row) {
+            util.forEach(row, function(data) {
+                if (data) {
+                    data.isPast = data.model.end < now;
+                }
+            });
+        });
+    });
+    // NMNS CUSTOMIZING END
     baseViewModel = util.extend({
         minHeight: this._getMinHeight(maxScheduleInDay),
         matrices: matrices,

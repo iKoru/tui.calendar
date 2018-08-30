@@ -21039,6 +21039,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias2(alias1(((stack1 = (data && data.root)) && stack1.scheduleHeight), depth0))
     + "px; "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.customStyle : stack1), depth0))
+    + "\" title=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.title : stack1), depth0))
     + "\">\n                    <span class=\""
     + alias2(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias4),(typeof helper === alias5 ? helper.call(alias3,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-schedule-bullet\"\n                        style=\"top: "
@@ -21093,6 +21095,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ((stack1 = helpers["if"].call(alias3,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(44, data, 0),"inverse":container.program(46, data, 0),"data":data})) != null ? stack1 : "")
     + "                        "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.customStyle : stack1), depth0))
+    + "\" title=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.title : stack1), depth0))
     + "\">\n                    <span class=\""
     + alias2(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias4),(typeof helper === alias5 ? helper.call(alias3,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-schedule-title\"\n                                    data-title=\""
@@ -21581,6 +21585,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.exceedLeft : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n            "
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.exceedRight : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n            "
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isPast : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\"\n        style=\"top:"
     + alias3((helpers.multiply || (depth0 && depth0.multiply) || alias2).call(alias1,(depth0 != null ? depth0.top : depth0),((stack1 = (data && data.root)) && stack1.scheduleBlockHeight),{"name":"multiply","hash":{},"data":data}))
     + "px;\n                left:"
@@ -21594,7 +21600,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "\" class=\""
     + alias3(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-schedule "
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(11, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\"\n            style=\"height:"
     + alias3(alias5(((stack1 = (data && data.root)) && stack1.scheduleHeight), depth0))
     + "px; line-height:"
@@ -21602,7 +21608,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "px; border-radius: "
     + alias3(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.borderRadius), depth0))
     + ";\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(11, data, 0),"inverse":container.program(13, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(13, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
     + "            "
     + alias3(alias5(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.customStyle : stack1), depth0))
     + "\">\n            <span class=\""
@@ -21612,7 +21618,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "\">"
     + ((stack1 = (helpers["schedule-tmpl"] || (depth0 && depth0["schedule-tmpl"]) || alias2).call(alias1,(depth0 != null ? depth0.model : depth0),{"name":"schedule-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n            "
-    + ((stack1 = helpers.unless.call(alias1,(helpers.or || (depth0 && depth0.or) || alias2).call(alias1,((stack1 = (data && data.root)) && stack1.isReadOnly),((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isReadOnly : stack1),{"name":"or","hash":{},"data":data}),{"name":"unless","hash":{},"fn":container.program(15, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(alias1,(helpers.or || (depth0 && depth0.or) || alias2).call(alias1,((stack1 = (data && data.root)) && stack1.isReadOnly),((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isReadOnly : stack1),{"name":"or","hash":{},"data":data}),{"name":"unless","hash":{},"fn":container.program(17, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n        </div>\n    </div>\n";
 },"5":function(container,depth0,helpers,partials,data) {
     var helper;
@@ -21629,9 +21635,15 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 },"9":function(container,depth0,helpers,partials,data) {
     var helper;
 
+  return " "
+    + container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
+    + "past";
+},"11":function(container,depth0,helpers,partials,data) {
+    var helper;
+
   return container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-schedule-focused ";
-},"11":function(container,depth0,helpers,partials,data) {
+},"13":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
   return "                    color: #ffffff; background-color:"
@@ -21639,7 +21651,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "; border-color:"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.color : stack1), depth0))
     + ";\n";
-},"13":function(container,depth0,helpers,partials,data) {
+},"15":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
   return "                    color:"
@@ -21649,7 +21661,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "; border-color:"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.borderColor : stack1), depth0))
     + ";\n";
-},"15":function(container,depth0,helpers,partials,data) {
+},"17":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=container.escapeExpression;
 
   return "<span class=\""
@@ -22750,6 +22762,7 @@ module.exports = DayGrid;
 
 var util = __webpack_require__(/*! tui-code-snippet */ "tui-code-snippet");
 var Weekday = __webpack_require__(/*! ../weekday */ "./src/js/view/weekday.js"),
+    TZDate = __webpack_require__(/*! ../../common/timezone */ "./src/js/common/timezone.js").Date, // NMNS CUSTOMIZING
     tmpl = __webpack_require__(/*! ../template/week/dayGridSchedule.hbs */ "./src/js/view/template/week/dayGridSchedule.hbs");
 var mmax = Math.max;
 
@@ -22830,9 +22843,20 @@ DayGridSchedule.prototype.getBaseViewModel = function(viewModel) {
     var maxScheduleInDay = this._getMaxScheduleInDay(matrices);
     var baseViewModel;
     var styles = this._getStyles(viewModel.theme);
+    var now = new TZDate();
 
     baseViewModel = Weekday.prototype.getBaseViewModel.call(this, viewModel);
-
+    // NMNS CUSTOMIZING START
+    util.forEach(matrices, function(matrix) {
+        util.forEach(matrix, function(row) {
+            util.forEach(row, function(data) {
+                if (data) {
+                    data.isPast = data.model.end < now;
+                }
+            });
+        });
+    });
+    // NMNS CUSTOMIZING END
     baseViewModel = util.extend({
         minHeight: this._getMinHeight(maxScheduleInDay),
         matrices: matrices,
@@ -24104,6 +24128,14 @@ function Week(controller, options, container, panels) {
     this.state = {
         timezonesCollapsed: this.options.timezonesCollapsed
     };
+
+    // NMNS CUSTOMIZING START
+    /**
+     * Week view container
+     * @type {object}
+     */
+    this.container = container;
+    // NMNS CUSTOMIZING END
 }
 
 util.inherit(Week, View);
@@ -24130,6 +24162,12 @@ Week.prototype.render = function() {
 
     renderStartDate = parseRangeDateString(options.renderStartDate);
     renderEndDate = parseRangeDateString(options.renderEndDate);
+
+    if (datetime.isSameDate(renderStartDate, renderEndDate)) {
+        domutil.addClass(this.container, config.classname('week-day'));
+    } else {
+        domutil.addClass(this.container, config.classname('week-week'));
+    }
 
     range = datetime.range(
         datetime.start(renderStartDate),
