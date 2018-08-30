@@ -95,6 +95,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
                 triggerEventName: 'click',
                 target: this._scheduleEl
             });
+            document.body.style.paddingRight = (window.innerWidth - $(document).width()) + 'px';
             document.body.classList.add('modal-open');
             domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
             domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen

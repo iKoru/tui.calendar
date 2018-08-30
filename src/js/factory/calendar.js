@@ -998,6 +998,7 @@ Calendar.prototype._onBeforeCreate = function(createScheduleData) {
         if (this._showCreationPopup && createScheduleData.category !== 'task') {
             this._showCreationPopup(createScheduleData);
 
+            document.body.style.paddingRight = (window.innerWidth - $(document).width()) + 'px';
             document.body.classList.add('modal-open');
             document.getElementsByClassName(config.classname('screen'))[0].style.visibility = 'visible';// show screen
             document.getElementsByClassName(config.classname('screen'))[0].style.opacity = 0.5;// show screen

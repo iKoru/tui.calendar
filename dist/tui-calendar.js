@@ -8959,6 +8959,7 @@ Calendar.prototype._onBeforeCreate = function(createScheduleData) {
         if (this._showCreationPopup && createScheduleData.category !== 'task') {
             this._showCreationPopup(createScheduleData);
 
+            document.body.style.paddingRight = (window.innerWidth - $(document).width()) + 'px';
             document.body.classList.add('modal-open');
             document.getElementsByClassName(config.classname('screen'))[0].style.visibility = 'visible';// show screen
             document.getElementsByClassName(config.classname('screen'))[0].style.opacity = 0.5;// show screen
@@ -18933,6 +18934,7 @@ ScheduleCreationPopup.prototype._closePopup = function (target) {
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
         this.hide();
         // NMNS CUSTOMIZING START
+        document.body.style.paddingRight = '0px';
         document.body.classList.remove('modal-open');
         domutil.find(config.classname('.screen')).style.opacity = 0;// hide screen
         domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
@@ -19644,6 +19646,7 @@ ScheduleCreationPopup.prototype.hide = function () {
         this.guide = null;
     }
     // NMNS CUSTOMIZING START
+    document.body.style.paddingRight = '0px';
     document.body.classList.remove('modal-open');
     domutil.find(config.classname('.screen')).style.opacity = 0;// hide screen
     domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
@@ -19778,6 +19781,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
                 triggerEventName: 'click',
                 target: this._scheduleEl
             });
+            document.body.style.paddingRight = (window.innerWidth - $(document).width()) + 'px';
             document.body.classList.add('modal-open');
             domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
             domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
