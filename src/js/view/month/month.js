@@ -247,6 +247,7 @@ Month.prototype.render = function() {
     this.children.each(function(childView) {
         var start = datetime.parse(childView.options.renderStartDate);
         var end = datetime.parse(childView.options.renderEndDate);
+        var now = new TZDate();
         var eventsInDateRange = controller.findByDateRange(
             datetime.start(start),
             datetime.end(end),
@@ -263,6 +264,17 @@ Month.prototype.render = function() {
             panelHeight: baseViewModel.panelHeight,
             theme: theme
         };
+        // NMNS CUSTOMIZING START
+        util.forEach(eventsInDateRange, function(matrix) {
+            util.forEach(matrix, function(row) {
+                util.forEach(row, function(data) {
+                    if (data) {
+                        data.isPast = data.model.end < now;
+                    }
+                });
+            });
+        });
+        // NMNS CUSTOMIZING END
 
         childView.render(viewModel);
 

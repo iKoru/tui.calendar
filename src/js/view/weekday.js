@@ -76,7 +76,8 @@ Weekday.prototype.getRenderDateGrids = function() {
 Weekday.prototype.getBaseViewModel = function(viewModel) {
     var opt = this.options;
     var range = viewModel.range;
-    var today = datetime.format(new TZDate(), 'YYYYMMDD');
+    var now = new TZDate();
+    var today = datetime.format(now, 'YYYYMMDD');
     var gridWidth = (100 / range.length);
     var grids = viewModel.grids;
     var exceedDate = viewModel.exceedDate || {};
@@ -104,7 +105,8 @@ Weekday.prototype.getBaseViewModel = function(viewModel) {
                 width: grids[index] ? grids[index].width : 0,
                 left: grids[index] ? grids[index].left : 0,
                 color: this._getDayNameColor(theme, day, isToday),
-                backgroundColor: this._getDayBackgroundColor(theme, day)
+                backgroundColor: this._getDayBackgroundColor(theme, day),
+                isPast: (date < now) && !isToday // NMNS CUSTOMIZING
             };
         }, this)
     };

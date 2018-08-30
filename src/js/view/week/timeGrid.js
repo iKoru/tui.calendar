@@ -87,7 +87,8 @@ function getHoursLabels(opt, hasHourMarker, timezoneOffset, styles) {
             minutes: shiftMinutes,
             hidden: nowAroundHours === hour || index === 0,
             color: color || '',
-            fontWeight: fontWeight || ''
+            fontWeight: fontWeight || '',
+            isPast: isPast
         };
     });
 }

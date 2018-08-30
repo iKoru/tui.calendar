@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Thu Aug 23 2018
+ * @version 1.7.0 | Thu Aug 30 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -48,7 +48,7 @@
   border-radius: 50%;
 }
 .tui-full-calendar-holiday {
-  color: #f00;
+  color: #ff4040;
 }
 .tui-full-calendar-today {
   background: rgba(218,229,249,0.3);
@@ -81,7 +81,7 @@
   height: 0;
 }
 .tui-full-calendar-month-week-item .tui-full-calendar-weekday-schedule {
-  margin: 0 10px;
+  margin: 0 3px;
 }
 .tui-full-calendar-month-week-item .tui-full-calendar-today {
   background: none;
@@ -129,8 +129,8 @@
 .tui-full-calendar-weekday-grid-line .tui-full-calendar-weekday-grid-date {
   display: inline-block;
   width: 27px;
-  height: 27px;
-  line-height: 27px;
+  height: 19px;
+  line-height: 19px;
   text-align: center;
 }
 .tui-full-calendar-weekday-grid-line .tui-full-calendar-weekday-grid-date-title {
@@ -177,7 +177,7 @@
 }
 .tui-full-calendar-weekday-schedule {
   position: relative;
-  margin: 0 10px 0 1px;
+  margin: 0;
   cursor: pointer;
   border-left-style: solid;
   border-left-width: 3px;
@@ -186,7 +186,7 @@
   border-left-width: 0;
 }
 .tui-full-calendar-weekday-schedule.tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
-  padding-left: 9px;
+  padding-left: 8px;
 }
 .tui-full-calendar-weekday-schedule-bullet {
   position: absolute;
@@ -194,7 +194,7 @@
   width: 6px;
   height: 6px;
   top: 6px;
-  left: 0;
+  left: 1px;
   border-radius: 50%;
 }
 .tui-full-calendar-weekday-schedule-bullet-focused {
@@ -482,7 +482,7 @@
   border-left-width: 3px;
   border-left-style: solid;
   font-weight: bold;
-  padding: 1px 0 1px 3px;
+  padding: 1px 3px 1px 3px;
 }
 .tui-full-calendar-time-resize-handle {
   position: absolute;

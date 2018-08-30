@@ -74,7 +74,8 @@ DayName.prototype._getBaseViewModel = function(start, end, grids) {
             left: grids[i] ? grids[i].left : 0,
             width: grids[i] ? grids[i].width : 0,
             renderDate: datetime.format(d, 'YYYY-MM-DD'),
-            color: this._getDayNameColor(theme, day, isToday, isPastDay)
+            color: this._getDayNameColor(theme, day, isToday, isPastDay),
+            isPast: isPastDay
         };
     }, this);
 
@@ -115,10 +116,10 @@ DayName.prototype._getDayNameColor = function(theme, day, isToday, isPastDay) {
     if (theme) {
         if (day === 0) {
             color = theme.common.holiday.color;
-        } else if (isPastDay) {
-            color = theme.week.pastDay.color || theme.common.dayname.color;
         } else if (day === 6) {
             color = theme.common.saturday.color;
+        } else if (isPastDay) {
+            color = theme.week.pastDay.color || theme.common.dayname.color;
         } else if (isToday) {
             color = theme.week.today.color || theme.common.today.color;
         } else {
