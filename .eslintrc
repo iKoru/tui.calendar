@@ -15,6 +15,7 @@
         "complexity": "off",
         "camelcase": "off",
         "space-before-function-paren": "off",
-        "object-curly-spacing": "off"
+        "object-curly-spacing": "off",
+        "max-nested-callbacks": "warn"
     }
 }

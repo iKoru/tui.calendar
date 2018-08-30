@@ -106,7 +106,7 @@ Weekday.prototype.getBaseViewModel = function(viewModel) {
                 left: grids[index] ? grids[index].left : 0,
                 color: this._getDayNameColor(theme, day, isToday),
                 backgroundColor: this._getDayBackgroundColor(theme, day),
-                isPast: (date < now) && !isToday
+                isPast: (date < now) && !isToday // NMNS CUSTOMIZING
             };
         }, this)
     };

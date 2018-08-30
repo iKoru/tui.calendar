@@ -136,6 +136,7 @@ Time.prototype._getBaseViewModel = function(ymd, matrices, containerHeight) {
         hourStart = options.hourStart,
         hourEnd = options.hourEnd,
         isReadOnly = options.isReadOnly,
+        now = new TZDate(), // NMNS CUSTOMIZING
         todayStart,
         baseMS;
 
@@ -173,6 +174,7 @@ Time.prototype._getBaseViewModel = function(ymd, matrices, containerHeight) {
                     return;
                 }
 
+                viewModel.isPast = viewModel.model.end < now;// NMNS CUSTOMIZING
                 viewBound = self.getScheduleViewBound(viewModel, {
                     todayStart: todayStart,
                     baseMS: baseMS,
