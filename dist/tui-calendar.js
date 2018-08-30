@@ -9968,7 +9968,7 @@ var DEFAULT_PANELS = [
     {
         name: 'task',
         type: 'daygrid',
-        minHeight: 40,
+        minHeight: 52, // NMNS CUSTOMIZING
         maxHeight: 120,
         showExpandableButton: true,
         maxExpandableHeight: 210,
@@ -9978,7 +9978,7 @@ var DEFAULT_PANELS = [
     {
         name: 'allday',
         type: 'daygrid',
-        minHeight: 30,
+        minHeight: 26, // NMNS CUSTOMIZING
         maxHeight: 80,
         showExpandableButton: true,
         maxExpandableHeight: 210,
@@ -19858,9 +19858,18 @@ ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(even
     var scheduleEl = event.target || event.srcElement;
     // NMNS CUSTOMIZING START
     var pos, scheduleBound;
-    if ($(scheduleEl).hasClass('tui-full-calendar-weekday-schedule-title')) {
-        scheduleEl = scheduleEl.parentElement;
+    if (!$(scheduleEl).hasClass('tui-full-calendar-weekday-schedule')) {
+        scheduleBound = $(scheduleEl).parents('.tui-full-calendar-weekday-schedule');
+        if (scheduleBound.length < 1) {
+            if (!$(scheduleEl).hasClass('tui-full-calendar-time-schedule')) {
+                scheduleBound = $(scheduleEl).parents('.tui-full-calendar-time-schedule');
+            }
+        }
+        if (scheduleBound.length) {
+            scheduleEl = scheduleBound[0];
+        }
     }
+
     scheduleBound = scheduleEl.getBoundingClientRect();
     // NMNS CUSTOMIZING END
 
@@ -20187,6 +20196,15 @@ Handlebars.registerHelper({
         }
 
         return cssClass;
+    },
+
+    /**
+     * Add dash to contact
+     * @param {string} num - contact
+     * @returns {string} dashed contact
+     */
+    'dashContact': function(num) {
+        return dashContact(num);
     },
 
     /**
@@ -21071,7 +21089,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.color : stack1), depth0))
     + "\n";
 },"37":function(container,depth0,helpers,partials,data) {
-    return "                                color:#333;\n";
+    return "                                color:#212121;\n";
 },"39":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=container.lambda, alias2=container.escapeExpression, alias3=depth0 != null ? depth0 : (container.nullContext || {}), alias4=helpers.helperMissing, alias5="function";
 
@@ -21308,9 +21326,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 },"7":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "dashContact("
-    + container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1), depth0))
-    + ")";
+  return ((stack1 = (helpers.dashContact || (depth0 && depth0.dashContact) || helpers.helperMissing).call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"dashContact","hash":{},"data":data})) != null ? stack1 : "");
 },"9":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
@@ -21375,7 +21391,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "section-header\">\n      <div title=\"일정이름\">\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "schedule-title\">"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(4, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(26, data, 0),"data":data})) != null ? stack1 : "")
     + "</span>\n      </div>\n      <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-detail-date "
@@ -21385,7 +21401,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "</div>\n    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-detail\">\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(26, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(29, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(15, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
@@ -21411,6 +21427,16 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers["popupDelete-tmpl"] || (depth0 != null ? depth0["popupDelete-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupDelete-tmpl","hash":{},"data":data}) : helper)))
     + "</span>\n      </button>\n    </div>\n";
 },"26":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(27, data, 0),"data":data})) != null ? stack1 : "");
+},"27":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "dashContact("
+    + container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1), depth0))
+    + ")";
+},"29":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
@@ -21607,6 +21633,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias3(alias5(((stack1 = (data && data.root)) && stack1.scheduleHeight), depth0))
     + "px; border-radius: "
     + alias3(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.borderRadius), depth0))
+    + ";margin-right:"
+    + alias3(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.marginRight), depth0))
     + ";\n"
     + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(13, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
     + "            "
@@ -22879,6 +22907,7 @@ DayGridSchedule.prototype._getStyles = function(theme) {
 
     if (theme) {
         styles.borderRadius = theme.week.dayGridSchedule.borderRadius;
+        styles.marginRight = theme.week.dayGridSchedule.marginRight;
     }
 
     return styles;

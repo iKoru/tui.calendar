@@ -212,6 +212,15 @@ Handlebars.registerHelper({
     },
 
     /**
+     * Add dash to contact
+     * @param {string} num - contact
+     * @returns {string} dashed contact
+     */
+    'dashContact': function(num) {
+        return dashContact(num);
+    },
+
+    /**
      * Add supplied two parameter
      * @param {*} a - a
      * @param {*} b - b

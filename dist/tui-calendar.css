@@ -88,9 +88,9 @@
 }
 .tui-full-calendar-month-week-item .tui-full-calendar-today .tui-full-calendar-weekday-grid-date-decorator {
   display: inline-block;
-  width: 27px;
-  height: 27px;
-  line-height: 27px;
+  width: 23px;
+  height: 23px;
+  line-height: 23px;
   text-align: center;
   background: #135de6;
   border-radius: 50%;
@@ -481,7 +481,6 @@
   overflow: hidden;
   border-left-width: 3px;
   border-left-style: solid;
-  font-weight: bold;
   padding: 1px 3px 1px 3px;
 }
 .tui-full-calendar-time-resize-handle {
@@ -500,6 +499,7 @@
   right: 10px;
   left: 1px;
   padding: 3px;
+  width: 100%;
 }
 .tui-full-calendar-time-guide-move .tui-full-calendar-time-schedule,
 .tui-full-calendar-time-guide-resize .tui-full-calendar-time-schedule,

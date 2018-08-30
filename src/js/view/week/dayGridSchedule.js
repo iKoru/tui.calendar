@@ -123,6 +123,7 @@ DayGridSchedule.prototype._getStyles = function(theme) {
 
     if (theme) {
         styles.borderRadius = theme.week.dayGridSchedule.borderRadius;
+        styles.marginRight = theme.week.dayGridSchedule.marginRight;
     }
 
     return styles;

@@ -3,7 +3,7 @@
     {{#fi schedule.category '!==' 'task'}}
     <div class="{{CSS_PREFIX}}popup-section {{CSS_PREFIX}}section-header">
       <div title="고객이름">
-        <span class="{{CSS_PREFIX}}schedule-title">{{#if schedule.title}}{{schedule.title}}{{else if schedule.raw.contents}}{{schedule.raw.contents}}{{else}}dashContact({{schedule.raw.contact}}){{/if}}</span>
+        <span class="{{CSS_PREFIX}}schedule-title">{{#if schedule.title}}{{schedule.title}}{{else if schedule.raw.contents}}{{schedule.raw.contents}}{{else}}{{{dashContact schedule.raw.contact}}}{{/if}}</span>
       </div>
       <div class="{{CSS_PREFIX}}popup-detail-date {{CSS_PREFIX}}content" title="예약 시간">{{popupDetailDate-tmpl schedule.isAllDay schedule.start schedule.end}}</div>
     </div>

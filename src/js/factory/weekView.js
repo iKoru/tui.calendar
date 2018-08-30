@@ -58,7 +58,7 @@ var DEFAULT_PANELS = [
     {
         name: 'task',
         type: 'daygrid',
-        minHeight: 40,
+        minHeight: 52, // NMNS CUSTOMIZING
         maxHeight: 120,
         showExpandableButton: true,
         maxExpandableHeight: 210,
@@ -68,7 +68,7 @@ var DEFAULT_PANELS = [
     {
         name: 'allday',
         type: 'daygrid',
-        minHeight: 30,
+        minHeight: 26, // NMNS CUSTOMIZING
         maxHeight: 80,
         showExpandableButton: true,
         maxExpandableHeight: 210,

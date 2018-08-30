@@ -172,9 +172,18 @@ ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(even
     var scheduleEl = event.target || event.srcElement;
     // NMNS CUSTOMIZING START
     var pos, scheduleBound;
-    if ($(scheduleEl).hasClass('tui-full-calendar-weekday-schedule-title')) {
-        scheduleEl = scheduleEl.parentElement;
+    if (!$(scheduleEl).hasClass('tui-full-calendar-weekday-schedule')) {
+        scheduleBound = $(scheduleEl).parents('.tui-full-calendar-weekday-schedule');
+        if (scheduleBound.length < 1) {
+            if (!$(scheduleEl).hasClass('tui-full-calendar-time-schedule')) {
+                scheduleBound = $(scheduleEl).parents('.tui-full-calendar-time-schedule');
+            }
+        }
+        if (scheduleBound.length) {
+            scheduleEl = scheduleBound[0];
+        }
     }
+
     scheduleBound = scheduleEl.getBoundingClientRect();
     // NMNS CUSTOMIZING END
 
