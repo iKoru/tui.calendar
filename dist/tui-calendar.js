@@ -19392,7 +19392,7 @@ ScheduleCreationPopup.prototype._updatePopup = function (viewModel) {
     $('#creationPopupName').val(viewModel.title || '');
     $('#creationPopupContents').val(viewModel.raw ? viewModel.raw.contents : (viewModel.contents || ''));
     $('#creationPopupContact').val(viewModel.raw ? viewModel.raw.contact : (viewModel.contact || ''));
-    $('#creationPopupEtc').val(viewModel.raw ? viewModel.raw.etc : (viewModel.etc || ''));
+    $('#creationPopupEtc').val(viewModel.raw ? viewModel.raw.etc : (viewModel.etc || '')).prop('readonly', this._isEditMode || (!!(viewModel.title || (viewModel.raw && viewModel.raw.contact))));
     $('#creationPopupAllDay').attr('checked', viewModel.isAllDay);
     this._selectedCal = this._selectedCal || this.calendars[0];
     this.calendars.forEach(function (item) {
@@ -21203,6 +21203,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">"
     + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
     + "</span>\n                    </button>\n";
+},"5":function(container,depth0,helpers,partials,data) {
+    return "readonly=\"readonly\" ";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda;
 
@@ -21246,7 +21248,9 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.selectedCal : depth0)) != null ? stack1.name : stack1), depth0))
     + "</span>\n                </button>\n                <div class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"creationPopupManager\" role=\"menu\">\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.calendars : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "                </div>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupEtc\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">고객메모</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupEtcIcon\" class=\"input-group-text far fa-bookmark\" title=\"고객메모\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control han\" id=\"creationPopupEtc\" name=\"etc\" aria-describedby=\"creationPopupEtcIcon\" placeholder=\"고객메모\"\n                    value=\""
+    + "                </div>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupEtc\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">고객메모</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupEtcIcon\" class=\"input-group-text far fa-bookmark\" title=\"고객메모\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control han\" id=\"creationPopupEtc\" name=\"etc\" aria-describedby=\"creationPopupEtcIcon\" placeholder=\"고객메모\" "
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,(depth0 != null ? depth0.title : depth0),"||",((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.contact : stack1),{"name":"fi","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n                    value=\""
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.etc : stack1), depth0))
     + "\">\n            </div>\n        </div>\n\n        <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))

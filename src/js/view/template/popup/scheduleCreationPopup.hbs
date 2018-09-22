@@ -84,7 +84,7 @@
                 <div class="d-inline-block input-group-prepend d-sm-none">
                     <i id="creationPopupEtcIcon" class="input-group-text far fa-bookmark" title="고객메모"></i>
                 </div>
-                <input type="text" class="form-control han" id="creationPopupEtc" name="etc" aria-describedby="creationPopupEtcIcon" placeholder="고객메모"
+                <input type="text" class="form-control han" id="creationPopupEtc" name="etc" aria-describedby="creationPopupEtcIcon" placeholder="고객메모" {{#fi title '||' raw.contact}}readonly="readonly" {{/fi}}
                     value="{{raw.etc}}">
             </div>
         </div>

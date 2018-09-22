@@ -562,7 +562,7 @@ ScheduleCreationPopup.prototype._updatePopup = function (viewModel) {
     $('#creationPopupName').val(viewModel.title || '');
     $('#creationPopupContents').val(viewModel.raw ? viewModel.raw.contents : (viewModel.contents || ''));
     $('#creationPopupContact').val(viewModel.raw ? viewModel.raw.contact : (viewModel.contact || ''));
-    $('#creationPopupEtc').val(viewModel.raw ? viewModel.raw.etc : (viewModel.etc || ''));
+    $('#creationPopupEtc').val(viewModel.raw ? viewModel.raw.etc : (viewModel.etc || '')).prop('readonly', this._isEditMode || (!!(viewModel.title || (viewModel.raw && viewModel.raw.contact))));
     $('#creationPopupAllDay').attr('checked', viewModel.isAllDay);
     this._selectedCal = this._selectedCal || this.calendars[0];
     this.calendars.forEach(function (item) {
