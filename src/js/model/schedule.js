@@ -234,6 +234,7 @@ Schedule.prototype.init = function(options) {
     this.isPending = options.isPending || false;
     this.isFocused = options.isFocused || false;
     this.isReadOnly = options.isReadOnly || false;
+    this.raw = options.raw || {};// NMNS CUSTOMIZING
 
     if (this.isAllDay) {
         this.setAllDayPeriod(options.start, options.end);

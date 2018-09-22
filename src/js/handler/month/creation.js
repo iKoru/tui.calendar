@@ -101,13 +101,13 @@ MonthCreation.prototype._createSchedule = function(eventData) {
      * @property {TimeCreationGuide} guide - TimeCreationGuide instance
      * @property {string} triggerEventName - event name
      */
-    this.fire('beforeCreateSchedule', {
+    this.fire('beforeCreateSchedule', util.extend({// NMNS CUSTOMIZING
         isAllDay: eventData.isAllDay,
         start: eventData.start,
         end: eventData.end,
         guide: this.guide.guide,
         triggerEventName: eventData.triggerEvent
-    });
+    }, eventData));
 };
 
 /**
@@ -319,12 +319,12 @@ MonthCreation.prototype.invokeCreationClick = function(schedule) {
 
     this.fire('monthCreationClick', eventData);
 
-    this._createSchedule({
+    this._createSchedule(util.extend({
         start: schedule.start,
         end: schedule.end,
         isAllDay: schedule.isAllDay,
         triggerEvent: 'manual'
-    });
+    }, schedule));
 };
 
 /**

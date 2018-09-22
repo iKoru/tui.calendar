@@ -233,13 +233,13 @@ TimeCreation.prototype._createSchedule = function(eventData) {
      * @property {TimeCreationGuide} guide - TimeCreationGuide instance
      * @property {string} triggerEventName - event name
      */
-    this.fire('beforeCreateSchedule', {
+    this.fire('beforeCreateSchedule', util.extend({// NMNS CUSTOMIZING
         isAllDay: false,
         start: new TZDate(start),
         end: new TZDate(end),
         guide: this.guide,
         triggerEventName: eventData.triggerEvent
-    });
+    }, eventData));
 };
 
 /**
@@ -369,7 +369,7 @@ TimeCreation.prototype.invokeCreationClick = function(schedule) {
     }
 
     getScheduleDataFunc = this._retriveScheduleDataFromDate(timeView);
-    eventData = getScheduleDataFunc(schedule.start, schedule.end);
+    eventData = util.extend(getScheduleDataFunc(schedule.start, schedule.end), schedule);// NMNS CUSTOMIZING
 
     this.fire('timeCreationClick', eventData);
 

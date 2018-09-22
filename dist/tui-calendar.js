@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Tue Sep 11 2018
+ * @version 1.7.0 | Sat Sep 22 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -12771,13 +12771,13 @@ MonthCreation.prototype._createSchedule = function(eventData) {
      * @property {TimeCreationGuide} guide - TimeCreationGuide instance
      * @property {string} triggerEventName - event name
      */
-    this.fire('beforeCreateSchedule', {
+    this.fire('beforeCreateSchedule', util.extend({// NMNS CUSTOMIZING
         isAllDay: eventData.isAllDay,
         start: eventData.start,
         end: eventData.end,
         guide: this.guide.guide,
         triggerEventName: eventData.triggerEvent
-    });
+    }, eventData));
 };
 
 /**
@@ -12989,12 +12989,12 @@ MonthCreation.prototype.invokeCreationClick = function(schedule) {
 
     this.fire('monthCreationClick', eventData);
 
-    this._createSchedule({
+    this._createSchedule(util.extend({
         start: schedule.start,
         end: schedule.end,
         isAllDay: schedule.isAllDay,
         triggerEvent: 'manual'
-    });
+    }, schedule));
 };
 
 /**
@@ -15208,13 +15208,13 @@ TimeCreation.prototype._createSchedule = function(eventData) {
      * @property {TimeCreationGuide} guide - TimeCreationGuide instance
      * @property {string} triggerEventName - event name
      */
-    this.fire('beforeCreateSchedule', {
+    this.fire('beforeCreateSchedule', util.extend({// NMNS CUSTOMIZING
         isAllDay: false,
         start: new TZDate(start),
         end: new TZDate(end),
         guide: this.guide,
         triggerEventName: eventData.triggerEvent
-    });
+    }, eventData));
 };
 
 /**
@@ -15344,7 +15344,7 @@ TimeCreation.prototype.invokeCreationClick = function(schedule) {
     }
 
     getScheduleDataFunc = this._retriveScheduleDataFromDate(timeView);
-    eventData = getScheduleDataFunc(schedule.start, schedule.end);
+    eventData = util.extend(getScheduleDataFunc(schedule.start, schedule.end), schedule);// NMNS CUSTOMIZING
 
     this.fire('timeCreationClick', eventData);
 
@@ -17018,6 +17018,7 @@ Schedule.prototype.init = function(options) {
     this.isPending = options.isPending || false;
     this.isFocused = options.isFocused || false;
     this.isReadOnly = options.isReadOnly || false;
+    this.raw = options.raw || {};// NMNS CUSTOMIZING
 
     if (this.isAllDay) {
         this.setAllDayPeriod(options.start, options.end);
@@ -19240,7 +19241,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
  */
 ScheduleCreationPopup.prototype.render = function (viewModel) {
     // NMNS CUSTOMIZING START
-    var timeout;
+    var timeout, calendarIndex;
     var calendars = this.calendars;
     var layer = this.layer;
     var self = this;
@@ -19258,7 +19259,17 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     viewModel.zIndex = this.layer.zIndex + 5;
     viewModel.calendars = calendars;
     if (calendars.length) {
-        viewModel.selectedCal = this._selectedCal = calendars[0];
+        if (viewModel.calendarId) {
+            calendarIndex = calendars.findIndex(function (calendar) {
+                return calendar.id === viewModel.calendarId;
+            });
+            if (calendarIndex < 0) {
+                calendarIndex = 0;
+            }
+        } else {
+            calendarIndex = 0;
+        }
+        viewModel.selectedCal = this._selectedCal = calendars[calendarIndex];// NMNS CUSTOMIZING
     }
 
     // NMNS CUSTOMIZING START
@@ -19354,9 +19365,11 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     } else {
         $('#alrimContactInfo').removeClass('d-sm-inline-block');
     }
-    if (this._isEditMode) {
+    if (this._isEditMode || (viewModel.raw && viewModel.raw.contact && $('#creationPopupContact').val() !== '')) {
         $('#creationPopup').data('contact', viewModel.raw.contact);
         onContactBlur();
+    } else {
+        $('#creationPopup').removeData('contact');
     }
     // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
     // NMNS CUSTOMIZING END
@@ -21200,7 +21213,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "popup-container\" autocomplete=\"off\">\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupName\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">고객이름</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupNameIcon\" class=\"input-group-text fas fa-user\" title=\"고객이름\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control han\" id=\"creationPopupName\" name=\"name\" placeholder=\"고객이름\" aria-describedby=\"creationPopupNameIcon\"\n                    autocomplete=\"off\" value=\""
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
     + "\">\n            </div>\n        </div>\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContact\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm compactLabel\">고객연락처</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContactIcon\" class=\"input-group-text fas fa-phone fa-rotate-90\" title=\"고객 연락처\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupContact\" name=\"contact\" aria-describedby=\"creationPopupContactIcon\"\n                    placeholder=\"고객연락처\" autocomplete=\"off\" value=\""
-    + alias4(((helper = (helper = helpers.contact || (depth0 != null ? depth0.contact : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"contact","hash":{},"data":data}) : helper)))
+    + alias4(alias5(((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.contact : stack1), depth0))
     + "\">\n            </div>\n            <small id=\"alrimContactInfo\" class=\"text-secondary d-none col-5 pl-0\"><span class=\"text-danger\">*</span>알림톡을 사용하도록 설정하시면<br/>고객에게 예약알림을 보낼 수 있습니다!</small>\n        </div>\n\n        <div class=\"row mb-1 mb-sm-3\">\n            <div id=\"creationPopupStartDate\" class=\"input-group input-group-sm col-5 col-sm-4 pr-0 "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-start-date\">\n                <div class=\"input-group-prepend\">\n                    <i id=\"creationPopupStartDateIcon\" class=\"input-group-text far fa-calendar-alt\" title=\"예약 시작시간\"></i>\n                </div>\n                <input id=\""
@@ -21234,7 +21247,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "</span>\n                </button>\n                <div class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"creationPopupManager\" role=\"menu\">\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.calendars : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "                </div>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupEtc\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">고객메모</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupEtcIcon\" class=\"input-group-text far fa-bookmark\" title=\"고객메모\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control han\" id=\"creationPopupEtc\" name=\"etc\" aria-describedby=\"creationPopupEtcIcon\" placeholder=\"고객메모\"\n                    value=\""
-    + alias4(((helper = (helper = helpers.etc || (depth0 != null ? depth0.etc : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"etc","hash":{},"data":data}) : helper)))
+    + alias4(alias5(((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.etc : stack1), depth0))
     + "\">\n            </div>\n        </div>\n\n        <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "button "

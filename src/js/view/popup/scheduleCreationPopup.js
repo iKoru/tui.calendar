@@ -411,7 +411,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
  */
 ScheduleCreationPopup.prototype.render = function (viewModel) {
     // NMNS CUSTOMIZING START
-    var timeout;
+    var timeout, calendarIndex;
     var calendars = this.calendars;
     var layer = this.layer;
     var self = this;
@@ -429,7 +429,17 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     viewModel.zIndex = this.layer.zIndex + 5;
     viewModel.calendars = calendars;
     if (calendars.length) {
-        viewModel.selectedCal = this._selectedCal = calendars[0];
+        if (viewModel.calendarId) {
+            calendarIndex = calendars.findIndex(function (calendar) {
+                return calendar.id === viewModel.calendarId;
+            });
+            if (calendarIndex < 0) {
+                calendarIndex = 0;
+            }
+        } else {
+            calendarIndex = 0;
+        }
+        viewModel.selectedCal = this._selectedCal = calendars[calendarIndex];// NMNS CUSTOMIZING
     }
 
     // NMNS CUSTOMIZING START
@@ -525,9 +535,11 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     } else {
         $('#alrimContactInfo').removeClass('d-sm-inline-block');
     }
-    if (this._isEditMode) {
+    if (this._isEditMode || (viewModel.raw && viewModel.raw.contact && $('#creationPopupContact').val() !== '')) {
         $('#creationPopup').data('contact', viewModel.raw.contact);
         onContactBlur();
+    } else {
+        $('#creationPopup').removeData('contact');
     }
     // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
     // NMNS CUSTOMIZING END
