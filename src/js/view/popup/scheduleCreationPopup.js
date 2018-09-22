@@ -489,6 +489,7 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
             onSearchError: function () { },
             onSelect: function (suggestion) {
                 $('#creationPopupContact').val(suggestion.data).trigger('blur');
+                $('#creationPopupEtc').prop('readonly', true);
             }
         }, NMNS.socket);
 
@@ -516,6 +517,7 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
             onSelect: function (suggestion) {
                 $('#creationPopupName').val(suggestion.data);
                 onContactBlur();
+                $('#creationPopupEtc').prop('readonly', true);
             }
         }, NMNS.socket).on('blur', function () {
             filterNonNumericCharacter($(this));
@@ -527,6 +529,12 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
             timeout = setTimeout(function () {
                 onContactBlur();
             }, 500);
+        }).on('input', function() {
+            $('#creationPopupEtc').prop('readonly', false);
+        });
+
+        $('#creationPopupName').on('input', function() {
+            $('#creationPopupEtc').prop('readonly', false);
         });
     }
     layer.show();
