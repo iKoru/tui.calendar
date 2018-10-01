@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Sat Sep 22 2018
+ * @version 1.7.0 | Mon Oct 01 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -18888,7 +18888,7 @@ util.inherit(ScheduleCreationPopup, View);
  * layer
  * @param {MouseEvent} mouseDownEvent - mouse event object
  */
-ScheduleCreationPopup.prototype._onMouseDown = function (mouseDownEvent) {
+ScheduleCreationPopup.prototype._onMouseDown = function(mouseDownEvent) {
     var target = (mouseDownEvent.target || mouseDownEvent.srcElement),
         popupLayer = domutil.closest(target, config.classname('.floating-layer'));
 
@@ -18903,7 +18903,7 @@ ScheduleCreationPopup.prototype._onMouseDown = function (mouseDownEvent) {
 /**
  * @override
  */
-ScheduleCreationPopup.prototype.destroy = function () {
+ScheduleCreationPopup.prototype.destroy = function() {
     this.layer.destroy();
     this.layer = null;
     domevent.off(this.container, 'click', this._onClick, this);
@@ -18916,10 +18916,10 @@ ScheduleCreationPopup.prototype.destroy = function () {
  * Click event handler for close button
  * @param {MouseEvent} clickEvent - mouse event object
  */
-ScheduleCreationPopup.prototype._onClick = function (clickEvent) {
+ScheduleCreationPopup.prototype._onClick = function(clickEvent) {
     var target = (clickEvent.target || clickEvent.srcElement);
 
-    util.forEach(this._onClickListeners, function (listener) {
+    util.forEach(this._onClickListeners, function(listener) {
         return !listener(target);
     });
 };
@@ -18929,7 +18929,7 @@ ScheduleCreationPopup.prototype._onClick = function (clickEvent) {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether popup layer is closed or not
  */
-ScheduleCreationPopup.prototype._closePopup = function (target) {
+ScheduleCreationPopup.prototype._closePopup = function(target) {
     var className = config.classname('popup-close');
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
@@ -18937,8 +18937,8 @@ ScheduleCreationPopup.prototype._closePopup = function (target) {
         // NMNS CUSTOMIZING START
         document.body.style.paddingRight = '0px';
         document.body.classList.remove('modal-open');
-        domutil.find(config.classname('.screen')).style.opacity = 0;// hide screen
-        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+        domutil.find(config.classname('.screen')).style.opacity = 0; // hide screen
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden'; // hide screen
 
         // NMNS CUSTOMIZING END
         return true;
@@ -18952,7 +18952,7 @@ ScheduleCreationPopup.prototype._closePopup = function (target) {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether user clicked dropdown button or not
  */
-ScheduleCreationPopup.prototype._toggleDropdownMenuView = function (target) {
+ScheduleCreationPopup.prototype._toggleDropdownMenuView = function(target) {
     var className = config.classname('dropdown-button');
     var dropdownBtn = domutil.hasClass(target, className) ? target : domutil.closest(target, '.' + className);
 
@@ -18973,7 +18973,7 @@ ScheduleCreationPopup.prototype._toggleDropdownMenuView = function (target) {
  * Close drop down menu
  * @param {HTMLElement} dropdown - dropdown element that has a opened dropdown menu
  */
-ScheduleCreationPopup.prototype._closeDropdownMenuView = function (dropdown) {
+ScheduleCreationPopup.prototype._closeDropdownMenuView = function(dropdown) {
     dropdown = dropdown || this._focusedDropdown;
     if (dropdown) {
         domutil.removeClass(dropdown, config.classname('open'));
@@ -18985,7 +18985,7 @@ ScheduleCreationPopup.prototype._closeDropdownMenuView = function (dropdown) {
  * Open drop down menu
  * @param {HTMLElement} dropdown - dropdown element that has a closed dropdown menu
  */
-ScheduleCreationPopup.prototype._openDropdownMenuView = function (dropdown) {
+ScheduleCreationPopup.prototype._openDropdownMenuView = function(dropdown) {
     domutil.addClass(dropdown, config.classname('open'));
     this._focusedDropdown = dropdown;
 };
@@ -18995,7 +18995,7 @@ ScheduleCreationPopup.prototype._openDropdownMenuView = function (dropdown) {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether
  */
-ScheduleCreationPopup.prototype._selectDropdownMenuItem = function (target) {
+ScheduleCreationPopup.prototype._selectDropdownMenuItem = function(target) {
     // NMNS CUSTOMIZING START
     var itemClassName = config.classname('dropdown-item');
     var selectedItem = domutil.hasClass(target, itemClassName) ? target : domutil.closest(target, '.' + itemClassName);
@@ -19004,7 +19004,7 @@ ScheduleCreationPopup.prototype._selectDropdownMenuItem = function (target) {
         return false;
     }
     selectedCalendarId = domutil.getData(selectedItem, 'calendarId');
-    this._selectedCal = this.calendars.find(function (cal) {
+    this._selectedCal = this.calendars.find(function(cal) {
         return (cal.id === selectedCalendarId);
     });
     /* common.find(this.calendars, function(cal) {
@@ -19021,7 +19021,7 @@ ScheduleCreationPopup.prototype._selectDropdownMenuItem = function (target) {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether event target is allday section or not
  */
-ScheduleCreationPopup.prototype._toggleIsAllday = function () {
+ScheduleCreationPopup.prototype._toggleIsAllday = function() {
     // NMNS CUSTOMIZING START
     /* var className = config.classname('section-allday');
     var alldaySection = domutil.hasClass(target, className) ? target : domutil.closest(target, '.' + className);
@@ -19042,7 +19042,7 @@ ScheduleCreationPopup.prototype._toggleIsAllday = function () {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether event target is private section or not
  */
-ScheduleCreationPopup.prototype._toggleIsPrivate = function (target) {
+ScheduleCreationPopup.prototype._toggleIsPrivate = function(target) {
     var className = config.classname('section-private');
     var privateSection = domutil.hasClass(target, className) ? target : domutil.closest(target, '.' + className);
 
@@ -19065,7 +19065,7 @@ ScheduleCreationPopup.prototype._toggleIsPrivate = function (target) {
  * @param {HTMLElement} target click event target
  * @returns {boolean} whether save button is clicked or not
  */
-ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
+ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
     // NMNS CUSTOMIZING START
     var title, isAllDay, startDate, endDate, contents, contact, etc, calendarId, manager;
     if (!$(target).is('#creationPopupSave')) {
@@ -19088,10 +19088,10 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
                 },
                 errorElement: 'p',
                 errorClass: 'message text-danger my-1 pl-4 pl-sm-0 ml-3',
-                errorPlacement: function (error, element) {
+                errorPlacement: function(error, element) {
                     error.appendTo(element.parent().parent());
                 },
-                highlight: function (element, errorClass) {
+                highlight: function(element, errorClass) {
                     $(element).removeClass(errorClass);
                 }
             });
@@ -19113,7 +19113,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
         }
     }
     calendarId = $('#creationPopupManager').data('calendarid');
-    manager = this.calendars.find(function (cal) {
+    manager = this.calendars.find(function(cal) {
         return cal.id === calendarId;
     });
     if (!manager && this._selectedCal) {
@@ -19132,7 +19132,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
 
         return true;
     }
-    if (datetime.compare(startDate, endDate) > 0) {// swap two dates
+    if (datetime.compare(startDate, endDate) > 0) { // swap two dates
         startDate = [endDate, endDate = startDate][0];
     }
 
@@ -19239,7 +19239,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function (target) {
  * @override
  * @param {object} viewModel - view model from factory/monthView
  */
-ScheduleCreationPopup.prototype.render = function (viewModel) {
+ScheduleCreationPopup.prototype.render = function(viewModel) {
     // NMNS CUSTOMIZING START
     var timeout, calendarIndex;
     var calendars = this.calendars;
@@ -19251,7 +19251,10 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     function onContactBlur() {
         clearTimeout(timeout);
         if ($('#creationPopupContact').val().length > 9) {
-            NMNS.socket.emit('get customer', { contact: $('#creationPopupContact').val() });
+            NMNS.socket.emit('get customer', {
+                name: $('#creationPopupName').val(),
+                contact: $('#creationPopupContact').val()
+            });
         }
     }
     // NMNS CUSTOMIZING END
@@ -19260,7 +19263,7 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     viewModel.calendars = calendars;
     if (calendars.length) {
         if (viewModel.calendarId) {
-            calendarIndex = calendars.findIndex(function (calendar) {
+            calendarIndex = calendars.findIndex(function(calendar) {
                 return calendar.id === viewModel.calendarId;
             });
             if (calendarIndex < 0) {
@@ -19269,7 +19272,7 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
         } else {
             calendarIndex = 0;
         }
-        viewModel.selectedCal = this._selectedCal = calendars[calendarIndex];// NMNS CUSTOMIZING
+        viewModel.selectedCal = this._selectedCal = calendars[calendarIndex]; // NMNS CUSTOMIZING
     }
 
     // NMNS CUSTOMIZING START
@@ -19282,16 +19285,21 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
         // guideElements = this._getGuideElements(this.guide);
         // boxElement = guideElements.length ? guideElements[0] : null;
     }
-    if ($('#creationPopup').length) {// already inited
+    if ($('#creationPopup').length) { // already inited
         this._updatePopup(viewModel);
         $('#creationPopupName').autocomplete().clearCache();
         $('#creationPopupContact').autocomplete().clearCache();
         $('#creationPopupContact').tooltip('dispose');
         this._createDatepicker(viewModel.start.toDate ? viewModel.start.toDate() : viewModel.start,
             viewModel.end.toDate ? viewModel.end.toDate() : viewModel.end);
-    } else {// need init
+        if (viewModel.title || (viewModel.raw && viewModel.raw.contact)) {
+            $('.creationPopupEtcNotice').show();
+        } else {
+            $('.creationPopupEtcNotice').hide();
+        }
+    } else { // need init
         layer.setContent(tmpl(viewModel));
-        document.getElementById('creationPopupForm').onsubmit = function () {
+        document.getElementById('creationPopupForm').onsubmit = function() {
             return false;
         };
         this._createDatepicker(viewModel.start.toDate ? viewModel.start.toDate() : viewModel.start,
@@ -19302,8 +19310,8 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
             zIndex: 1060,
             maxHeight: 150,
             triggerSelectOnValidInput: false,
-            transformResult: function (response) {
-                response.forEach(function (item) {
+            transformResult: function(response) {
+                response.forEach(function(item) {
                     item.data = item.contact;
                     item.value = item.name;
                     delete item.contact;
@@ -19312,14 +19320,15 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
 
                 return { suggestions: response };
             },
-            onSearchComplete: function () { },
-            formatResult: function (suggestion) {
+            onSearchComplete: function() {},
+            formatResult: function(suggestion) {
                 return suggestion.value + ' (' + dashContact(suggestion.data) + ')';
             },
-            onSearchError: function () { },
-            onSelect: function (suggestion) {
+            onSearchError: function() {},
+            onSelect: function(suggestion) {
                 $('#creationPopupContact').val(suggestion.data).trigger('blur');
                 $('#creationPopupEtc').prop('readonly', true);
+                $('.creationPopupEtcNotice').show();
             }
         }, NMNS.socket);
 
@@ -19329,8 +19338,8 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
             zIndex: 1060,
             maxHeight: 150,
             triggerSelectOnValidInput: false,
-            transformResult: function (response) {
-                response.forEach(function (item) {
+            transformResult: function(response) {
+                response.forEach(function(item) {
                     item.data = item.name;
                     item.value = item.contact;
                     delete item.contact;
@@ -19339,32 +19348,35 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
 
                 return { suggestions: response };
             },
-            onSearchComplete: function () { },
-            formatResult: function (suggestion) {
+            onSearchComplete: function() {},
+            formatResult: function(suggestion) {
                 return suggestion.value + ' (' + dashContact(suggestion.data) + ')';
             },
-            onSearchError: function () { },
-            onSelect: function (suggestion) {
+            onSearchError: function() {},
+            onSelect: function(suggestion) {
                 $('#creationPopupName').val(suggestion.data);
                 onContactBlur();
                 $('#creationPopupEtc').prop('readonly', true);
+                $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket).on('blur', function () {
+        }, NMNS.socket).on('blur', function() {
             filterNonNumericCharacter($(this));
         });
 
-        $('#creationPopupContact').on('blur', function () {
+        $('#creationPopupContact').on('blur', function() {
             filterNonNumericCharacter($('#creationPopupContact'));
             clearTimeout(timeout);
-            timeout = setTimeout(function () {
+            timeout = setTimeout(function() {
                 onContactBlur();
             }, 500);
         }).on('input', function() {
             $('#creationPopupEtc').prop('readonly', false);
+            $('.creationPopupEtcNotice').hide();
         });
 
         $('#creationPopupName').on('input', function() {
             $('#creationPopupEtc').prop('readonly', false);
+            $('.creationPopupEtcNotice').hide();
         });
     }
     layer.show();
@@ -19382,7 +19394,7 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
     // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
     // NMNS CUSTOMIZING END
 
-    util.debounce(function () {
+    util.debounce(function() {
         domevent.on(document.body, 'mousedown', self._onMouseDown, self);
     })();
 };
@@ -19392,7 +19404,7 @@ ScheduleCreationPopup.prototype.render = function (viewModel) {
  * update popup form data
  * @param {ViewModel} viewModel - viewmodel
  */
-ScheduleCreationPopup.prototype._updatePopup = function (viewModel) {
+ScheduleCreationPopup.prototype._updatePopup = function(viewModel) {
     var dropdown = '';
     var escapedCssPrefix = 'tui-full-calendar-';
     document.getElementById('tui-full-calendar-schedule-start-date')._flatpickr.destroy();
@@ -19403,11 +19415,11 @@ ScheduleCreationPopup.prototype._updatePopup = function (viewModel) {
     $('#creationPopupEtc').val(viewModel.raw ? viewModel.raw.etc : (viewModel.etc || '')).prop('readonly', this._isEditMode || (!!(viewModel.title || (viewModel.raw && viewModel.raw.contact))));
     $('#creationPopupAllDay').attr('checked', viewModel.isAllDay);
     this._selectedCal = this._selectedCal || this.calendars[0];
-    this.calendars.forEach(function (item) {
-        dropdown += '<button type="button" class="dropdown-item ' + escapedCssPrefix + 'dropdown-item" data-calendar-id="' + item.id + '">\n'
-            + '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.bgColor + '"></span>\n'
-            + '<span class="' + escapedCssPrefix + 'content">' + item.name + '</span>\n'
-            + '</button>\n';
+    this.calendars.forEach(function(item) {
+        dropdown += '<button type="button" class="dropdown-item ' + escapedCssPrefix + 'dropdown-item" data-calendar-id="' + item.id + '">\n' +
+            '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.bgColor + '"></span>\n' +
+            '<span class="' + escapedCssPrefix + 'content">' + item.name + '</span>\n' +
+            '</button>\n';
     });
     $('#creationPopupManager').html($('#creationPopupManager').next().html(dropdown).find("button[data-calendar-id='" + this._selectedCal.id + "']").html()).data('calendarid', this._selectedCal.id);
 };
@@ -19418,7 +19430,7 @@ ScheduleCreationPopup.prototype._updatePopup = function (viewModel) {
  * @param {object} viewModel - original view model from 'beforeCreateEditPopup'
  * @returns {object} - edit mode view model
  */
-ScheduleCreationPopup.prototype._makeEditModeData = function (viewModel) {
+ScheduleCreationPopup.prototype._makeEditModeData = function(viewModel) {
     // NMNS CUSTOMIZING START
     var schedule = viewModel.schedule;
     var title, startDate, endDate, isAllDay, state, contact, etc, contents, status;
@@ -19437,7 +19449,7 @@ ScheduleCreationPopup.prototype._makeEditModeData = function (viewModel) {
     etc = raw.etc;
     status = raw.status;
 
-    calendarIndex = calendars.findIndex(function (calendar) {
+    calendarIndex = calendars.findIndex(function(calendar) {
         return calendar.id === viewModel.schedule.calendarId;
     });
     if (calendarIndex < 0) {
@@ -19477,14 +19489,14 @@ ScheduleCreationPopup.prototype._makeEditModeData = function (viewModel) {
         },
         zIndex: this.layer.zIndex + 5,
         isEditMode: this._isEditMode
-    };// NMNS CUSTOMIZING END
+    }; // NMNS CUSTOMIZING END
 };
 
 /**
  * Set popup position and arrow direction to apear near guide element
  * @param {MonthCreationGuide|TimeCreationGuide|DayGridCreationGuide} guideBound - creation guide element
  */
-ScheduleCreationPopup.prototype._setPopupPositionAndArrowDirection = function (guideBound) {
+ScheduleCreationPopup.prototype._setPopupPositionAndArrowDirection = function(guideBound) {
     var layer = domutil.find(config.classname('.popup'), this.layer.container);
     var layerSize = {
         width: layer.offsetWidth,
@@ -19515,7 +19527,7 @@ ScheduleCreationPopup.prototype._setPopupPositionAndArrowDirection = function (g
  * @param {MonthCreationGuide|TimeCreationGuide|AlldayCreationGuide} guide - creation guide
  * @returns {Array.<HTMLElement>} creation guide element
  */
-ScheduleCreationPopup.prototype._getGuideElements = function (guide) {
+ScheduleCreationPopup.prototype._getGuideElements = function(guide) {
     var guideElements = [];
     var i = 0;
 
@@ -19537,7 +19549,7 @@ ScheduleCreationPopup.prototype._getGuideElements = function (guide) {
  * @param {Array.<HTMLElement>} guideElements - creation guide elements
  * @returns {Object} - popup bound data
  */
-ScheduleCreationPopup.prototype._getBoundOfFirstRowGuideElement = function (guideElements) {
+ScheduleCreationPopup.prototype._getBoundOfFirstRowGuideElement = function(guideElements) {
     var bound;
 
     if (!guideElements.length) {
@@ -19561,7 +19573,7 @@ ScheduleCreationPopup.prototype._getBoundOfFirstRowGuideElement = function (guid
  * @param {{top: {number}, left: {number}, right: {number}, bottom: {number}}} guideBound - guide element bound data
  * @returns {PopupRenderingData} rendering position of popup and popup arrow
  */
-ScheduleCreationPopup.prototype._calcRenderingData = function (layerSize, parentSize, guideBound) {
+ScheduleCreationPopup.prototype._calcRenderingData = function(layerSize, parentSize, guideBound) {
     var guideHorizontalCenter = (guideBound.left + guideBound.right) / 2;
     var x = guideHorizontalCenter - (layerSize.width / 2);
     var y = guideBound.top - layerSize.height + 3;
@@ -19606,7 +19618,7 @@ ScheduleCreationPopup.prototype._calcRenderingData = function (layerSize, parent
  * Set arrow's direction and position
  * @param {Object} arrow rendering data for popup arrow
  */
-ScheduleCreationPopup.prototype._setArrowDirection = function (arrow) {
+ScheduleCreationPopup.prototype._setArrowDirection = function(arrow) {
     var direction = arrow.direction || 'arrow-bottom';
     var arrowEl = domutil.get(config.classname('popup-arrow'));
     var borderElement = domutil.find(config.classname('.popup-arrow-border', arrowEl));
@@ -19626,7 +19638,7 @@ ScheduleCreationPopup.prototype._setArrowDirection = function (arrow) {
  * @param {TZDate} start - start date
  * @param {TZDate} end - end date
  */
-ScheduleCreationPopup.prototype._createDatepicker = function (start, end) {
+ScheduleCreationPopup.prototype._createDatepicker = function(start, end) {
     // NMNS CUSTOMIZING START
     var beginTime = moment((NMNS.info.bizBeginTime || '0900'), 'HHmm').format('HH:mm');
     var endTime = moment((NMNS.info.bizEndTime || '2300'), 'HHmm').format('HH:mm');
@@ -19659,7 +19671,7 @@ ScheduleCreationPopup.prototype._createDatepicker = function (start, end) {
 /**
  * Hide layer
  */
-ScheduleCreationPopup.prototype.hide = function () {
+ScheduleCreationPopup.prototype.hide = function() {
     this.layer.hide();
 
     if (this.guide) {
@@ -19669,8 +19681,8 @@ ScheduleCreationPopup.prototype.hide = function () {
     // NMNS CUSTOMIZING START
     document.body.style.paddingRight = '0px';
     document.body.classList.remove('modal-open');
-    domutil.find(config.classname('.screen')).style.opacity = 0;// hide screen
-    domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+    domutil.find(config.classname('.screen')).style.opacity = 0; // hide screen
+    domutil.find(config.classname('.screen')).style.visibility = 'hidden'; // hide screen
     // NMNS CUSTOMIZING END
     domevent.off(document.body, 'mousedown', this._onMouseDown, this);
 };
@@ -19678,7 +19690,7 @@ ScheduleCreationPopup.prototype.hide = function () {
 /**
  * refresh layer
  */
-ScheduleCreationPopup.prototype.refresh = function () {
+ScheduleCreationPopup.prototype.refresh = function() {
     if (this._viewModel) {
         this.layer.setContent(this.tmpl(this._viewModel));
     }
@@ -19688,7 +19700,7 @@ ScheduleCreationPopup.prototype.refresh = function () {
  * Set calendar list
  * @param {Array.<Calendar>} calendars - calendar list
  */
-ScheduleCreationPopup.prototype.setCalendars = function (calendars) {
+ScheduleCreationPopup.prototype.setCalendars = function(calendars) {
     this.calendars = calendars || [];
 };
 
@@ -21213,6 +21225,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "</span>\n                    </button>\n";
 },"5":function(container,depth0,helpers,partials,data) {
     return "readonly=\"readonly\" ";
+},"7":function(container,depth0,helpers,partials,data) {
+    return " style=\"display:block\"";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda;
 
@@ -21260,7 +21274,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,(depth0 != null ? depth0.title : depth0),"||",((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.contact : stack1),{"name":"fi","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n                    value=\""
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.etc : stack1), depth0))
-    + "\">\n            </div>\n        </div>\n\n        <div class=\""
+    + "\">\n                <div class=\"w-100 creationPopupEtcNotice\""
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,(depth0 != null ? depth0.title : depth0),"||",((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.contact : stack1),{"name":"fi","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "></div>\n                <small class=\"mb-0 creationPopupEtcNotice\""
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,(depth0 != null ? depth0.title : depth0),"||",((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.contact : stack1),{"name":"fi","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ">이미 등록된 고객에 대한 메모는 고객관리에서 변경하실 수 있습니다.</small>\n            </div>\n        </div>\n\n        <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "button "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
