@@ -557,9 +557,11 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
     }
     if (this._isEditMode || (viewModel.raw && viewModel.raw.contact && $('#creationPopupContact').val() !== '')) {
         $('#creationPopup').data('contact', viewModel.raw.contact);
+        $('#creationPopup').data('name', viewModel.title);
         onContactBlur();
     } else {
         $('#creationPopup').removeData('contact');
+        $('#creationPopup').removeData('name');
     }
     // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
     // NMNS CUSTOMIZING END
