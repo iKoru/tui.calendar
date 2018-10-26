@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Thu Oct 25 2018
+ * @version 1.7.0 | Fri Oct 26 2018
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -479,9 +479,7 @@
   height: 100%;
   font-size: 12px;
   overflow: hidden;
-  border-left-width: 3px;
-  border-left-style: solid;
-  padding: 1px 3px 1px 3px;
+  padding: 1px 4px 1px 4px;
 }
 .tui-full-calendar-time-resize-handle {
   position: absolute;
