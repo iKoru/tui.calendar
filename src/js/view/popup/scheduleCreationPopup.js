@@ -420,7 +420,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
      */
     function onContactBlur() {
         clearTimeout(timeout);
-        if ($('#creationPopupContact').val().length > 9) {
+        if ($('#creationPopupContact').val().length > 9 || $('#creationPopupName').val() !== '') {
             NMNS.socket.emit('get customer', {
                 name: $('#creationPopupName').val(),
                 contact: $('#creationPopupContact').val()
@@ -467,6 +467,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
         } else {
             $('.creationPopupEtcNotice').hide();
         }
+        $('#creationPopup').removeData('autocompleted');
     } else { // need init
         layer.setContent(tmpl(viewModel));
         document.getElementById('creationPopupForm').onsubmit = function() {
@@ -500,7 +501,15 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('#creationPopupEtc').prop('readonly', true);
                 $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket);
+        }, NMNS.socket).on('blur', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                onContactBlur();
+            }, 300);
+        }).on('input', function() {
+            $('#creationPopupEtc').prop('readonly', false);
+            $('.creationPopupEtcNotice').hide();
+        });
 
         $('#creationPopupContact').autocomplete({
             serviceUrl: 'get customer info',
@@ -530,21 +539,12 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('.creationPopupEtcNotice').show();
             }
         }, NMNS.socket).on('blur', function() {
-            filterNonNumericCharacter($(this));
-        });
-
-        $('#creationPopupContact').on('blur', function() {
             filterNonNumericCharacter($('#creationPopupContact'));
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 onContactBlur();
-            }, 500);
+            }, 300);
         }).on('input', function() {
-            $('#creationPopupEtc').prop('readonly', false);
-            $('.creationPopupEtcNotice').hide();
-        });
-
-        $('#creationPopupName').on('input', function() {
             $('#creationPopupEtc').prop('readonly', false);
             $('.creationPopupEtcNotice').hide();
         });
@@ -557,9 +557,11 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
     }
     if (this._isEditMode || (viewModel.raw && viewModel.raw.contact && $('#creationPopupContact').val() !== '')) {
         $('#creationPopup').data('contact', viewModel.raw.contact);
+        $('#creationPopup').data('name', viewModel.title);
         onContactBlur();
     } else {
         $('#creationPopup').removeData('contact');
+        $('#creationPopup').removeData('name');
     }
     // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
     // NMNS CUSTOMIZING END
