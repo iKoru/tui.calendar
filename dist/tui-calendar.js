@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Mon Oct 01 2018
+ * @version 1.7.0 | Mon Feb 11 2019
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -19762,7 +19762,7 @@ util.inherit(ScheduleDetailPopup, View);
  * layer
  * @param {MouseEvent} mouseDownEvent - mouse event object
  */
-ScheduleDetailPopup.prototype._onMouseDown = function(mouseDownEvent) {
+ScheduleDetailPopup.prototype._onMouseDown = function (mouseDownEvent) {
     var target = (mouseDownEvent.target || mouseDownEvent.srcElement),
         popupLayer = domutil.closest(target, config.classname('.floating-layer'));
 
@@ -19778,7 +19778,7 @@ ScheduleDetailPopup.prototype._onMouseDown = function(mouseDownEvent) {
 /**
  * @override
  */
-ScheduleDetailPopup.prototype.destroy = function() {
+ScheduleDetailPopup.prototype.destroy = function () {
     this.layer.destroy();
     this.layer = null;
     domevent.off(this.container, 'click', this._onClick, this);
@@ -19791,7 +19791,7 @@ ScheduleDetailPopup.prototype.destroy = function() {
  * Click event handler for close button
  * @param {MouseEvent} clickEvent - mouse event object
  */
-ScheduleDetailPopup.prototype._onClick = function(clickEvent) {
+ScheduleDetailPopup.prototype._onClick = function (clickEvent) {
     var target = (clickEvent.target || clickEvent.srcElement);
 
     this._onClickEditSchedule(target);
@@ -19803,7 +19803,7 @@ ScheduleDetailPopup.prototype._onClick = function(clickEvent) {
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
  */
-ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
+ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
     var className = config.classname('popup-edit');
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
@@ -19832,7 +19832,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
  */
-ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
+ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
     var className = config.classname('popup-delete');
 
     if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
@@ -19850,7 +19850,7 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
  * @override
  * @param {object} viewModel - view model from factory/monthView
  */
-ScheduleDetailPopup.prototype.render = function(viewModel) {
+ScheduleDetailPopup.prototype.render = function (viewModel) {
     var layer = this.layer;
     var self = this;
 
@@ -19859,12 +19859,26 @@ ScheduleDetailPopup.prototype.render = function(viewModel) {
         calendar: viewModel.calendar
     }));
     layer.show();
+    // NMNS CUSTOMIZING START
+    if (viewModel.raw.contact && $('#detailPopupResendAlrim').length) {
+        if (viewModel.schedule.end.getTime() < new Date().getTime()) {
+            $('#detailPopupResendAlrim').off('click').on('click', function () {
+                NMNS.socket.emit('resend alrimtalk', {
+                    id: viewModel.schedule.id
+                });
+                $(this).addClass('disabled', true);
+            });
+        } else {
+            $('#detailPopupResendAlrim').addClass('d-none');// hide button
+        }
+    }
+    // NMNS CUSTOMIZING END
     this._setPopupPositionAndArrowDirection(viewModel.event);
 
     this._schedule = viewModel.schedule;
     this._calendar = viewModel.calendar;
 
-    util.debounce(function() {
+    util.debounce(function () {
         domevent.on(document.body, 'mousedown', self._onMouseDown, self);
     })();
 };
@@ -19873,7 +19887,7 @@ ScheduleDetailPopup.prototype.render = function(viewModel) {
  * Set popup position and arrow direction to apear near guide element
  * @param {Event} event - creation guide element
  */
-ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(event) {
+ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function (event) {
     var layer = domutil.find(config.classname('.popup'), this.layer.container);
     var layerSize = {
         width: layer.offsetWidth,
@@ -19922,7 +19936,7 @@ ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(even
  * @param {{top: {number}, left: {number}, right: {number}, bottom: {number}}} guideBound - guide element bound data
  * @returns {PopupRenderingData} rendering position of popup and popup arrow
  */
-ScheduleDetailPopup.prototype._calcRenderingData = function(layerSize, parentSize, guideBound) {
+ScheduleDetailPopup.prototype._calcRenderingData = function (layerSize, parentSize, guideBound) {
     var guideVerticalCenter = (guideBound.top + guideBound.bottom) / 2;
     var x = guideBound.right;
     var y = guideVerticalCenter;
@@ -19967,7 +19981,7 @@ ScheduleDetailPopup.prototype._calcRenderingData = function(layerSize, parentSiz
  * Set arrow's direction and position
  * @param {Object} arrow rendering data for popup arrow
  */
-ScheduleDetailPopup.prototype._setArrowDirection = function(arrow) {
+ScheduleDetailPopup.prototype._setArrowDirection = function (arrow) {
     var direction = arrow.direction || 'arrow-left';
     var arrowEl = domutil.find(config.classname('.popup-arrow'), this.layer.container);
     var borderElement = domutil.find(config.classname('.popup-arrow-border', arrowEl));
@@ -19985,7 +19999,7 @@ ScheduleDetailPopup.prototype._setArrowDirection = function(arrow) {
 /**
  * Hide layer
  */
-ScheduleDetailPopup.prototype.hide = function() {
+ScheduleDetailPopup.prototype.hide = function () {
     this.layer.hide();
 
     if (this.guide) {
@@ -19999,9 +20013,24 @@ ScheduleDetailPopup.prototype.hide = function() {
 /**
  * refresh layer
  */
-ScheduleDetailPopup.prototype.refresh = function() {
-    if (this._viewModel) {
-        this.layer.setContent(this.tmpl(this._viewModel));
+ScheduleDetailPopup.prototype.refresh = function () {
+    var viewModel = this._viewModel;
+    if (viewModel) {
+        this.layer.setContent(this.tmpl(viewModel));
+        // NMNS CUSTOMIZING START
+        if (viewModel.raw.contact && $('#detailPopupResendAlrim').length) {
+            if (viewModel.schedule.end.getTime() < new Date().getTime()) {
+                $('#detailPopupResendAlrim').off('click').on('click', function () {
+                    NMNS.socket.emit('resend alrimtalk', {
+                        id: viewModel.schedule.id
+                    });
+                    $(this).addClass('disabled', true);
+                });
+            } else {
+                $('#detailPopupResendAlrim').addClass('d-none');// hide button
+            }
+        }
+        // NMNS CUSTOMIZING END
     }
 };
 
@@ -21238,15 +21267,15 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
     + "\">\n            </div>\n        </div>\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContact\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm compactLabel\">고객연락처</label>\n            <div class=\"col-9 col-sm-5 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContactIcon\" class=\"input-group-text fas fa-phone fa-rotate-90\" title=\"고객 연락처\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control\" id=\"creationPopupContact\" name=\"contact\" aria-describedby=\"creationPopupContactIcon\"\n                    placeholder=\"고객연락처\" autocomplete=\"off\" value=\""
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.raw : depth0)) != null ? stack1.contact : stack1), depth0))
-    + "\">\n            </div>\n            <small id=\"alrimContactInfo\" class=\"text-secondary d-none col-5 pl-0\"><span class=\"text-danger\">*</span>알림톡을 사용하도록 설정하시면<br/>고객에게 예약알림을 보낼 수 있습니다!</small>\n        </div>\n\n        <div class=\"row mb-1 mb-sm-3\">\n            <div id=\"creationPopupStartDate\" class=\"input-group input-group-sm col-5 col-sm-4 pr-0 "
+    + "\">\n            </div>\n            <small id=\"alrimContactInfo\" class=\"text-secondary d-none col-5 pl-0\"><span class=\"text-danger\">*</span>알림톡을 사용하도록 설정하시면<br/>고객에게 예약알림을 보낼 수 있습니다!</small>\n        </div>\n\n        <div class=\"row mb-1 mb-sm-3\">\n            <div id=\"creationPopupStartDate\" class=\"input-group input-group-sm col-9 col-sm-4 pr-sm-0 mb-1 mb-sm-0 "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-start-date\">\n                <div class=\"input-group-prepend\">\n                    <i id=\"creationPopupStartDateIcon\" class=\"input-group-text far fa-calendar-alt\" title=\"예약 시작시간\"></i>\n                </div>\n                <input id=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "schedule-start-date\" name=\"start\" class=\"form-control\" aria-describedby=\"creationPopupStartDateIcon\"\n                    placeholder=\""
     + alias4(((helper = (helper = helpers["startDatePlaceholder-tmpl"] || (depth0 != null ? depth0["startDatePlaceholder-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"startDatePlaceholder-tmpl","hash":{},"data":data}) : helper)))
-    + "\">\n            </div>\n            <span class=\"px-2 "
+    + "\">\n            </div>\n            <div class=\"w-100 d-sm-none\"></div>\n            <span class=\"px-2 ml-3 ml-sm-0 "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "dash\">—</span>\n            <div id=\"creationPopupEndDate\" class=\"input-group input-group-sm col-5 col-sm-4 pl-0 "
+    + "dash\">—</span>\n            <div id=\"creationPopupEndDate\" class=\"input-group input-group-sm col-9 col-sm-4 pl-0 pr-4 pr-sm-3 mb-1 mb-sm-0 "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-end-date\">\n                <div class=\"input-group-prepend\">\n                    <i id=\"creationPopupEndDateIcon\" class=\"input-group-text far fa-calendar-alt\" title=\"예약 종료시간\"></i>\n                </div>\n                <input id=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
@@ -21379,7 +21408,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content\">"
     + alias4((helpers["dash-contact"] || (depth0 && depth0["dash-contact"]) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"dash-contact","hash":{},"data":data}))
-    + "</span>\n      </div>\n";
+    + "</span>\n        <button id=\"detailPopupResendAlrim\" type=\"button\" class=\"btn btn-primary btn-sm py-0 ml-1\">알림톡 다시 보내기</button>\n      </div>\n";
 },"11":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
