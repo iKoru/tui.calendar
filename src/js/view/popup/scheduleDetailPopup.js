@@ -140,6 +140,20 @@ ScheduleDetailPopup.prototype.render = function(viewModel) {
         calendar: viewModel.calendar
     }));
     layer.show();
+    // NMNS CUSTOMIZING START
+    if (viewModel.raw.contact && $('#detailPopupResendAlrim').length) {
+        if(viewModel.schedule.end.getTime() < new Date().getTime()){
+            $('#detailPopupResendAlrim').off('click').on('click', function(e){
+                NMNS.socket.emit('resend alrimtalk', {
+                    id:viewModel.schedule.id
+                })
+                $(this).addClass('disabled', true);
+            })
+        }else{
+            $('#detailPopupResendAlrim').addClass('d-none');//hide button
+        }
+    }
+    // NMNS CUSTOMIZING END
     this._setPopupPositionAndArrowDirection(viewModel.event);
 
     this._schedule = viewModel.schedule;
@@ -283,6 +297,21 @@ ScheduleDetailPopup.prototype.hide = function() {
 ScheduleDetailPopup.prototype.refresh = function() {
     if (this._viewModel) {
         this.layer.setContent(this.tmpl(this._viewModel));
+        // NMNS CUSTOMIZING START
+        if (this._viewModel.raw.contact && $('#detailPopupResendAlrim').length) {
+            if(this._viewModel.schedule.end.getTime() < new Date().getTime()){
+                var that = this;
+                $('#detailPopupResendAlrim').off('click').on('click', function(e){
+                    NMNS.socket.emit('resend alrimtalk', {
+                        id:that._viewModel.schedule.id
+                    })
+                    $(this).addClass('disabled', true);
+                })
+            }else{
+                $('#detailPopupResendAlrim').addClass('d-none');//hide button
+            }
+        }
+        // NMNS CUSTOMIZING END
     }
 };
 
