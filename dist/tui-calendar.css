@@ -479,9 +479,7 @@
   height: 100%;
   font-size: 12px;
   overflow: hidden;
-  border-left-width: 3px;
-  border-left-style: solid;
-  padding: 1px 3px 1px 3px;
+  padding: 1px 4px 1px 4px;
 }
 .tui-full-calendar-time-resize-handle {
   position: absolute;

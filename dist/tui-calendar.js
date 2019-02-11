@@ -19250,7 +19250,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
      */
     function onContactBlur() {
         clearTimeout(timeout);
-        if ($('#creationPopupContact').val().length > 9) {
+        if ($('#creationPopupContact').val().length > 9 || $('#creationPopupName').val() !== '') {
             NMNS.socket.emit('get customer', {
                 name: $('#creationPopupName').val(),
                 contact: $('#creationPopupContact').val()
@@ -19297,6 +19297,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
         } else {
             $('.creationPopupEtcNotice').hide();
         }
+        $('#creationPopup').removeData('autocompleted');
     } else { // need init
         layer.setContent(tmpl(viewModel));
         document.getElementById('creationPopupForm').onsubmit = function() {
@@ -19330,7 +19331,15 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('#creationPopupEtc').prop('readonly', true);
                 $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket);
+        }, NMNS.socket).on('blur', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                onContactBlur();
+            }, 300);
+        }).on('input', function() {
+            $('#creationPopupEtc').prop('readonly', false);
+            $('.creationPopupEtcNotice').hide();
+        });
 
         $('#creationPopupContact').autocomplete({
             serviceUrl: 'get customer info',
@@ -19360,21 +19369,12 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('.creationPopupEtcNotice').show();
             }
         }, NMNS.socket).on('blur', function() {
-            filterNonNumericCharacter($(this));
-        });
-
-        $('#creationPopupContact').on('blur', function() {
             filterNonNumericCharacter($('#creationPopupContact'));
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 onContactBlur();
-            }, 500);
+            }, 300);
         }).on('input', function() {
-            $('#creationPopupEtc').prop('readonly', false);
-            $('.creationPopupEtcNotice').hide();
-        });
-
-        $('#creationPopupName').on('input', function() {
             $('#creationPopupEtc').prop('readonly', false);
             $('.creationPopupEtcNotice').hide();
         });
@@ -19387,9 +19387,11 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
     }
     if (this._isEditMode || (viewModel.raw && viewModel.raw.contact && $('#creationPopupContact').val() !== '')) {
         $('#creationPopup').data('contact', viewModel.raw.contact);
+        $('#creationPopup').data('name', viewModel.title);
         onContactBlur();
     } else {
         $('#creationPopup').removeData('contact');
+        $('#creationPopup').removeData('name');
     }
     // this._setPopupPositionAndArrowDirection(boxElement.getBoundingClientRect());
     // NMNS CUSTOMIZING END
@@ -21289,7 +21291,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers["popupIsAllDay-tmpl"] || (depth0 != null ? depth0["popupIsAllDay-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupIsAllDay-tmpl","hash":{},"data":data}) : helper)))
     + "</span>\n            </div>\n        </div>\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupContents\" class=\"col-2 pr-sm-0 d-sm-inline-block d-none col-form-label col-form-label-sm\">예약내용</label>\n            <div class=\"col-sm-9 input-group input-group-sm\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupContentsIcon\" class=\"input-group-text fas fa-list-ul\" title=\"예약내용\"></i>\n                </div>\n                <input type=\"text\" class=\"form-control han\" id=\"creationPopupContents\" name=\"content\" aria-describedby=\"creationPopupContentsIcon\"\n                    placeholder=\"예약내용\" value=\""
     + alias4(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"contents","hash":{},"data":data}) : helper)))
-    + "\">\n            </div>\n        </div>\n\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupManager\" class=\"col-2 pr-0 col-form-label col-form-label-sm d-sm-inline-block d-none\">담당자</label>\n            <div class=\"input-group input-group-sm btn-group dropdown col-sm-9\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupManagerIcon\" class=\"input-group-text fas fa-user-tie\" title=\"담당자\"></i>\n                </div>\n                <button id=\"creationPopupManager\" type=\"button\" aria-describedby=\"creationPopupManagerIcon\" data-toggle=\"dropdown\" aria-haspopup=\"true\"\n                    aria-expanded=\"false\" class=\"btn btn-sm dropdown-toggle btn-flat form-control text-left\" aria-label=\"담당자 선택\">\n                    <span class=\""
+    + "\">\n            </div>\n        </div>\n\n\n        <div class=\"row mb-2 mb-sm-3\">\n            <label for=\"creationPopupManager\" class=\"col-2 pr-0 col-form-label col-form-label-sm d-sm-inline-block d-none\">담당자</label>\n            <div class=\"input-group input-group-sm btn-group dropdown col-sm-9\">\n                <div class=\"d-inline-block input-group-prepend d-sm-none\">\n                    <i id=\"creationPopupManagerIcon\" class=\"input-group-text fas fa-user-tie\" title=\"담당자\"></i>\n                </div>\n                <button id=\"creationPopupManager\" type=\"button\" aria-describedby=\"creationPopupManagerIcon\" data-toggle=\"dropdown\" aria-haspopup=\"true\"\n                    aria-expanded=\"false\" class=\"btn btn-sm dropdown-toggle btn-flat form-control text-left\" aria-label=\"담당자 선택\" data-display=\"static\">\n                    <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "icon "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
