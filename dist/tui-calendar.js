@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Mon Feb 11 2019
+ * @version 1.7.0 | Fri Feb 15 2019
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -19862,8 +19862,8 @@ ScheduleDetailPopup.prototype.render = function (viewModel) {
     }));
     layer.show();
     // NMNS CUSTOMIZING START
-    if (viewModel.raw.contact && $('#detailPopupResendAlrim').length) {
-        if (viewModel.schedule.end.getTime() < new Date().getTime()) {
+    if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
+        if (viewModel.schedule.end.getTime() > new Date().getTime()) {
             $('#detailPopupResendAlrim').off('click').on('click', function () {
                 NMNS.socket.emit('resend alrimtalk', {
                     id: viewModel.schedule.id
@@ -20020,8 +20020,8 @@ ScheduleDetailPopup.prototype.refresh = function () {
     if (viewModel) {
         this.layer.setContent(this.tmpl(viewModel));
         // NMNS CUSTOMIZING START
-        if (viewModel.raw.contact && $('#detailPopupResendAlrim').length) {
-            if (viewModel.schedule.end.getTime() < new Date().getTime()) {
+        if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
+            if (viewModel.schedule.end.getTime() > new Date().getTime()) {
                 $('#detailPopupResendAlrim').off('click').on('click', function () {
                     NMNS.socket.emit('resend alrimtalk', {
                         id: viewModel.schedule.id
