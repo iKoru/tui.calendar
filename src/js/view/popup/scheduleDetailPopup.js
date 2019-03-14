@@ -43,7 +43,7 @@ util.inherit(ScheduleDetailPopup, View);
  * layer
  * @param {MouseEvent} mouseDownEvent - mouse event object
  */
-ScheduleDetailPopup.prototype._onMouseDown = function(mouseDownEvent) {
+ScheduleDetailPopup.prototype._onMouseDown = function (mouseDownEvent) {
     var target = (mouseDownEvent.target || mouseDownEvent.srcElement),
         popupLayer = domutil.closest(target, config.classname('.floating-layer'));
 
@@ -59,7 +59,7 @@ ScheduleDetailPopup.prototype._onMouseDown = function(mouseDownEvent) {
 /**
  * @override
  */
-ScheduleDetailPopup.prototype.destroy = function() {
+ScheduleDetailPopup.prototype.destroy = function () {
     this.layer.destroy();
     this.layer = null;
     domevent.off(this.container, 'click', this._onClick, this);
@@ -72,7 +72,7 @@ ScheduleDetailPopup.prototype.destroy = function() {
  * Click event handler for close button
  * @param {MouseEvent} clickEvent - mouse event object
  */
-ScheduleDetailPopup.prototype._onClick = function(clickEvent) {
+ScheduleDetailPopup.prototype._onClick = function (clickEvent) {
     var target = (clickEvent.target || clickEvent.srcElement);
 
     this._onClickEditSchedule(target);
@@ -84,7 +84,7 @@ ScheduleDetailPopup.prototype._onClick = function(clickEvent) {
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
  */
-ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
+ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
     var className = config.classname('popup-edit');
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
@@ -113,7 +113,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function(target) {
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
  */
-ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
+ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
     var className = config.classname('popup-delete');
 
     if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
@@ -131,7 +131,7 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function(target) {
  * @override
  * @param {object} viewModel - view model from factory/monthView
  */
-ScheduleDetailPopup.prototype.render = function(viewModel) {
+ScheduleDetailPopup.prototype.render = function (viewModel) {
     var layer = this.layer;
     var self = this;
 
@@ -140,12 +140,26 @@ ScheduleDetailPopup.prototype.render = function(viewModel) {
         calendar: viewModel.calendar
     }));
     layer.show();
+    // NMNS CUSTOMIZING START
+    if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
+        if (viewModel.schedule.end.getTime() > new Date().getTime()) {
+            $('#detailPopupResendAlrim').off('click').on('click', function () {
+                NMNS.socket.emit('resend alrimtalk', {
+                    id: viewModel.schedule.id
+                });
+                $(this).addClass('disabled', true);
+            });
+        } else {
+            $('#detailPopupResendAlrim').addClass('d-none');// hide button
+        }
+    }
+    // NMNS CUSTOMIZING END
     this._setPopupPositionAndArrowDirection(viewModel.event);
 
     this._schedule = viewModel.schedule;
     this._calendar = viewModel.calendar;
 
-    util.debounce(function() {
+    util.debounce(function () {
         domevent.on(document.body, 'mousedown', self._onMouseDown, self);
     })();
 };
@@ -154,7 +168,7 @@ ScheduleDetailPopup.prototype.render = function(viewModel) {
  * Set popup position and arrow direction to apear near guide element
  * @param {Event} event - creation guide element
  */
-ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(event) {
+ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function (event) {
     var layer = domutil.find(config.classname('.popup'), this.layer.container);
     var layerSize = {
         width: layer.offsetWidth,
@@ -203,7 +217,7 @@ ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function(even
  * @param {{top: {number}, left: {number}, right: {number}, bottom: {number}}} guideBound - guide element bound data
  * @returns {PopupRenderingData} rendering position of popup and popup arrow
  */
-ScheduleDetailPopup.prototype._calcRenderingData = function(layerSize, parentSize, guideBound) {
+ScheduleDetailPopup.prototype._calcRenderingData = function (layerSize, parentSize, guideBound) {
     var guideVerticalCenter = (guideBound.top + guideBound.bottom) / 2;
     var x = guideBound.right;
     var y = guideVerticalCenter;
@@ -248,7 +262,7 @@ ScheduleDetailPopup.prototype._calcRenderingData = function(layerSize, parentSiz
  * Set arrow's direction and position
  * @param {Object} arrow rendering data for popup arrow
  */
-ScheduleDetailPopup.prototype._setArrowDirection = function(arrow) {
+ScheduleDetailPopup.prototype._setArrowDirection = function (arrow) {
     var direction = arrow.direction || 'arrow-left';
     var arrowEl = domutil.find(config.classname('.popup-arrow'), this.layer.container);
     var borderElement = domutil.find(config.classname('.popup-arrow-border', arrowEl));
@@ -266,7 +280,7 @@ ScheduleDetailPopup.prototype._setArrowDirection = function(arrow) {
 /**
  * Hide layer
  */
-ScheduleDetailPopup.prototype.hide = function() {
+ScheduleDetailPopup.prototype.hide = function () {
     this.layer.hide();
 
     if (this.guide) {
@@ -280,9 +294,24 @@ ScheduleDetailPopup.prototype.hide = function() {
 /**
  * refresh layer
  */
-ScheduleDetailPopup.prototype.refresh = function() {
-    if (this._viewModel) {
-        this.layer.setContent(this.tmpl(this._viewModel));
+ScheduleDetailPopup.prototype.refresh = function () {
+    var viewModel = this._viewModel;
+    if (viewModel) {
+        this.layer.setContent(this.tmpl(viewModel));
+        // NMNS CUSTOMIZING START
+        if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
+            if (viewModel.schedule.end.getTime() > new Date().getTime()) {
+                $('#detailPopupResendAlrim').off('click').on('click', function () {
+                    NMNS.socket.emit('resend alrimtalk', {
+                        id: viewModel.schedule.id
+                    });
+                    $(this).addClass('disabled', true);
+                });
+            } else {
+                $('#detailPopupResendAlrim').addClass('d-none');// hide button
+            }
+        }
+        // NMNS CUSTOMIZING END
     }
 };
 
