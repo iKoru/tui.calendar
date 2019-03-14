@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Fri Feb 15 2019
+ * @version 1.7.0 | Fri Mar 15 2019
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -292,9 +292,10 @@
   margin-left: -1px;
   height: 100%;
   overflow: hidden;
+  opacity: 0.5;
 }
 .tui-full-calendar-dayname.tui-full-calendar-today {
-  font-weight: bold;
+  opacity: 1;
 }
 .tui-full-calendar-dayname-container {
   overflow-y: scroll;
@@ -304,11 +305,10 @@
   height: 100%;
 }
 .tui-full-calendar-dayname-date {
-  font-size: 26px;
+  font-size: 13px;
 }
 .tui-full-calendar-dayname-name {
-  font-weight: bold;
-  font-size: 12px;
+  font-size: 13px;
 }
 .tui-full-calendar-daygrid-layout {
   height: 100%;
@@ -340,6 +340,7 @@
   position: relative;
   color: #555;
   box-sizing: border-box;
+  opacity: 0.5;
 }
 .tui-full-calendar-timegrid-hour:first-child span {
   display: none;
@@ -455,6 +456,7 @@
 .tui-full-calendar-time-date-schedule-block {
   position: absolute;
   right: 0px;
+  padding: 5px;
 }
 .tui-full-calendar-time-date-schedule-block-pending {
   opacity: 0.7;
@@ -480,6 +482,8 @@
   font-size: 12px;
   overflow: hidden;
   padding: 1px 4px 1px 4px;
+  border-left-width: 3px;
+  border-left-style: solid;
 }
 .tui-full-calendar-time-resize-handle {
   position: absolute;
@@ -988,13 +992,13 @@ input[type='checkbox'].tui-full-calendar-checkbox-round {
 input[type='checkbox'].tui-full-calendar-checkbox-round + span {
   display: inline-block;
   cursor: pointer;
-  width: 14px;
-  height: 14px;
-  line-height: 14px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
   vertical-align: middle;
   margin-right: 8px;
   border-radius: 8px;
-  border: solid 2px;
+  border: solid 1px;
   background: transparent;
 }
 .tui-full-calendar-popup-top-line {
