@@ -17,6 +17,7 @@
         position: relative
         color: #555
         box-sizing: border-box
+        opacity:0.5
         &:first-child span
             display: none
         &:last-child
@@ -84,19 +85,19 @@
     .sticky-container
         position: absolute
         top: 0
-    
+
     .timezone-label-container
         position: absolute
-    
+
     .timezone-label-cell
         display: table
-    
+
     .timezone-label
         display: table-cell
         vertical-align: middle
         padding-right: 5px
         text-align: right
-    
+
     .timezone-close-btn
         cursor: pointer
         position: absolute
@@ -129,6 +130,7 @@
     .date-schedule-block
         position: absolute
         right: 0px
+        padding:5px
 
     .date-schedule-block-pending
         opacity: 0.7
@@ -154,6 +156,8 @@
         font-size: 12px
         overflow: hidden
         padding: 1px 4px 1px 4px
+        border-left-width: 3px
+        border-left-style:solid
 
     .resize-handle
         position: absolute

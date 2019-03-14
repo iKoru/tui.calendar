@@ -3,9 +3,10 @@
     margin-left: -1px
     height: 100%
     overflow: hidden
+    opacity:0.5
 
     &.{css-prefix}today
-        font-weight: bold
+        opacity:1
 
 +prefix-classes(dayname)
     .container
@@ -14,10 +15,9 @@
     .leftmargin
         position: relative
         height: 100%
-    
+
     .date
-        font-size: 26px
-    
+        font-size: 13px
+
     .name
-        font-weight: bold
-        font-size: 12px
+        font-size: 13px
