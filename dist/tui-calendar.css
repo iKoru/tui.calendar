@@ -47,9 +47,6 @@
   height: 7px;
   border-radius: 50%;
 }
-.tui-full-calendar-holiday {
-  color: #ff4040;
-}
 .tui-full-calendar-today {
   background: rgba(218,229,249,0.3);
 }
