@@ -291,9 +291,9 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
     } else if (!manager && !this._selectedCal) {
         manager = {
             id: calendarId,
-            color: getColorFromBackgroundColor('#b2dfdb'),
-            bgColor: '#b2dfdb',
-            borderColor: '#b2dfdb'
+            color: '#334150',
+            bgColor: '#99a0a8',
+            borderColor: '#334150'
         };
     }
 
@@ -388,10 +388,10 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
             isPrivate: false,
             customStyle: '',
             location: '',
-            bgColor: manager ? manager.bgColor : '#b2dfdb',
-            borderColor: manager ? manager.borderColor : '#b2dfdb',
-            color: getColorFromBackgroundColor(manager ? manager.bgColor : '#b2dfdb'),
-            dragBgColor: manager ? manager.bgColor : '#b2dfdb',
+            bgColor: manager ? manager.bgColor : '#99a0a8',
+            borderColor: manager ? manager.borderColor : '#334150',
+            color: manager ? manager.borderColor : '#334150',
+            dragBgColor: manager ? manager.bgColor : '#99a0a8',
             manager: calendarId,
             contents: contents,
             contact: contact,
@@ -589,7 +589,7 @@ ScheduleCreationPopup.prototype._updatePopup = function(viewModel) {
     this._selectedCal = this._selectedCal || this.calendars[0];
     this.calendars.forEach(function(item) {
         dropdown += '<button type="button" class="dropdown-item ' + escapedCssPrefix + 'dropdown-item" data-calendar-id="' + item.id + '">\n' +
-            '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.bgColor + '"></span>\n' +
+            '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.borderColor + '"></span>\n' +
             '<span class="' + escapedCssPrefix + 'content">' + item.name + '</span>\n' +
             '</button>\n';
     });
@@ -627,7 +627,7 @@ ScheduleCreationPopup.prototype._makeEditModeData = function(viewModel) {
     if (calendarIndex < 0) {
         viewModel.selectedCal = this._selectedCal = {
             id: viewModel.schedule.calendarId,
-            bgColor: viewModel.schedule.bgColor,
+            bgColor: viewModel.schedule.borderColor,
             name: '삭제된 담당자'
         };
     } else {

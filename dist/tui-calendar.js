@@ -19121,9 +19121,9 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
     } else if (!manager && !this._selectedCal) {
         manager = {
             id: calendarId,
-            color: getColorFromBackgroundColor('#b2dfdb'),
-            bgColor: '#b2dfdb',
-            borderColor: '#b2dfdb'
+            color: '#334150',
+            bgColor: '#99a0a8',
+            borderColor: '#334150'
         };
     }
 
@@ -19218,10 +19218,10 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
             isPrivate: false,
             customStyle: '',
             location: '',
-            bgColor: manager ? manager.bgColor : '#b2dfdb',
-            borderColor: manager ? manager.borderColor : '#b2dfdb',
-            color: getColorFromBackgroundColor(manager ? manager.bgColor : '#b2dfdb'),
-            dragBgColor: manager ? manager.bgColor : '#b2dfdb',
+            bgColor: manager ? manager.bgColor : '#99a0a8',
+            borderColor: manager ? manager.borderColor : '#334150',
+            color: manager ? manager.borderColor : '#334150',
+            dragBgColor: manager ? manager.bgColor : '#99a0a8',
             manager: calendarId,
             contents: contents,
             contact: contact,
@@ -19419,7 +19419,7 @@ ScheduleCreationPopup.prototype._updatePopup = function(viewModel) {
     this._selectedCal = this._selectedCal || this.calendars[0];
     this.calendars.forEach(function(item) {
         dropdown += '<button type="button" class="dropdown-item ' + escapedCssPrefix + 'dropdown-item" data-calendar-id="' + item.id + '">\n' +
-            '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.bgColor + '"></span>\n' +
+            '<span class="' + escapedCssPrefix + 'icon ' + escapedCssPrefix + 'calendar-dot" style="background-color: ' + item.borderColor + '"></span>\n' +
             '<span class="' + escapedCssPrefix + 'content">' + item.name + '</span>\n' +
             '</button>\n';
     });
@@ -19457,7 +19457,7 @@ ScheduleCreationPopup.prototype._makeEditModeData = function(viewModel) {
     if (calendarIndex < 0) {
         viewModel.selectedCal = this._selectedCal = {
             id: viewModel.schedule.calendarId,
-            bgColor: viewModel.schedule.bgColor,
+            bgColor: viewModel.schedule.borderColor,
             name: '삭제된 담당자'
         };
     } else {
@@ -21248,7 +21248,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "icon "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "calendar-dot\" style=\"background-color: "
-    + alias4(((helper = (helper = helpers.bgColor || (depth0 != null ? depth0.bgColor : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"bgColor","hash":{},"data":data}) : helper)))
+    + alias4(((helper = (helper = helpers.borderColor || (depth0 != null ? depth0.borderColor : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"borderColor","hash":{},"data":data}) : helper)))
     + "\"></span>\n                        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content\">"
@@ -21296,7 +21296,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "icon "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "calendar-dot\" style=\"background-color: "
-    + alias4(alias5(((stack1 = (depth0 != null ? depth0.selectedCal : depth0)) != null ? stack1.bgColor : stack1), depth0))
+    + alias4(alias5(((stack1 = (depth0 != null ? depth0.selectedCal : depth0)) != null ? stack1.borderColor : stack1), depth0))
     + "\"></span>\n                    <span>"
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.selectedCal : depth0)) != null ? stack1.name : stack1), depth0))
     + "</span>\n                </button>\n                <div class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"creationPopupManager\" role=\"menu\">\n"
@@ -21441,7 +21441,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "icon "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "calendar-dot\" style=\"background-color: "
-    + alias4(alias5(((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.bgColor : stack1), depth0))
+    + alias4(alias5(((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.borderColor : stack1), depth0))
     + "\"></span>\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content\">"
@@ -21535,7 +21535,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "  </div>\n  <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-top-line\" style=\"background-color: "
-    + alias4(container.lambda(((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.bgColor : stack1), depth0))
+    + alias4(container.lambda(((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.borderColor : stack1), depth0))
     + "\"></div>\n  <div id=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-arrow\" class=\""
