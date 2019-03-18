@@ -86,18 +86,6 @@
 .tui-full-calendar-month-week-item .tui-full-calendar-today {
   background: none;
 }
-.tui-full-calendar-month-week-item .tui-full-calendar-today .tui-full-calendar-weekday-grid-date-decorator {
-  display: inline-block;
-  width: 23px;
-  height: 23px;
-  line-height: 23px;
-  text-align: center;
-  background: #135de6;
-  border-radius: 50%;
-  color: #fff;
-  font-weight: bold;
-  margin-left: 2px;
-}
 .tui-full-calendar-weekday-container,
 .tui-full-calendar-weekday-grid,
 .tui-full-calendar-weekday-grid-line {
@@ -121,6 +109,7 @@
 .tui-full-calendar-weekday-grid-header {
   text-align: right;
   padding: 7px 7px 0 0;
+  font-weight: 500;
 }
 .tui-full-calendar-weekday-grid-line {
   position: absolute;

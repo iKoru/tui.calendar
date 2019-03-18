@@ -82,7 +82,10 @@ Weekday.prototype.getBaseViewModel = function(viewModel) {
     var grids = viewModel.grids;
     var exceedDate = viewModel.exceedDate || {};
     var theme = viewModel.theme;
+    var tomorrow = new Date();
 
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow = datetime.format(tomorrow, 'YYYYMMDD');
     this._cacheParentViewModel = viewModel;
 
     return {
@@ -100,6 +103,7 @@ Weekday.prototype.getBaseViewModel = function(viewModel) {
                 month: date.getMonth() + 1,
                 day: day,
                 isToday: isToday,
+                isTomorrow: ymd === tomorrow,
                 ymd: ymd,
                 hiddenSchedules: exceedDate[ymd] || 0,
                 width: grids[index] ? grids[index].width : 0,
@@ -182,7 +186,7 @@ Weekday.prototype._getDayNameColor = function(theme, day, isToday, isOtherMonth)
         if (day === 0) {
             color = isOtherMonth ? theme.month.holidayExceptThisMonth.color : theme.common.holiday.color;
         } else if (day === 6) {
-            color = isOtherMonth ? theme.month.dayExceptThisMonth.color : theme.common.saturday.color;
+            color = isOtherMonth ? theme.month.saturdayExceptThisMonth.color : theme.common.saturday.color;
         } else if (isToday) {
             color = theme.common.today.color;
         } else {

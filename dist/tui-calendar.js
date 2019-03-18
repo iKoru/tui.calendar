@@ -17424,6 +17424,7 @@ var theme = {
 
     // month day grid cell 'day'
     'month.holidayExceptThisMonth.color': 'rgba(255, 64, 64, 0.4)',
+    'month.saturdayExceptThisMonth.color': 'rgba(255, 64, 64, 0.4)',
     'month.dayExceptThisMonth.color': 'rgba(51, 51, 51, 0.4)',
     'month.weekend.backgroundColor': 'none',
     'month.day.fontSize': '14px',
@@ -17790,6 +17791,7 @@ var themeConfig = {
 
     // month day grid cell 'day'
     'month.holidayExceptThisMonth.color': 'rgba(255, 64, 64, 0.4)',
+    'month.saturdayExceptThisMonth.color': 'rgba(255, 64, 64, 0.4)',
     'month.dayExceptThisMonth.color': 'rgba(51, 51, 51, 0.4)',
     'month.weekend.backgroundColor': 'inherit',
     'month.day.fontSize': '14px',
@@ -18765,6 +18767,7 @@ WeekdayInMonth.prototype.render = function(viewModel) {
         return;
     }
 
+    console.log('baseViewModel', baseViewModel);
     scheduleContainer.innerHTML = scheduleTmpl(baseViewModel);
 
     common.setAutoEllipsis(
@@ -20846,7 +20849,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4((helpers.holiday || (depth0 && depth0.holiday) || alias2).call(alias1,(depth0 != null ? depth0.day : depth0),{"name":"holiday","hash":{},"data":data}))
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,(depth0 != null ? depth0.date : depth0),"!==",1,{"name":"fi","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isToday : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isYesterday : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isTomorrow : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isOtherMonth : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isPast : depth0),{"name":"if","hash":{},"fn":container.program(10, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\"\n        style=\"width:"
@@ -20858,7 +20861,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "; font-size: "
     + alias4(container.lambda(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.fontSize), depth0))
     + ";\n"
-    + ((stack1 = helpers.unless.call(alias1,(data && data.last),{"name":"unless","hash":{},"fn":container.program(12, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(alias1,(data && data.first),{"name":"unless","hash":{},"fn":container.program(12, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        \" data-date=\""
     + alias4(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"date","hash":{},"data":data}) : helper)))
     + "\">\n        <div class=\""
@@ -20868,7 +20871,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ";\">"
     + ((stack1 = (helpers["monthGridHeader-tmpl"] || (depth0 && depth0["monthGridHeader-tmpl"]) || alias2).call(alias1,depth0,{"name":"monthGridHeader-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-grid-footer\">\n            <span style=\"color: "
@@ -20876,7 +20879,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ";\">"
     + ((stack1 = (helpers["monthGridFooter-tmpl"] || (depth0 && depth0["monthGridFooter-tmpl"]) || alias2).call(alias1,depth0,{"name":"monthGridFooter-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(18, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n    </div>\n";
 },"2":function(container,depth0,helpers,partials,data) {
     var helper;
@@ -20895,7 +20898,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 
   return " "
     + container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "yesterday";
+    + "tomorrow";
 },"8":function(container,depth0,helpers,partials,data) {
     var helper;
 
@@ -20911,10 +20914,18 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 },"12":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "        border-right:"
+  return ((stack1 = helpers.unless.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.isToday : depth0),{"name":"unless","hash":{},"fn":container.program(13, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+},"13":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.unless.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.isTomorrow : depth0),{"name":"unless","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+},"14":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        border-left:"
     + container.escapeExpression(container.lambda(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.borderLeft), depth0))
     + ";\n";
-},"14":function(container,depth0,helpers,partials,data) {
+},"16":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "                <span class=\""
@@ -20924,7 +20935,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "\">"
     + ((stack1 = (helpers["monthGridHeaderExceed-tmpl"] || (depth0 && depth0["monthGridHeaderExceed-tmpl"]) || alias2).call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"monthGridHeaderExceed-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n";
-},"16":function(container,depth0,helpers,partials,data) {
+},"18":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "                <span class=\""
@@ -23845,11 +23856,13 @@ TimeGrid.prototype._renderChildren = function(viewModels, grids, container, them
         options = this.options,
         childOption,
         child,
-        isToday,
         containerHeight,
         today = datetime.format(new TZDate(), 'YYYYMMDD'),
+        tomorrow = new Date(),
         i = 0;
 
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow = datetime.format(tomorrow, 'YYYYMMDD');
     // clear contents
     container.innerHTML = '';
     this.children.clear();
@@ -23858,14 +23871,13 @@ TimeGrid.prototype._renderChildren = function(viewModels, grids, container, them
 
     // reconcilation of child views
     util.forEach(viewModels, function(schedules, ymd) {
-        isToday = ymd === today;
-
         childOption = {
             index: i,
             left: grids[i] ? grids[i].left : 0,
             width: grids[i] ? grids[i].width : 0,
             ymd: ymd,
-            isToday: isToday,
+            isToday: ymd === today,
+            isTomorrow: ymd === tomorrow,
             isPending: options.isPending,
             isFocused: options.isFocused,
             isReadOnly: options.isReadOnly,
@@ -24490,7 +24502,10 @@ Weekday.prototype.getBaseViewModel = function(viewModel) {
     var grids = viewModel.grids;
     var exceedDate = viewModel.exceedDate || {};
     var theme = viewModel.theme;
+    var tomorrow = new Date();
 
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow = datetime.format(tomorrow, 'YYYYMMDD');
     this._cacheParentViewModel = viewModel;
 
     return {
@@ -24508,6 +24523,7 @@ Weekday.prototype.getBaseViewModel = function(viewModel) {
                 month: date.getMonth() + 1,
                 day: day,
                 isToday: isToday,
+                isTomorrow: ymd === tomorrow,
                 ymd: ymd,
                 hiddenSchedules: exceedDate[ymd] || 0,
                 width: grids[index] ? grids[index].width : 0,
@@ -24590,7 +24606,7 @@ Weekday.prototype._getDayNameColor = function(theme, day, isToday, isOtherMonth)
         if (day === 0) {
             color = isOtherMonth ? theme.month.holidayExceptThisMonth.color : theme.common.holiday.color;
         } else if (day === 6) {
-            color = isOtherMonth ? theme.month.dayExceptThisMonth.color : theme.common.saturday.color;
+            color = isOtherMonth ? theme.month.saturdayExceptThisMonth.color : theme.common.saturday.color;
         } else if (isToday) {
             color = theme.common.today.color;
         } else {

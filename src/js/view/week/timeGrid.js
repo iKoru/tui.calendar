@@ -390,11 +390,13 @@ TimeGrid.prototype._renderChildren = function(viewModels, grids, container, them
         options = this.options,
         childOption,
         child,
-        isToday,
         containerHeight,
         today = datetime.format(new TZDate(), 'YYYYMMDD'),
+        tomorrow = new Date(),
         i = 0;
 
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow = datetime.format(tomorrow, 'YYYYMMDD');
     // clear contents
     container.innerHTML = '';
     this.children.clear();
@@ -403,14 +405,13 @@ TimeGrid.prototype._renderChildren = function(viewModels, grids, container, them
 
     // reconcilation of child views
     util.forEach(viewModels, function(schedules, ymd) {
-        isToday = ymd === today;
-
         childOption = {
             index: i,
             left: grids[i] ? grids[i].left : 0,
             width: grids[i] ? grids[i].width : 0,
             ymd: ymd,
-            isToday: isToday,
+            isToday: ymd === today,
+            isTomorrow: ymd === tomorrow,
             isPending: options.isPending,
             isFocused: options.isFocused,
             isReadOnly: options.isReadOnly,

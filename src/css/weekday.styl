@@ -12,17 +12,6 @@
     .{css-prefix}today
         background: none
 
-        .{css-prefix}weekday-grid-date-decorator
-            display: inline-block
-            wh(23px, 23px)
-            line-height: 23px
-            text-align: center
-            background: #135de6
-            border-radius: 50%
-            color: #fff
-            font-weight: bold
-            margin-left: 2px
-
 +prefix-classes(weekday)
     .container,
     .grid,
@@ -45,7 +34,8 @@
 
     .grid-header
         text-align:right
-        padding:7px 7px 0 0;
+        padding:7px 7px 0 0
+        font-weight:500
 
     .grid-line
         position: absolute

@@ -4,10 +4,14 @@
 "></div>
 <div class="{{CSS_PREFIX}}weekday-grid">
 {{#each dates ~}}
-    <div class="{{CSS_PREFIX}}weekday-grid-line {{holiday day}}{{#fi date '!==' 1}} {{CSS_PREFIX}}near-month-day{{/fi}}{{#if isToday}} {{CSS_PREFIX}}today{{/if}}{{#if isYesterday}} {{CSS_PREFIX}}yesterday{{/if}}{{#if isOtherMonth}} {{CSS_PREFIX}}extra-date{{/if}}{{#if isPast}} {{CSS_PREFIX}}past{{/if}}"
+    <div class="{{CSS_PREFIX}}weekday-grid-line {{holiday day}}{{#fi date '!==' 1}} {{CSS_PREFIX}}near-month-day{{/fi}}{{#if isToday}} {{CSS_PREFIX}}today{{/if}}{{#if isTomorrow}} {{CSS_PREFIX}}tomorrow{{/if}}{{#if isOtherMonth}} {{CSS_PREFIX}}extra-date{{/if}}{{#if isPast}} {{CSS_PREFIX}}past{{/if}}"
         style="width:{{width}}%; left:{{left}}%; background-color: {{backgroundColor}}; font-size: {{@root.styles.fontSize}};
-        {{#unless @last}}
-        border-right:{{@root.styles.borderLeft}};
+        {{#unless @first}}
+        {{#unless isToday}}
+        {{#unless isTomorrow}}
+        border-left:{{@root.styles.borderLeft}};
+        {{/unless}}
+        {{/unless}}
         {{/unless}}
         " data-date="{{date}}">
         <div class="{{CSS_PREFIX}}weekday-grid-header">
