@@ -24,6 +24,7 @@ var theme = {
     // month header 'dayname'
     'month.dayname.height': '31px',
     'month.dayname.borderLeft': 'none',
+    'month.dayname.borderTop': 'none',
     'month.dayname.paddingLeft': '10px',
     'month.dayname.paddingRight': '0',
     'month.dayname.backgroundColor': 'inherit',

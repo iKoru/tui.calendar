@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Fri Mar 15 2019
+ * @version 1.7.0 | Mon Mar 18 2019
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -17414,6 +17414,7 @@ var theme = {
     // month header 'dayname'
     'month.dayname.height': '31px',
     'month.dayname.borderLeft': 'none',
+    'month.dayname.borderTop': 'none',
     'month.dayname.paddingLeft': '10px',
     'month.dayname.paddingRight': '0',
     'month.dayname.backgroundColor': 'inherit',
@@ -17779,6 +17780,7 @@ var themeConfig = {
     // month header 'dayname'
     'month.dayname.height': '31px',
     'month.dayname.borderLeft': '1px solid #e5e5e5',
+    'month.dayname.borderTop': '1px solid #e5e5e5',
     'month.dayname.paddingLeft': '10px',
     'month.dayname.paddingRight': '10px',
     'month.dayname.backgroundColor': 'inherit',
@@ -20844,8 +20846,9 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4((helpers.holiday || (depth0 && depth0.holiday) || alias2).call(alias1,(depth0 != null ? depth0.day : depth0),{"name":"holiday","hash":{},"data":data}))
     + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,(depth0 != null ? depth0.date : depth0),"!==",1,{"name":"fi","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isToday : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isOtherMonth : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isPast : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isYesterday : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isOtherMonth : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isPast : depth0),{"name":"if","hash":{},"fn":container.program(10, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\"\n        style=\"width:"
     + alias4(((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"width","hash":{},"data":data}) : helper)))
     + "%; left:"
@@ -20855,7 +20858,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "; font-size: "
     + alias4(container.lambda(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.fontSize), depth0))
     + ";\n"
-    + ((stack1 = helpers.unless.call(alias1,(data && data.last),{"name":"unless","hash":{},"fn":container.program(10, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(alias1,(data && data.last),{"name":"unless","hash":{},"fn":container.program(12, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        \" data-date=\""
     + alias4(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"date","hash":{},"data":data}) : helper)))
     + "\">\n        <div class=\""
@@ -20865,7 +20868,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ";\">"
     + ((stack1 = (helpers["monthGridHeader-tmpl"] || (depth0 && depth0["monthGridHeader-tmpl"]) || alias2).call(alias1,depth0,{"name":"monthGridHeader-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(12, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-grid-footer\">\n            <span style=\"color: "
@@ -20873,7 +20876,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + ";\">"
     + ((stack1 = (helpers["monthGridFooter-tmpl"] || (depth0 && depth0["monthGridFooter-tmpl"]) || alias2).call(alias1,depth0,{"name":"monthGridFooter-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n    </div>\n";
 },"2":function(container,depth0,helpers,partials,data) {
     var helper;
@@ -20892,20 +20895,26 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 
   return " "
     + container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "extra-date";
+    + "yesterday";
 },"8":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return " "
     + container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "past";
+    + "extra-date";
 },"10":function(container,depth0,helpers,partials,data) {
+    var helper;
+
+  return " "
+    + container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
+    + "past";
+},"12":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "        border-right:"
     + container.escapeExpression(container.lambda(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.borderLeft), depth0))
     + ";\n";
-},"12":function(container,depth0,helpers,partials,data) {
+},"14":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "                <span class=\""
@@ -20915,7 +20924,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "\">"
     + ((stack1 = (helpers["monthGridHeaderExceed-tmpl"] || (depth0 && depth0["monthGridHeaderExceed-tmpl"]) || alias2).call(alias1,(depth0 != null ? depth0.hiddenSchedules : depth0),{"name":"monthGridHeaderExceed-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</span>\n";
-},"14":function(container,depth0,helpers,partials,data) {
+},"16":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "                <span class=\""
