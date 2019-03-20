@@ -2,6 +2,7 @@
     style="
     border-top: {{styles.borderTop}};
 "></div>
+<div class="{{CSS_PREFIX}}weekday-schedules"></div>
 <div class="{{CSS_PREFIX}}weekday-grid">
 {{#each dates ~}}
     <div class="{{CSS_PREFIX}}weekday-grid-line {{holiday day}}{{#fi date '!==' 1}} {{CSS_PREFIX}}near-month-day{{/fi}}{{#if isToday}} {{CSS_PREFIX}}today{{/if}}{{#if isTomorrow}} {{CSS_PREFIX}}tomorrow{{/if}}{{#if isOtherMonth}} {{CSS_PREFIX}}extra-date{{/if}}{{#if isPast}} {{CSS_PREFIX}}past{{/if}}"
@@ -29,4 +30,3 @@
     </div>
 {{/each ~}}
 </div>
-<div class="{{CSS_PREFIX}}weekday-schedules"></div>
