@@ -262,11 +262,34 @@ function scheduleASC(a, b) {
     return util.stamp(modelA) - util.stamp(modelB);
 }
 
+/**
+ * NMNS CUSTOMIZING
+ * Compare calendar models for sort.
+ *
+ * 1. early start date
+ * 2. calendar id (string)
+ * @param {CalendarViewModel} a The object calendar instance.
+ * @param {CalendarViewModel} b The object calendar instance.
+ * @returns {number} Result of comparison.
+ */
+function calendarASC(a, b) {
+    var startsCompare = datetime.compare(a.getStarts(), b.getStarts());
+
+    if (startsCompare) {
+        return startsCompare;
+    }
+
+    return stringASC(a.getCalendarId(), b.getCalendarId());
+}
+
 module.exports = {
     bsearch: bsearch,
     compare: {
         schedule: {
             asc: scheduleASC
+        },
+        calendar: {
+            asc: calendarASC // NMNS CUSTOMIZING
         },
         bool: {
             asc: booleanASC,

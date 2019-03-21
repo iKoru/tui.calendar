@@ -157,6 +157,13 @@ setterMethods.forEach(function(methodName) {
     };
 });
 
+// NMNS CUSTOMIZING
+TZDate.prototype.addDays = function(days) {
+    var newDate = new Date(this.valueOf());
+    newDate.setDate(newDate.getDate() + days);
+    this.setDate(new TZDate(newDate));
+};
+
 module.exports = {
     Date: TZDate,
 

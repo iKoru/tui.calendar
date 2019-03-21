@@ -78,7 +78,7 @@
     "test:ne": "KARMA_SERVER=ne karma start",
     "build": "webpack --mode development",
     "test:types": "tsc --project test/types",
-    "bundle": "webpack --mode development && NODE_ENV=production webpack --mode production",
+    "bundle": "webpack --mode production",
     "serve": "webpack-dev-server --mode development --progress --inline --hot",
     "cpy-dist2doc": "mkdir -p doc/dist && cp -f -r dist doc",
     "release-note": "tuie",

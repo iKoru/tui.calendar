@@ -1,25 +1,30 @@
 /**
- * @fileoverview Model for views
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * NMNS CUSTOMIZING
+ * @fileoverview Model for Month views
+ * @author iKoru <glassonyou@gmail.com>
  */
 'use strict';
 
 var util = require('tui-code-snippet');
 var datetime = require('../../common/datetime');
 
-var SCHEDULE_MIN_DURATION = datetime.MILLISECONDS_SCHEDULE_MIN_DURATION;
-
 /**
  * Schedule ViewModel
  * @constructor
- * @param {Schedule} schedule Schedule instance.
+ * @param {string} calendarId calendarId.
+ * @param {TZDate} date date of calendar
+ * @param {number} count number of schedules of the given calendar id on the date
  */
-function ScheduleViewModel(schedule) {
+function CalendarViewModel(calendarId, date, count) {
     /**
      * The model of schedule.
-     * @type {Schedule}
+     * @type {object}
      */
-    this.model = schedule;
+    this.model = {
+        calendarId: calendarId,
+        date: date,
+        count: count
+    };
 
     /**
      * @type {number}
@@ -102,12 +107,14 @@ function ScheduleViewModel(schedule) {
  **********/
 
 /**
- * ScheduleViewModel factory method.
- * @param {Schedule} schedule Schedule instance.
- * @returns {ScheduleViewModel} ScheduleViewModel instance.
+ * CalendarViewModel factory method.
+ * @param {string} calendarId calendarId.
+ * @param {TZDate} date date of calendar
+ * @param {number} count number of schedules of the given calendar id on the date
+ * @returns {CalendarViewModel} CalendarViewModel instance.
  */
-ScheduleViewModel.create = function(schedule) {
-    return new ScheduleViewModel(schedule);
+CalendarViewModel.create = function(calendarId, date, count) {
+    return new CalendarViewModel(calendarId, date, count);
 };
 
 /**********
@@ -115,39 +122,45 @@ ScheduleViewModel.create = function(schedule) {
  **********/
 
 /**
- * return renderStarts property to render properly when specific schedule that exceed rendering date range.
+ * return date property to render properly when specific schedule that exceed rendering date range.
  *
- * if renderStarts is not set. return model's start property.
- * @override
- * @returns {Date} render start date.
+ * @returns {Date} render date.
  */
-ScheduleViewModel.prototype.getStarts = function() {
-    if (this.renderStarts) {
-        return this.renderStarts;
-    }
-
-    return this.model.start;
+CalendarViewModel.prototype.getDate = function() {
+    return this.model.date;
 };
 
 /**
- * return renderStarts property to render properly when specific schedule that exceed rendering date range.
+ * return date property to render properly when specific schedule that exceed rendering date range.
  *
- * if renderEnds is not set. return model's end property.
- * @override
+ * @returns {Date} render start date.
+ */
+CalendarViewModel.prototype.getStarts = function() {
+    return this.model.date;
+};
+
+/**
+ * return date property to render properly when specific schedule that exceed rendering date range.
+ *
  * @returns {Date} render end date.
  */
-ScheduleViewModel.prototype.getEnds = function() {
-    if (this.renderEnds) {
-        return this.renderEnds;
-    }
+CalendarViewModel.prototype.getEnds = function() {
+    return this.model.date;
+};
 
-    return this.model.end;
+/**
+ * return count property to render
+ *
+ * @returns {number} count property.
+ */
+CalendarViewModel.prototype.getCount = function() {
+    return this.model.count;
 };
 
 /**
  * @returns {number} unique number for model.
  */
-ScheduleViewModel.prototype.cid = function() {
+CalendarViewModel.prototype.cid = function() {
     return util.stamp(this.model);
 };
 
@@ -155,54 +168,18 @@ ScheduleViewModel.prototype.cid = function() {
  * Shadowing valueOf method for schedule sorting.
  * @returns {Schedule} The model of schedule.
  */
-ScheduleViewModel.prototype.valueOf = function() {
+CalendarViewModel.prototype.valueOf = function() {
     return this.model;
 };
 
 /**
- * Link duration method
- * @returns {number} Schedule#duration result.
- */
-ScheduleViewModel.prototype.duration = function() {
-    return this.model.duration();
-};
-
-/**
  * Link collidesWith method
- * @param {Schedule|ScheduleViewModel} viewModel - Model or viewmodel instance of Schedule.
- * @returns {boolean} Schedule#collidesWith result.
+ * @param {CalendarViewModel} viewModel - viewmodel instance of Calendar.
+ * @returns {boolean} Calendar#collidesWith result.
  */
-ScheduleViewModel.prototype.collidesWith = function(viewModel) {
-    var ownStarts = this.getStarts(),
-        ownEnds = this.getEnds(),
-        start = viewModel.getStarts(),
-        end = viewModel.getEnds();
-    var ownGoingDuration = datetime.millisecondsFrom('minutes', this.valueOf().goingDuration),
-        ownComingDuration = datetime.millisecondsFrom('minutes', this.valueOf().comingDuration),
-        goingDuration = datetime.millisecondsFrom('minutes', viewModel.valueOf().goingDuration),
-        comingDuration = datetime.millisecondsFrom('minutes', viewModel.valueOf().comingDuration);
-
-    if (Math.abs(ownEnds - ownStarts) < SCHEDULE_MIN_DURATION) {
-        ownEnds += SCHEDULE_MIN_DURATION;
-    }
-
-    if (Math.abs(end - start) < SCHEDULE_MIN_DURATION) {
-        end += SCHEDULE_MIN_DURATION;
-    }
-
-    ownStarts -= ownGoingDuration;
-    ownEnds += ownComingDuration;
-    start -= goingDuration;
-    end += comingDuration;
-
-    if ((start > ownStarts && start < ownEnds) ||
-        (end > ownStarts && end < ownEnds) ||
-        (start <= ownStarts && end >= ownEnds)) {
-        return true;
-    }
-
-    return false;
+CalendarViewModel.prototype.collidesWith = function(viewModel) {
+    return datetime.isSameDate(this.model.date, viewModel.getDate());
 };
 
-module.exports = ScheduleViewModel;
+module.exports = CalendarViewModel;
 

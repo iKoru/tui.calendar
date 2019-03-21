@@ -189,11 +189,12 @@ var Month = {
         andFilters = andFilters || [];
         filter = Collection.and.apply(null, [filter].concat(andFilters));
 
+        // NMNS CUSTIMOZING START
         coll = this.schedules.find(filter);
-        vColl = ctrlCore.convertToViewModel(coll);
-        ctrlMonth._addMultiDatesInfo(vColl);
-        ctrlMonth._adjustRenderRange(start, end, vColl);
-        vList = vColl.sort(array.compare.schedule.asc);
+        vColl = ctrlCore.convertToCalendarViewModel(coll, start, end, this.calendars);
+        // ctrlMonth._addMultiDatesInfo(vColl);
+        // ctrlMonth._adjustRenderRange(start, end, vColl);
+        vList = vColl.sort(array.compare.calendar.asc);
 
         collisionGroup = ctrlCore.getCollisionGroup(vList);
         matrices = ctrlCore.getMatrices(vColl, collisionGroup);
