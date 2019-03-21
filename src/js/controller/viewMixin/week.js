@@ -10,8 +10,9 @@ var util = require('tui-code-snippet');
 var Collection = require('../../common/collection');
 var array = require('../../common/array');
 var datetime = require('../../common/datetime');
+var TZDate = require('../../common/timezone').Date;
 
-var MILLISECONDS_SCHEDULE_MIN_DURATION = datetime.MILLISECONDS_SCHEDULE_MIN_DURATION;
+var SCHEDULE_MIN_DURATION = datetime.MILLISECONDS_SCHEDULE_MIN_DURATION;
 
 /**
  * @mixin Base.Week
@@ -31,6 +32,8 @@ var Week = {
         var row,
             col,
             schedule,
+            start,
+            end,
             map = [],
             cursor = [],
             maxColLen = Math.max.apply(null, util.map(matrix, function(col) {
@@ -42,7 +45,14 @@ var Week = {
             schedule = util.pick(matrix, row, col);
 
             while (schedule) {
-                cursor.push([schedule.getStarts().getTime(), schedule.getEnds().getTime()]);
+                start = schedule.getStarts().getTime() - datetime.millisecondsFrom('minutes', schedule.valueOf().goingDuration);
+                end = schedule.getEnds().getTime() + datetime.millisecondsFrom('minutes', schedule.valueOf().comingDuration);
+
+                if (Math.abs(end - start) < SCHEDULE_MIN_DURATION) {
+                    end += SCHEDULE_MIN_DURATION;
+                }
+
+                cursor.push([start, end]);
 
                 row += 1;
                 schedule = util.pick(matrix, row, col);
@@ -119,9 +129,12 @@ var Week = {
                     startTime = viewModel.getStarts().getTime();
                     endTime = viewModel.getEnds().getTime();
 
-                    if (Math.abs(endTime - startTime) < MILLISECONDS_SCHEDULE_MIN_DURATION) {
-                        endTime += MILLISECONDS_SCHEDULE_MIN_DURATION;
+                    if (Math.abs(endTime - startTime) < SCHEDULE_MIN_DURATION) {
+                        endTime += SCHEDULE_MIN_DURATION;
                     }
+
+                    startTime -= datetime.millisecondsFrom('minutes', viewModel.valueOf().goingDuration);
+                    endTime += datetime.millisecondsFrom('minutes', viewModel.valueOf().comingDuration);
 
                     endTime -= 1;
 
@@ -146,17 +159,20 @@ var Week = {
      * @param {Date} start - start date.
      * @param {Date} end - end date.
      * @param {Collection} time - view model collection.
+     * @param {number} hourStart - start hour to be shown
+     * @param {number} hourEnd - end hour to be shown
      * @returns {object} view model for time part.
      */
-    getViewModelForTimeView: function(start, end, time) {
+    getViewModelForTimeView: function(start, end, time, hourStart, hourEnd) {
         var self = this,
             ymdSplitted = this.splitScheduleByDateRange(start, end, time),
             result = {};
 
+        var _getViewModel = Week._makeGetViewModelFuncForTimeView(hourStart, hourEnd);
+
         util.forEach(ymdSplitted, function(collection, ymd) {
-            var viewModels = collection.sort(array.compare.schedule.asc),
-                collisionGroups,
-                matrices;
+            var viewModels = _getViewModel(collection);
+            var collisionGroups, matrices;
 
             collisionGroups = self.Core.getCollisionGroup(viewModels);
             matrices = self.Core.getMatrices(collection, collisionGroups);
@@ -166,6 +182,51 @@ var Week = {
         });
 
         return result;
+    },
+
+    /**
+     * make view model function depending on start and end hour
+     * if time view option has start or end hour condition
+     * it add filter
+     * @param {number} hourStart - start hour to be shown
+     * @param {number} hourEnd - end hour to be shown
+     * @returns {function} function
+     */
+    _makeGetViewModelFuncForTimeView: function(hourStart, hourEnd) {
+        if (hourStart === 0 && hourEnd === 24) {
+            return function(collection) {
+                return collection.sort(array.compare.schedule.asc);
+            };
+        }
+
+        return function(collection) {
+            return collection.find(Week._makeHourRangeFilter(hourStart, hourEnd))
+                .sort(array.compare.schedule.asc);
+        };
+    },
+
+    /**
+     * make a filter function that is not included range of start, end hour
+     * @param {number} hStart - hour start
+     * @param {number} hEnd - hour end
+     * @returns {function} - filtering function
+     */
+    _makeHourRangeFilter: function(hStart, hEnd) {
+        return function(schedule) {
+            var ownHourStart = schedule.model.start;
+            var ownHourEnd = schedule.model.end;
+            var yyyy = ownHourStart.getFullYear();
+            var mm = ownHourStart.getMonth();
+            var dd = ownHourStart.getDate();
+
+            var hourStart = new TZDate(yyyy, mm, dd).setHours(hStart);
+            var hourEnd = new TZDate(yyyy, mm, dd).setHours(hEnd);
+
+            return (ownHourStart >= hourStart && ownHourStart < hourEnd) ||
+                (ownHourEnd > hourStart && ownHourEnd <= hourEnd) ||
+                (ownHourStart < hourStart && ownHourEnd > hourStart) ||
+                (ownHourEnd > hourEnd && ownHourStart < hourEnd);
+        };
     },
 
     /**********
@@ -228,13 +289,16 @@ var Week = {
      * @param {Date} end end date.
      * @param {Array.<object>} panels - schedule panels like 'milestone', 'task', 'allday', 'time'
      * @param {function[]} [andFilters] - optional filters to applying search query
+     * @param {Object} options - week view options
      * @returns {object} schedules grouped by dates.
      */
-    findByDateRange: function(start, end, panels, andFilters) {
+    findByDateRange: function(start, end, panels, andFilters, options) {
         var ctrlCore = this.Core,
             ctrlWeek = this.Week,
             filter = ctrlCore.getScheduleInDateRangeFilter(start, end),
             scheduleTypes = util.pluck(panels, 'name'),
+            hourStart = util.pick(options, 'hourStart'),
+            hourEnd = util.pick(options, 'hourEnd'),
             modelColl,
             group;
 
@@ -250,7 +314,7 @@ var Week = {
             if (panel.type === 'daygrid') {
                 group[name] = ctrlWeek.getViewModelForAlldayView(start, end, group[name]);
             } else if (panel.type === 'timegrid') {
-                group[name] = ctrlWeek.getViewModelForTimeView(start, end, group[name]);
+                group[name] = ctrlWeek.getViewModelForTimeView(start, end, group[name], hourStart, hourEnd);
             }
         });
 

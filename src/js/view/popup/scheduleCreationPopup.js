@@ -35,14 +35,14 @@ function ScheduleCreationPopup(container, calendars) {
      */
     this._viewModel = null;
     this._selectedCal = null;
-    this._scheduleId = '';
+    this._schedule = null;
     this.calendars = calendars;
     this._focusedDropdown = null;
     this._onClickListeners = [
         this._selectDropdownMenuItem.bind(this),
+        this._toggleDropdownMenuView.bind(this),
         this._closeDropdownMenuView.bind(this, null),
         this._closePopup.bind(this),
-        this._toggleDropdownMenuView.bind(this),
         this._toggleIsAllday.bind(this),
         this._toggleIsPrivate.bind(this),
         this._onClickSaveSchedule.bind(this)
@@ -130,7 +130,7 @@ ScheduleCreationPopup.prototype._toggleDropdownMenuView = function(target) {
         return false;
     }
 
-    if (domutil.hasClass(config.classname('open'))) {
+    if (domutil.hasClass(dropdownBtn.parentNode, config.classname('open'))) {
         this._closeDropdownMenuView(dropdownBtn.parentNode);
     } else {
         this._openDropdownMenuView(dropdownBtn.parentNode);
@@ -325,7 +325,7 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
     if (this._isEditMode) {
         this.fire('beforeUpdateSchedule', {
             schedule: {
-                id: this._scheduleId,
+                id: this._schedule.id,
                 calendarId: calendarId,
                 title: title,
                 raw: {
@@ -347,7 +347,8 @@ ScheduleCreationPopup.prototype._onClickSaveSchedule = function(target) {
                 color: manager.color,
                 bgColor: manager.bgColor,
                 borderColor: manager.borderColor,
-                dragBgColor: manager.bgColor
+                dragBgColor: manager.bgColor,
+                triggerEventName: 'click'
             },
             history: this._viewModel,
             start: startDate,
@@ -634,7 +635,7 @@ ScheduleCreationPopup.prototype._makeEditModeData = function(viewModel) {
         viewModel.selectedCal = this._selectedCal = calendars[calendarIndex];
     }
 
-    this._scheduleId = id;
+    this._schedule = schedule;
 
     return {
         id: id,

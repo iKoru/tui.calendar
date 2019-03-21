@@ -200,8 +200,12 @@ ScheduleDetailPopup.prototype._setPopupPositionAndArrowDirection = function (eve
 
     scheduleBound = scheduleEl.getBoundingClientRect();
     // NMNS CUSTOMIZING END
+    /* var blockEl = domutil.closest(scheduleEl, config.classname('.time-date-schedule-block'))
+        || domutil.closest(scheduleEl, config.classname('.weekday-schedule'))
+        || scheduleEl;
+    scheduleBound = blockEl.getBoundingClientRect(); */
 
-    this._scheduleEl = scheduleEl;
+    this._scheduleEl = scheduleEl;// blockEl;
 
     pos = this._calcRenderingData(layerSize, windowSize, scheduleBound);
     pos.x -= parentBounds.left + 4;

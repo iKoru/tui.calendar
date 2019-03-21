@@ -317,6 +317,22 @@ Handlebars.registerHelper({
         return common.stripTags(model.title);
     },
 
+    'goingDuration-tmpl': function(model) {
+        var goingDuration = model.goingDuration;
+        var hour = parseInt(goingDuration / SIXTY_MINUTES, 10);
+        var minutes = goingDuration % SIXTY_MINUTES;
+
+        return 'GoingTime ' + datetime.leadingZero(hour, 2) + ':' + datetime.leadingZero(minutes, 2);
+    },
+
+    'comingDuration-tmpl': function(model) {
+        var goingDuration = model.goingDuration;
+        var hour = parseInt(goingDuration / SIXTY_MINUTES, 10);
+        var minutes = goingDuration % SIXTY_MINUTES;
+
+        return 'ComingTime ' + datetime.leadingZero(hour, 2) + ':' + datetime.leadingZero(minutes, 2);
+    },
+
     'monthMoreTitleDate-tmpl': function(date, dayname) {
         var classDay = config.classname('month-more-title-day');
         var classDayLabel = config.classname('month-more-title-day-label');
@@ -356,15 +372,15 @@ Handlebars.registerHelper({
         return '';
     },
 
+    'monthDayname-tmpl': function(model) {
+        return model.label;
+    },
+
     'weekDayname-tmpl': function(model) {
         var classDate = config.classname('dayname-date');
         var className = config.classname('dayname-name');
 
         return '<span class="' + classDate + '">' + model.date + '</span>&nbsp;&nbsp;<span class="' + className + '">' + model.dayName + '</span>';
-    },
-
-    'monthDayname-tmpl': function(model) {
-        return model.label;
     },
 
     'weekGridFooterExceed-tmpl': function(hiddenSchedules) {
@@ -394,6 +410,48 @@ Handlebars.registerHelper({
         var closeIconName = config.classname('ic-arrow-solid-top');
 
         return '<span class="' + iconName + ' ' + closeIconName + '"></span>';
+    },
+
+    'timezoneDisplayLabel-tmpl': function(timezoneOffset, displayLabel) {
+        var gmt, hour, minutes;
+
+        if (util.isUndefined(displayLabel)) {
+            gmt = timezoneOffset < 0 ? '-' : '+';
+            hour = Math.abs(parseInt(timezoneOffset / SIXTY_MINUTES, 10));
+            minutes = Math.abs(timezoneOffset % SIXTY_MINUTES);
+            displayLabel = gmt + datetime.leadingZero(hour, 2) + ':' + datetime.leadingZero(minutes, 2);
+        }
+
+        return displayLabel;
+    },
+
+    'timegridDisplayPrimayTime-tmpl': function(time) {
+        /* TODO: 1.11.0 이후 버전부터 삭제 필요 (will be deprecate) */
+        var meridiem = time.hour < 12 ? 'am' : 'pm';
+
+        return time.hour + ' ' + meridiem;
+    },
+
+    'timegridDisplayPrimaryTime-tmpl': function(time) {
+        var meridiem = time.hour < 12 ? 'am' : 'pm';
+
+        return time.hour + ' ' + meridiem;
+    },
+
+    'timegridDisplayTime-tmpl': function(time) {
+        return datetime.leadingZero(time.hour, 2) + ':' + datetime.leadingZero(time.minutes, 2);
+    },
+
+    'timegridCurrentTime-tmpl': function(timezone) {
+        var templates = [];
+
+        if (timezone.dateDifference) {
+            templates.push('[' + timezone.dateDifferenceSign + timezone.dateDifference + ']<br>');
+        }
+
+        templates.push(datetime.format(timezone.hourmarker, 'HH:mm'));
+
+        return templates.join('');
     },
 
     'popupIsAllDay-tmpl': function() {
@@ -443,37 +501,21 @@ Handlebars.registerHelper({
         return schedule.location;
     },
     'popupDetailUser-tmpl': function(schedule) {
-        var creator = util.pick(schedule, 'raw', 'creator', 'name');
-
-        return creator;
+        return (schedule.attendees || []).join(', ');
     },
     'popupDetailState-tmpl': function(schedule) {
         return schedule.state || 'Busy';
+    },
+    'popupDetailRepeat-tmpl': function(schedule) {
+        return schedule.recurrenceRule;
+    },
+    'popupDetailBody-tmpl': function(schedule) {
+        return schedule.body;
     },
     'popupEdit-tmpl': function() {
         return 'Edit';
     },
     'popupDelete-tmpl': function() {
         return 'Delete';
-    },
-    'timezoneDisplayLabel-tmpl': function(timezoneOffset, displayLabel) {
-        var gmt, hour, minutes;
-
-        if (util.isUndefined(displayLabel)) {
-            gmt = timezoneOffset < 0 ? '-' : '+';
-            hour = Math.abs(parseInt(timezoneOffset / SIXTY_MINUTES, 10));
-            minutes = Math.abs(timezoneOffset % 60);
-            displayLabel = gmt + datetime.leadingZero(hour, 2) + ':' + datetime.leadingZero(minutes, 2);
-        }
-
-        return displayLabel;
-    },
-    'timegridDisplayPrimayTime-tmpl': function(time) {
-        var meridiem = time.hour < 12 ? 'am' : 'pm';
-
-        return time.hour + ' ' + meridiem;
-    },
-    'timegridDisplayTime-tmpl': function(time) {
-        return datetime.leadingZero(time.hour, 2) + ':' + datetime.leadingZero(time.minutes, 2);
     }
 });

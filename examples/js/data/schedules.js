@@ -14,6 +14,7 @@ function ScheduleInfo() {
     this.calendarId = null;
 
     this.title = null;
+    this.body = null;
     this.isAllday = false;
     this.start = null;
     this.end = null;
@@ -30,6 +31,9 @@ function ScheduleInfo() {
     this.isPending = false;
     this.isVisible = true;
     this.isReadOnly = false;
+    this.goingDuration = 0;
+    this.comingDuration = 0;
+    this.recurrenceRule = '';
 
     this.raw = {
         memo: '',
@@ -79,6 +83,27 @@ function generateTime(schedule, renderStart, renderEnd) {
     schedule.end = endDate
         .add(chance.integer({min: 1, max: 4}), 'hour')
         .toDate();
+
+    if (!schedule.isAllday && chance.bool({likelihood: 20})) {
+        schedule.goingDuration = chance.integer({min: 30, max: 120});
+        schedule.comingDuration = chance.integer({min: 30, max: 120});;
+
+        if (chance.bool({likelihood: 50})) {
+            schedule.end = schedule.start;
+        }
+    }
+}
+
+function generateNames() {
+    var names = [];
+    var i = 0;
+    var length = chance.integer({min: 1, max: 10});
+
+    for (; i < length; i += 1) {
+        names.push(chance.name());
+    }
+
+    return names;
 }
 
 function generateRandomSchedule(calendar, renderStart, renderEnd) {
@@ -88,13 +113,14 @@ function generateRandomSchedule(calendar, renderStart, renderEnd) {
     schedule.calendarId = calendar.id;
 
     schedule.title = chance.sentence({words: 3});
+    schedule.body = chance.bool({likelihood: 20}) ? chance.sentence({words: 10}) : '';
     schedule.isReadOnly = chance.bool({likelihood: 20});
     generateTime(schedule, renderStart, renderEnd);
 
     schedule.isPrivate = chance.bool({likelihood: 10});
     schedule.location = chance.address();
-    schedule.attendees = chance.bool({likelihood: 70}) ? ['anyone']: [];
-    schedule.recurrenceRule = chance.bool({likelihood: 20});
+    schedule.attendees = chance.bool({likelihood: 70}) ? generateNames() : [];
+    schedule.recurrenceRule = chance.bool({likelihood: 20}) ? 'repeated events' : '';
 
     schedule.color = calendar.color;
     schedule.bgColor = calendar.bgColor;
@@ -114,6 +140,12 @@ function generateRandomSchedule(calendar, renderStart, renderEnd) {
     schedule.raw.creator.company = chance.company();
     schedule.raw.creator.email = chance.email();
     schedule.raw.creator.phone = chance.phone();
+
+    if (chance.bool({ likelihood: 20 })) {
+        var travelTime = chance.minute();
+        schedule.goingDuration = travelTime;
+        schedule.comingDuration = travelTime;
+    }
 
     ScheduleList.push(schedule);
 }

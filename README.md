@@ -9,13 +9,17 @@
 [![code with hearth by NHN Entertainment](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-NHN%20Entertainment-ff1414.svg)](https://github.com/nhnent)
 
 ## Wrappers
+* [toast-ui.vue-calendar](https://github.com/nhnent/toast-ui.vue-calendar) **Vue** wrapper component is implemented by [NHN Entertainment](https://github.com/nhnent).
+* [toast-ui.react-calendar](https://github.com/nhnent/toast-ui.react-calendar) **React** wrapper component is powered by [NHN Entertainment](https://github.com/nhnent).
 * [ngx-tui-dev](https://github.com/brnrds/ngx-tui-dev): **TypeScript** and **Angular 5** wrapper component is being implemented(ref [#82](https://github.com/nhnent/tui.calendar/issues/82)) by [@amanvishnani](https://github.com/amanvishnani) and [@brnrds](https://github.com/brnrds). Thanks for their effort.
 * [vue-tui-calendar](https://github.com/lkmadushan/vue-tuicalendar): **Vue** wrapper component is being implemented(ref [#81](https://github.com/nhnent/tui.calendar/issues/81)) by [@lkmadushan](https://github.com/lkmadushan). Thanks for their effort.
+* [tui-calendar-react](https://github.com/IniZio/react-tui-calendar): **React** wrapper component is provided(ref #[134](https://github.com/nhnent/tui.calendar/issues/134)) by [@IniZio](https://github.com/IniZio). Thanks for his effort.
 
 ![tui-calendar-demo](https://user-images.githubusercontent.com/26706716/38919146-bc596f28-432a-11e8-8bbd-b561911067c7.gif)
 
 ## 🚩 Table of Contents
 
+* [Collect statistics on the use of open source](#Collect-statistics-on-the-use-of-open-source)
 * [Browser Support](#-browser-support)
 * [How Cool: Monthly, Weekly, Daily and Various View Types.](#how-cool-monthly-weekly-daily-and-various-view-types)
 * [Easy to Use: Dragging and Resizing a Schedule](#easy-to-use-dragging-and-resizing-a-schedule)
@@ -39,6 +43,15 @@
 * [TOAST UI Family](#-toast-ui-family)
 * [Used By](#-used-by)
 * [License](#-license)
+
+## Collect statistics on the use of open source
+
+TOAST UI Calendar applies Google Analytics (GA) to collect statistics on the use of open source, in order to identify how widely TOAST UI Calendar is used throughout the world. It also serves as important index to determine the future course of projects. location.hostname (e.g. > “ui.toast.com") is to be collected and the sole purpose is nothing but to measure statistics on the usage.
+To disable GA, include tui-code-snippet.js and then immediately write the options as follows:
+
+```js
+tui.usageStatistics = false;
+```
 
 ## 🌏 Browser Support
 | <img src="https://user-images.githubusercontent.com/1215767/34348387-a2e64588-ea4d-11e7-8267-a43365103afe.png" alt="Chrome" width="16px" height="16px" /> Chrome | <img src="https://user-images.githubusercontent.com/1215767/34348590-250b3ca2-ea4f-11e7-9efb-da953359321f.png" alt="IE" width="16px" height="16px" /> Internet Explorer | <img src="https://user-images.githubusercontent.com/1215767/34348380-93e77ae8-ea4d-11e7-8696-9a989ddbbbf5.png" alt="Edge" width="16px" height="16px" /> Edge | <img src="https://user-images.githubusercontent.com/1215767/34348394-a981f892-ea4d-11e7-9156-d128d58386b9.png" alt="Safari" width="16px" height="16px" /> Safari | <img src="https://user-images.githubusercontent.com/1215767/34348383-9e7ed492-ea4d-11e7-910c-03b39d52f496.png" alt="Firefox" width="16px" height="16px" /> Firefox |
@@ -80,7 +93,7 @@
 
 ## 🐾 Examples
 
-* [Basic](https://nhnent.github.io/tui.calendar/latest/tutorial-example01-basic.html) : Example of using default options.
+* [Basic](https://nhnent.github.io/tui.calendar/latest/tutorial-example00-basic) : Example of using default options.
 
 ## 💾 Install
 
@@ -166,13 +179,15 @@ var Calendar = tui.Calendar;
 
 ```javascript
 var Calendar = require('tui-calendar'); /* CommonJS */
+require("tui-calendar/dist/tui-calendar.css");
 ```
 
 ```javascript
 import Calendar from 'tui-calendar'; /* ES6 */
+import "tui-calendar/dist/tui-calendar.css";
 ```
 
-Then you can create a calendar instance with [options](https://nhnent.github.io/tui.calendar/latest/global.html#Options) to set configuration.
+Then you can create a calendar instance with [options](https://nhnent.github.io/tui.calendar/latest/Options) to set configuration.
 
 ```javascript
 var calendar = new Calendar('#calendar', {
@@ -251,7 +266,7 @@ For more information on PR's step, please see links of Contributing section.
 
 * [Getting Started](https://github.com/nhnent/tui.calendar/blob/master/docs/getting-started.md)
 * [Tutorials](https://github.com/nhnent/tui.calendar/tree/master/docs)
-* [APIs](https://nhnent.github.io/tui.calendar/latest/Calendar.html)
+* [APIs](https://nhnent.github.io/tui.calendar/latest/Calendar)
 
 You can also see the older versions of API page on the [releases page](https://github.com/nhnent/tui.calendar/releases).
 
@@ -264,7 +279,7 @@ You can also see the older versions of API page on the [releases page](https://g
 
 ## 🔩 Dependency
 
-* [tui-code-snippet](https://github.com/nhnent/tui.code-snippet) >= 1.4.0
+* [tui-code-snippet](https://github.com/nhnent/tui.code-snippet) >= 1.5.0
 * [tui-date-picker](https://github.com/nhnent/tui.date-picker) >= 3.0.0 is optional.
 * [tui-time-picker](https://github.com/nhnent/tui.time-picker) >= 1.0.0 is optional.
 
@@ -276,6 +291,7 @@ You can also see the older versions of API page on the [releases page](https://g
 
 ## 🚀 Used By
 * [TOAST Dooray! - Collaboration Service (Project, Messenger, Mail, Calendar, Drive, Wiki, Contacts)](https://dooray.com)
+* [NCP - Commerce Platform](https://www.e-ncp.com/)
 
 ## 📜 License
 

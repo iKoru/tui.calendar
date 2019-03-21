@@ -8,6 +8,7 @@ var util = require('tui-code-snippet');
 var config = require('../../config');
 var datetime = require('../../common/datetime');
 var domutil = require('../../common/domutil');
+var domevent = require('../../common/domevent');
 var TZDate = require('../../common/timezone').Date;
 var timeCore = require('./core');
 var TimeMoveGuide = require('./moveGuide');
@@ -53,6 +54,7 @@ function TimeMove(dragHandler, timeGridView, baseController) {
     this._guide = new TimeMoveGuide(this);
 
     dragHandler.on('dragStart', this._onDragStart, this);
+    dragHandler.on('mousedown', this._onMouseDown, this);
 }
 
 /**
@@ -98,6 +100,26 @@ TimeMove.prototype._getTimeView = function(target) {
     }
 
     return util.pick(this.timeGridView.children.items, Number(matches[1]));
+};
+
+/**
+ * @emits TimeMove#mousedown
+ * @param {object} mouseDownEventData - Drag#mousedown schedule data.
+ */
+TimeMove.prototype._onMouseDown = function(mouseDownEventData) {
+    var target = mouseDownEventData.target,
+        timeView = this.checkExpectCondition(target),
+        blockElement = domutil.closest(target, config.classname('.time-date-schedule-block'));
+
+    if (!timeView || !blockElement) {
+        return;
+    }
+
+    // EventTarget.target is not changed in mousemove event even if mouse is over the other element.
+    // It's different with other browsers(IE, Chrome, Safari)
+    if (util.browser.firefox) {
+        domevent.preventDefault(mouseDownEventData.originEvent);
+    }
 };
 
 /**
@@ -212,35 +234,19 @@ TimeMove.prototype._updateSchedule = function(scheduleData) {
         schedule = ctrl.schedules.items[modelID],
         relatedView = scheduleData.relatedView,
         currentView = scheduleData.currentView,
-        scheduleDuration,
-        dateStart,
-        dateEnd,
         newStarts,
-        newEnds,
-        baseDate;
+        newEnds;
 
     if (!schedule || !currentView) {
         return;
     }
 
     timeDiff -= datetime.millisecondsFrom('minutes', 30);
-    baseDate = new TZDate(relatedView.getDate());
-    dateStart = datetime.start(baseDate);
-    dateEnd = datetime.end(baseDate);
     newStarts = new TZDate(schedule.getStarts().getTime() + timeDiff);
     newEnds = new TZDate(schedule.getEnds().getTime() + timeDiff);
-    scheduleDuration = schedule.duration();
 
     if (currentView) {
         dateDiff = currentView.getDate() - relatedView.getDate();
-    }
-
-    if (newStarts < dateStart) {
-        newStarts = new TZDate(dateStart.getTime());
-        newEnds = new TZDate(newStarts.getTime() + scheduleDuration.getTime());
-    } else if (newEnds > dateEnd) {
-        newEnds = new TZDate(dateEnd.getTime());
-        newStarts = new TZDate(newEnds.getTime() - scheduleDuration.getTime());
     }
 
     newStarts = new TZDate(newStarts.getTime() + dateDiff);

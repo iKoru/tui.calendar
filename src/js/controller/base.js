@@ -156,6 +156,9 @@ Base.prototype.updateSchedule = function(schedule, options) {
     if (typeof options.isAllDay !== 'undefined') {// NMNS CUSTOMIZING
         schedule.set('isAllDay', options.isAllDay);
     }
+    if (options.body) {
+        schedule.set('body', options.body);
+    }
 
     if (options.start || options.end) {
         if (schedule.isAllDay) {
@@ -179,6 +182,10 @@ Base.prototype.updateSchedule = function(schedule, options) {
 
     if (options.origin) {
         schedule.set('origin', options.origin);
+    }
+
+    if (!util.isUndefined(options.isAllDay)) {
+        schedule.set('isAllDay', options.isAllDay);
     }
 
     if (!util.isUndefined(options.isPending)) {
@@ -377,16 +384,6 @@ Base.prototype.clearSchedules = function() {
 Base.prototype.setTheme = function(theme) {
     return this.theme.setStyles(theme);
 };
-
-/**
- * @typedef {Calendar}
- * @property {string|number} id - calendar id
- * @property {string} name - calendar name
- * @property {string} color - text color when schedule is displayed
- * @property {string} bgColor - background color schedule is displayed
- * @property {string} borderColor - color of left border or bullet point when schedule is displayed
- * @property {boolean} [checked] - whether to show calendar's schedules or not
- */
 
 /**
  * Set calendar list

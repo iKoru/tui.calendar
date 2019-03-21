@@ -17,6 +17,7 @@ var Time = require('./time');
 var AutoScroll = require('../../common/autoScroll');
 var mainTmpl = require('../template/week/timeGrid.hbs');
 var timezoneStickyTmpl = require('../template/week/timezoneSticky.hbs');
+var timegridCurrentTimeTmpl = require('../template/week/timeGridCurrentTime.hbs');
 var TZDate = Timezone.Date;
 var HOURMARKER_REFRESH_INTERVAL = 1000 * 60;
 var SIXTY_SECONDS = 60;
@@ -250,7 +251,7 @@ TimeGrid.prototype._getTopPercentByTime = function(time) {
 TimeGrid.prototype._getHourmarkerViewModel = function(now, grids, range) {
     var todaymarkerLeft = -1;
     var todaymarkerWidth = -1;
-    var hourmarkerTexts = [];
+    var hourmarkerTimzones = [];
     var opt = this.options;
     var primaryOffset = Timezone.getOffset();
     var timezones = opt.timezones;
@@ -268,26 +269,22 @@ TimeGrid.prototype._getHourmarkerViewModel = function(now, grids, range) {
     util.forEach(timezones, function(timezone) {
         var timezoneDifference = timezone.timezoneOffset + primaryOffset;
         var hourmarker = new TZDate(now);
-        var texts = [];
         var dateDifference;
 
         hourmarker.setMinutes(hourmarker.getMinutes() + timezoneDifference);
-
         dateDifference = hourmarker.getDate() - now.getDate();
-        if (dateDifference < 0) {
-            texts.push('[-' + Math.abs(dateDifference) + ']<br>');
-        } else if (dateDifference > 0) {
-            texts.push('[+' + Math.abs(dateDifference) + ']<br>');
-        }
 
-        texts.push(datetime.format(hourmarker, 'HH:mm'));
-        hourmarkerTexts.push(texts.join(''));
+        hourmarkerTimzones.push({
+            hourmarker: hourmarker,
+            dateDifferenceSign: (dateDifference < 0) ? '-' : '+',
+            dateDifference: Math.abs(dateDifference)
+        });
     });
 
     viewModel = {
         currentHours: now.getHours(),
         hourmarkerTop: this._getTopPercentByTime(now),
-        hourmarkerTexts: hourmarkerTexts,
+        hourmarkerTimzones: hourmarkerTimzones,
         todaymarkerLeft: todaymarkerLeft,
         todaymarkerWidth: todaymarkerWidth,
         todaymarkerRight: todaymarkerLeft + todaymarkerWidth
@@ -316,7 +313,6 @@ TimeGrid.prototype._getTimezoneViewModel = function(currentHours, timezonesColla
 
     util.forEach(timezones, function(timezone, index) {
         var hourmarker = new TZDate(now);
-        var texts = [];
         var timezoneDifference;
         var timeSlots;
         var dateDifference;
@@ -325,15 +321,7 @@ TimeGrid.prototype._getTimezoneViewModel = function(currentHours, timezonesColla
         timeSlots = getHoursLabels(opt, currentHours >= 0, timezoneDifference, styles);
 
         hourmarker.setMinutes(hourmarker.getMinutes() + timezoneDifference);
-
         dateDifference = hourmarker.getDate() - now.getDate();
-        if (dateDifference < 0) {
-            texts.push('[-' + Math.abs(dateDifference) + ']<br>');
-        } else if (dateDifference > 0) {
-            texts.push('[+' + Math.abs(dateDifference) + ']<br>');
-        }
-
-        texts.push(datetime.format(hourmarker, 'HH:mm'));
 
         if (index > 0) {
             backgroundColor = styles.additionalTimezoneBackgroundColor;
@@ -347,9 +335,11 @@ TimeGrid.prototype._getTimezoneViewModel = function(currentHours, timezonesColla
             width: width,
             left: collapsed ? 0 : (timezones.length - index - 1) * width,
             isPrimary: index === 0,
-            hourmarkerText: texts.join(''),
             backgroundColor: backgroundColor || '',
-            hidden: index !== 0 && collapsed
+            hidden: index !== 0 && collapsed,
+            hourmarker: hourmarker,
+            dateDifferenceSign: (dateDifference < 0) ? '-' : '+',
+            dateDifference: Math.abs(dateDifference)
         });
     });
 
@@ -530,7 +520,7 @@ TimeGrid.prototype.refreshHourmarker = function() {
         } else {
             util.forEach(hourmarkers, function(hourmarker) {
                 var todaymarker = domutil.find(config.classname('.timegrid-todaymarker'), hourmarker);
-                var hourmarkerText = domutil.find(config.classname('.timegrid-hourmarker-time'), hourmarker);
+                var hourmarkerContainer = domutil.find(config.classname('.timegrid-hourmarker-time'), hourmarker);
                 var timezone = domutil.closest(hourmarker, config.classname('.timegrid-timezone'));
                 var timezoneIndex = timezone ? domutil.getData(timezone, 'timezoneIndex') : 0;
 
@@ -539,8 +529,10 @@ TimeGrid.prototype.refreshHourmarker = function() {
                 if (todaymarker) {
                     todaymarker.style.display = (baseViewModel.todaymarkerLeft >= 0) ? 'block' : 'none';
                 }
-                if (hourmarkerText) {
-                    hourmarkerText.innerHTML = baseViewModel.hourmarkerTexts[timezoneIndex];
+                if (hourmarkerContainer) {
+                    hourmarkerContainer.innerHTML = timegridCurrentTimeTmpl(
+                        baseViewModel.hourmarkerTimzones[timezoneIndex]
+                    );
                 }
             });
         }

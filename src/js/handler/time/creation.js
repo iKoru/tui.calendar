@@ -67,10 +67,20 @@ function TimeCreation(dragHandler, timeGridView, baseController, options) {
      */
     this._requestOnClick = false;
 
+    /**
+     * @type {boolean}
+     */
+    this._disableDblClick = options.disableDblClick;
+
+    /**
+     * @type {boolean}
+     */
+    this._disableClick = options.disableClick;
+
     dragHandler.on('dragStart', this._onDragStart, this);
     dragHandler.on('click', this._onClick, this);
 
-    if (options.disableDblClick) {
+    if (this._disableDblClick) {
         CLICK_DELAY = 0;
     } else {
         domevent.on(timeGridView.container, 'dblclick', this._onDblClick, this);
@@ -304,7 +314,7 @@ TimeCreation.prototype._onClick = function(clickEventData) {
     }, this);
 
     condResult = this.checkExpectedCondition(clickEventData.target);
-    if (!condResult) {
+    if (!condResult || this._disableClick) {
         return;
     }
 
@@ -354,6 +364,7 @@ TimeCreation.prototype.invokeCreationClick = function(schedule) {
             datetime.parse(opt.renderStartDate),
             datetime.parse(opt.renderEndDate),
             datetime.MILLISECONDS_PER_DAY),
+        hourStart = opt.hourStart,
         targetDate = schedule.start;
     var getScheduleDataFunc, eventData, timeView;
 
@@ -369,7 +380,7 @@ TimeCreation.prototype.invokeCreationClick = function(schedule) {
     }
 
     getScheduleDataFunc = this._retriveScheduleDataFromDate(timeView);
-    eventData = util.extend(getScheduleDataFunc(schedule.start, schedule.end), schedule);// NMNS CUSTOMIZING
+    eventData = util.extend(getScheduleDataFunc(schedule.start, schedule.end, hourStart), schedule);// NMNS CUSTOMIZING
 
     this.fire('timeCreationClick', eventData);
 

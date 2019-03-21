@@ -83,9 +83,10 @@ var timeCore = {
         /**
          * @param {TZDate} startDate - start date
          * @param {TZDate} endDate - end date
+         * @param {number} hourStart Can limit of render hour start.
          * @returns {object} - common event data for time.*
          */
-        return util.bind(function(startDate, endDate) {
+        return util.bind(function(startDate, endDate, hourStart) {
             var gridY, timeY, nearestGridY, nearestGridTimeY, nearestGridEndY, nearestGridEndTimeY;
             // NMNS CUSTOMIZING START
             gridY = startDate.getHours() + getNearestHour(startDate.getMinutes())
@@ -107,7 +108,8 @@ var timeCore = {
                 nearestGridTimeY: nearestGridTimeY,
                 nearestGridEndY: nearestGridEndY,
                 nearestGridEndTimeY: nearestGridEndTimeY,
-                triggerEvent: 'manual'
+                triggerEvent: 'manual',
+                hourStart: hourStart
             });
         }, this);
     },

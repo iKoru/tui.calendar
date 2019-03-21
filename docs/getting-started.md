@@ -26,10 +26,12 @@ Initialize the Calendar class with given element to make an Calendar.
 
 ```javascript
 var Calendar = require('tui-calendar'); /* CommonJS */
+require("tui-calendar/dist/tui-calendar.css");
 ```
 
 ```javascript
 import Calendar from 'tui-calendar'; /* ES6 */
+import "tui-calendar/dist/tui-calendar.css";
 ```
 
 Then you can create a calendar instance with [options](https://nhnent.github.io/tui.calendar/latest/global.html#Options) to set configuration.
@@ -148,6 +150,17 @@ var calendar = new Calendar('#calendar', {
 });
 ```
 
+Or you can disable single clicking on calendar to create a schedule. use `disableClick` option.
+
+```js
+calendar.setOptions({disableClick: true}, true);
+
+// or
+var calendar = new Calendar('#calendar', {
+  disableClick: true
+});
+```
+
 #### 'beforeUpdateSchedule'
 
 Update the schedule when dragging it.
@@ -186,6 +199,16 @@ calendar.on('clickSchedule', function(event) {
     lastClickSchedule = schedule;
 
     // open detail view
+});
+```
+
+#### 'clickMore'
+
+A callback after shown up 'more view'
+
+```javascript
+calendar.on('clickMore', function(event) {
+    console.log('clickMore', event.date, event.target);
 });
 ```
 
@@ -348,13 +371,33 @@ var calendar = new Calendar('#calendar', {
         monthDayname: function(dayname) {
             return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
         },
-        timegridDisplayPrimayTime: function(time) {
+        timegridDisplayPrimaryTime: function(time) {
             var meridiem = time.hour < 12 ? 'am' : 'pm';
 
             return time.hour + ' ' + meridiem;
         },
         timegridDisplayTime: function(time) {
             return time.hour + ':' + time.minutes;
+        },
+        goingDuration: function(model) {
+            var goingDuration = model.goingDuration;
+            var hour = parseInt(goingDuration / SIXTY_MINUTES, 10);
+            var minutes = goingDuration % SIXTY_MINUTES;
+
+            return 'GoingTime ' + hour + ':' + minutes;
+        },
+        comingDuration: function(model) {
+            var goingDuration = model.goingDuration;
+            var hour = parseInt(goingDuration / SIXTY_MINUTES, 10);
+            var minutes = goingDuration % SIXTY_MINUTES;
+
+            return 'ComingTime ' + hour + ':' + minutes;
+        },
+        popupDetailRepeat: function(model) {
+            return model.recurrenceRule;
+        },
+        popupDetailBody: function(model) {
+            return model.body;
         }
     }
 });
@@ -383,9 +426,9 @@ cal.on({
     'beforeCreateSchedule': function(e) {
         console.log('beforeCreateSchedule', e);
         // open a creation popup
-        
+
         // If you dont' want to show any popup, just use `e.guide.clearGuideElement()`
-        
+
         // then close guide element(blue box from dragging or clicking days)
         e.guide.clearGuideElement();
     },
@@ -408,5 +451,26 @@ You can make a calendar read-only. A user can't create and modify schedules, but
 ```js
 var cal = new Calendar('#calendar', {
     isReadOnly: true
+});
+```
+
+### Support timezone
+Show multiple timezones in weekly and daily view. The `showTimezoneCollapseButton` can collapse mutiple timezones. The `timezonesCollapsed` is for initial collapsed state.
+
+```js
+var cal = new Calendar('#calendar', {
+    timezones: [{
+        timezoneOffset: 540,
+        // displayLabel: 'GMT+09:00',
+        tooltip: 'Seoul'
+    }, {
+        timezoneOffset: -420,
+        // displayLabel: 'GMT-08:00',
+        tooltip: 'Los Angeles'
+    }],
+    week: {
+        showTimezoneCollapseButton: true,
+        timezonesCollapsed: false
+    }
 });
 ```

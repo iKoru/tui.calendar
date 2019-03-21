@@ -46,13 +46,14 @@ Desktop.ini
 .project
 .metadata
 
-# vscode 
+# vscode
 .vscode
 
 # etc
 temp
 doc
 report
+tui.calendar
 # dist
 *.vim
 
