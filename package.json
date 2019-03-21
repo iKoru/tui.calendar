@@ -1,13 +1,13 @@
 {
   "name": "tui-calendar",
-  "author": "NHNEnt FE Development Lab <dl_javascript@nhnent.com>",
+  "author": "iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>",
   "version": "1.11.0",
   "main": "dist/tui-calendar.js",
   "license": "MIT",
   "description": "TOAST UI Calendar",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nhnent/tui.calendar.git"
+    "url": "https://github.com/iKoru/tui.calendar.git"
   },
   "keywords": [
     "nhnent",
@@ -78,7 +78,7 @@
     "test:ne": "KARMA_SERVER=ne karma start",
     "build": "webpack --mode development",
     "test:types": "tsc --project test/types",
-    "bundle": "webpack --mode development && NODE_ENV=production webpack --mode production && node tsBannerGenerator.js",
+    "bundle": "webpack --mode development && NODE_ENV=production webpack --mode production",
     "serve": "webpack-dev-server --mode development --progress --inline --hot",
     "cpy-dist2doc": "mkdir -p doc/dist && cp -f -r dist doc",
     "release-note": "tuie",
