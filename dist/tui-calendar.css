@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.7.0 | Mon Mar 18 2019
+ * @version 1.7.0 | Thu Mar 21 2019
  * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -118,6 +118,7 @@
 .tui-full-calendar-weekday-grid-line .tui-full-calendar-weekday-grid-footer {
   position: absolute;
   bottom: 4px;
+  right: 0;
 }
 .tui-full-calendar-weekday-grid-line .tui-full-calendar-weekday-grid-date {
   display: inline-block;
@@ -131,15 +132,11 @@
   margin-right: 5px;
 }
 .tui-full-calendar-weekday-grid-line .tui-full-calendar-weekday-grid-more-schedules {
-  float: right;
   display: inline-block;
-  height: 27px;
-  line-height: 27px;
-  padding: 0 5px;
-  text-align: center;
-  font-size: 11px;
-  font-weight: bold;
-  color: #aaa;
+  height: 24px;
+  line-height: 1.5;
+  padding: 0 10px;
+  font-size: 10px;
 }
 .tui-full-calendar-weekday-creation {
   top: 0;
@@ -347,7 +344,7 @@
   top: -11px;
   left: 0;
   right: 5px;
-  text-align: right;
+  text-align: left;
   line-height: 25px;
 }
 .tui-full-calendar-timegrid-right {
@@ -390,7 +387,7 @@
 .tui-full-calendar-timegrid-hourmarker-time {
   padding-right: 5px;
   line-height: 12px;
-  text-align: right;
+  text-align: left;
   display: table-cell;
   vertical-align: bottom;
 }
