@@ -12,6 +12,7 @@ var datetime = require('../../common/datetime');
 var TZDate = require('../../common/timezone').Date;
 var Collection = require('../../common/collection');
 var ScheduleViewModel = require('../../model/viewModel/scheduleViewModel');
+var CalendarViewModel = require('../../model/viewModel/calendarViewModel');// NMNS CUSTOMIZING
 
 var Core = {
     /**
@@ -245,6 +246,26 @@ var Core = {
 
         modelColl.each(function(model) {
             viewModelColl.add(ScheduleViewModel.create(model));
+        });
+
+        return viewModelColl;
+    },
+
+    /**
+     * NMNS CUSTOMIZING
+     * Convert schedule model collection to calendar view model collection.
+     * @param {Collection} modelColl - collection of schedule model
+     * @returns {Collection} collection of calendar view model
+     */
+    convertToCalendarViewModel: function(modelColl) {
+        var viewModelColl;
+
+        viewModelColl = new Collection(function(viewModel) {
+            return viewModel.cid();
+        });
+
+        modelColl.each(function(model) {
+            viewModelColl.add(CalendarViewModel.create(model));
         });
 
         return viewModelColl;

@@ -1,7 +1,7 @@
 /*!
  * TOAST UI Calendar
  * @version 1.11.0 | Thu Mar 21 2019
- * @author NHNEnt FE Development Lab <dl_javascript@nhnent.com>
+ * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -18823,6 +18823,7 @@ Month.prototype.render = function() {
             theme: theme
         };
         // NMNS CUSTOMIZING START
+        console.log('eventsInDateRange : ', eventsInDateRange);
         util.forEach(eventsInDateRange, function(matrix) {
             util.forEach(matrix, function(row) {
                 util.forEach(row, function(data) {

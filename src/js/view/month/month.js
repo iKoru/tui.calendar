@@ -265,6 +265,7 @@ Month.prototype.render = function() {
             theme: theme
         };
         // NMNS CUSTOMIZING START
+        console.log('eventsInDateRange : ', eventsInDateRange);
         util.forEach(eventsInDateRange, function(matrix) {
             util.forEach(matrix, function(row) {
                 util.forEach(row, function(data) {
