@@ -14,8 +14,9 @@ var datetime = require('../../common/datetime');
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
  * @param {number} count number of schedules of the given calendar id on the date
+ * @param {object} calendar calendar
  */
-function CalendarViewModel(calendarId, date, count) {
+function CalendarViewModel(calendarId, date, count, calendar) {
     /**
      * The model of schedule.
      * @type {object}
@@ -23,7 +24,8 @@ function CalendarViewModel(calendarId, date, count) {
     this.model = {
         calendarId: calendarId,
         date: date,
-        count: count
+        count: count,
+        calendar: calendar
     };
 
     /**
@@ -111,10 +113,11 @@ function CalendarViewModel(calendarId, date, count) {
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
  * @param {number} count number of schedules of the given calendar id on the date
+ * @param {object} calendar calendar.
  * @returns {CalendarViewModel} CalendarViewModel instance.
  */
-CalendarViewModel.create = function(calendarId, date, count) {
-    return new CalendarViewModel(calendarId, date, count);
+CalendarViewModel.create = function(calendarId, date, count, calendar) {
+    return new CalendarViewModel(calendarId, date, count, calendar);
 };
 
 /**********
@@ -128,6 +131,15 @@ CalendarViewModel.create = function(calendarId, date, count) {
  */
 CalendarViewModel.prototype.getDate = function() {
     return this.model.date;
+};
+
+/**
+ * return calendarId property to render properly
+ *
+ * @returns {String} calendar id
+ */
+CalendarViewModel.prototype.getCalendarId = function() {
+    return this.model.calendarId;
 };
 
 /**

@@ -5927,10 +5927,11 @@ setterMethods.forEach(function(methodName) {
 });
 
 // NMNS CUSTOMIZING
-TZDate.prototype.addDays = function(days) {
+TZDate.prototype.getDaysAfter = function(days) {
     var newDate = new Date(this.valueOf());
     newDate.setDate(newDate.getDate() + days);
-    this.setDate(new TZDate(newDate));
+
+    return new TZDate(newDate);
 };
 
 module.exports = {
@@ -7428,33 +7429,35 @@ var Core = {
         var current = new TZDate(start);
 
         viewModelColl = new Collection(function(viewModel) {
-            return viewModel.cid();
+            return viewModel.cid ? viewModel.cid() : util.stamp(viewModel);
         });
 
         groupColl = modelColl.groupBy('calendarId');
         while (true) { // eslint-disable-line no-constant-condition
-            Object.keys(groupColl).forEach(function(calendarId) {
+            Object.keys(groupColl).forEach(function(calendarId) { // eslint-disable-line no-loop-func
                 var count = 0;
                 groupColl[calendarId].each(function(schedule) {
-                    if ((datetime.compare(schedule.start, start) < 0 || datetime.isSameDate(schedule.start, start))
-                        && (datetime.compare(schedule.end, end) > 0 || datetime.isSameDate(schedule.end, end))) {
+                    if ((datetime.compare(schedule.start, current) < 0 || datetime.isSameDate(schedule.start, current))
+                    && (datetime.compare(schedule.end, current) > 0 || datetime.isSameDate(schedule.end, current))) {
                         count += 1;
                     }
                 });
-                viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), count),
-                    calendars.find(function(calendar) {
-                        return calendar.calendarId === calendarId;
-                    }) ||
-                    {
-                        borderColor: '#334150',
-                        color: '#334150',
-                        bgColor: '#99a0a7'
-                    });
+                if (count > 0) {
+                    viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), count,
+                        calendars.find(function(calendar) {
+                            return calendar.id === calendarId;
+                        }) ||
+                        {
+                            borderColor: '#334150',
+                            color: '#334150',
+                            bgColor: '#99a0a7'
+                        }));
+                }
             });
             if (datetime.isSameDate(current, end)) {
                 break;
             } else {
-                current.addDays(1);
+                current = current.getDaysAfter(1);
             }
         }
 
@@ -7517,27 +7520,6 @@ var Month = {
     },
 
     /**
-     * Adjust render range to render properly.
-     *
-     * Limit start, end for each allday schedules and expand start, end for
-     * each time schedules
-     * @this Base
-     * @param {Date} start - render start date
-     * @param {Date} end - render end date
-     * @param {Collection} vColl - view model collection
-     * property.
-     */
-    _adjustRenderRange: function(start, end, vColl) {
-        var ctrlCore = this.Core;
-
-        vColl.each(function(viewModel) {
-            if (viewModel.model.isAllDay || viewModel.hasMultiDates) {
-                ctrlCore.limitRenderRange(start, end, viewModel);
-            }
-        });
-    },
-
-    /**
      * Get max top index value for allday schedules in specific date (YMD)
      * @this Base
      * @param {string} ymd - yyyymmdd formatted value
@@ -7569,7 +7551,7 @@ var Month = {
         var ctrlMonth = this.Month;
         var getAlldayMaxTopIndexAtYMD = ctrlMonth._getAlldayMaxTopIndexAtYMD;
         var vAlldayColl = vColl.find(ctrlMonth._onlyAlldayFilter);
-        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.schedule.asc);
+        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.calendar.asc);
         var maxIndexInYMD = {};
 
         sortedTimeSchedules.forEach(function(timeViewModel) {
@@ -7593,7 +7575,7 @@ var Month = {
     _stackTimeFromTop: function(vColl) {
         var ctrlMonth = this.Month;
         var vAlldayColl = vColl.find(ctrlMonth._onlyAlldayFilter);
-        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.schedule.asc);
+        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.calendar.asc);
         var indiceInYMD = {};
         var dateMatrix = this.dateMatrix;
 
@@ -7622,27 +7604,6 @@ var Month = {
                 }
             }
             topArrayInYMD.push(timeViewModel.top);
-        });
-    },
-
-    /**
-     * Convert multi-date time schedule to all-day schedule
-     * @this Base
-     * @param {Collection} vColl - view model collection
-     * property.
-     */
-    _addMultiDatesInfo: function(vColl) {
-        vColl.each(function(viewModel) {
-            var model = viewModel.model;
-            var start = model.getStarts();
-            var end = model.getEnds();
-
-            viewModel.hasMultiDates = !datetime.isSameDate(start, end);
-
-            if (!model.isAllDay && viewModel.hasMultiDates) {
-                viewModel.renderStarts = datetime.start(start);
-                viewModel.renderEnds = datetime.end(end);
-            }
         });
     },
 
@@ -17804,8 +17765,9 @@ var datetime = __webpack_require__(/*! ../../common/datetime */ "./src/js/common
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
  * @param {number} count number of schedules of the given calendar id on the date
+ * @param {object} calendar calendar
  */
-function CalendarViewModel(calendarId, date, count) {
+function CalendarViewModel(calendarId, date, count, calendar) {
     /**
      * The model of schedule.
      * @type {object}
@@ -17813,7 +17775,8 @@ function CalendarViewModel(calendarId, date, count) {
     this.model = {
         calendarId: calendarId,
         date: date,
-        count: count
+        count: count,
+        calendar: calendar
     };
 
     /**
@@ -17901,10 +17864,11 @@ function CalendarViewModel(calendarId, date, count) {
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
  * @param {number} count number of schedules of the given calendar id on the date
+ * @param {object} calendar calendar.
  * @returns {CalendarViewModel} CalendarViewModel instance.
  */
-CalendarViewModel.create = function(calendarId, date, count) {
-    return new CalendarViewModel(calendarId, date, count);
+CalendarViewModel.create = function(calendarId, date, count, calendar) {
+    return new CalendarViewModel(calendarId, date, count, calendar);
 };
 
 /**********
@@ -17918,6 +17882,15 @@ CalendarViewModel.create = function(calendarId, date, count) {
  */
 CalendarViewModel.prototype.getDate = function() {
     return this.model.date;
+};
+
+/**
+ * return calendarId property to render properly
+ *
+ * @returns {String} calendar id
+ */
+CalendarViewModel.prototype.getCalendarId = function() {
+    return this.model.calendarId;
 };
 
 /**
@@ -21829,11 +21802,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(container.lambda(((stack1 = (depth0 != null ? depth0.styles : depth0)) != null ? stack1.borderTop : stack1), depth0))
     + ";\n\"></div>\n<div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "weekday-schedules\"></div>\n<div class=\""
-    + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-grid\">\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.dates : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "</div>\n";
+    + "</div>\n<div class=\""
+    + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
+    + "weekday-schedules\"></div>\n";
 },"useData":true});
 
 /***/ }),
@@ -21905,7 +21878,9 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias3(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-schedule-title\" style=\"color: "
     + alias3(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.calendar : stack1)) != null ? stack1.color : stack1), depth0))
-    + "\" data-title=\"예약 "
+    + "\" data-title=\""
+    + alias3(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.calendar : stack1)) != null ? stack1.name : stack1), depth0))
+    + " 예약 "
     + alias3(alias5(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.count : stack1), depth0))
     + "건\">"
     + ((stack1 = (helpers["time-tmpl"] || (depth0 && depth0["time-tmpl"]) || alias2).call(alias1,(depth0 != null ? depth0.model : depth0),{"name":"time-tmpl","hash":{},"data":data})) != null ? stack1 : "")

@@ -158,10 +158,11 @@ setterMethods.forEach(function(methodName) {
 });
 
 // NMNS CUSTOMIZING
-TZDate.prototype.addDays = function(days) {
+TZDate.prototype.getDaysAfter = function(days) {
     var newDate = new Date(this.valueOf());
     newDate.setDate(newDate.getDate() + days);
-    this.setDate(new TZDate(newDate));
+
+    return new TZDate(newDate);
 };
 
 module.exports = {

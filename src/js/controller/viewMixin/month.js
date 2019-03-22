@@ -39,27 +39,6 @@ var Month = {
     },
 
     /**
-     * Adjust render range to render properly.
-     *
-     * Limit start, end for each allday schedules and expand start, end for
-     * each time schedules
-     * @this Base
-     * @param {Date} start - render start date
-     * @param {Date} end - render end date
-     * @param {Collection} vColl - view model collection
-     * property.
-     */
-    _adjustRenderRange: function(start, end, vColl) {
-        var ctrlCore = this.Core;
-
-        vColl.each(function(viewModel) {
-            if (viewModel.model.isAllDay || viewModel.hasMultiDates) {
-                ctrlCore.limitRenderRange(start, end, viewModel);
-            }
-        });
-    },
-
-    /**
      * Get max top index value for allday schedules in specific date (YMD)
      * @this Base
      * @param {string} ymd - yyyymmdd formatted value
@@ -91,7 +70,7 @@ var Month = {
         var ctrlMonth = this.Month;
         var getAlldayMaxTopIndexAtYMD = ctrlMonth._getAlldayMaxTopIndexAtYMD;
         var vAlldayColl = vColl.find(ctrlMonth._onlyAlldayFilter);
-        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.schedule.asc);
+        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.calendar.asc);
         var maxIndexInYMD = {};
 
         sortedTimeSchedules.forEach(function(timeViewModel) {
@@ -115,7 +94,7 @@ var Month = {
     _stackTimeFromTop: function(vColl) {
         var ctrlMonth = this.Month;
         var vAlldayColl = vColl.find(ctrlMonth._onlyAlldayFilter);
-        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.schedule.asc);
+        var sortedTimeSchedules = vColl.find(ctrlMonth._onlyTimeFilter).sort(array.compare.calendar.asc);
         var indiceInYMD = {};
         var dateMatrix = this.dateMatrix;
 
@@ -144,27 +123,6 @@ var Month = {
                 }
             }
             topArrayInYMD.push(timeViewModel.top);
-        });
-    },
-
-    /**
-     * Convert multi-date time schedule to all-day schedule
-     * @this Base
-     * @param {Collection} vColl - view model collection
-     * property.
-     */
-    _addMultiDatesInfo: function(vColl) {
-        vColl.each(function(viewModel) {
-            var model = viewModel.model;
-            var start = model.getStarts();
-            var end = model.getEnds();
-
-            viewModel.hasMultiDates = !datetime.isSameDate(start, end);
-
-            if (!model.isAllDay && viewModel.hasMultiDates) {
-                viewModel.renderStarts = datetime.start(start);
-                viewModel.renderEnds = datetime.end(end);
-            }
         });
     },
 

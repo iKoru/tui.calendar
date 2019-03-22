@@ -176,13 +176,13 @@
   border-left-width: 0;
 }
 .tui-full-calendar-weekday-schedule.tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
-  padding-left: 8px;
+  padding-left: 11px;
 }
 .tui-full-calendar-weekday-schedule-bullet {
   position: absolute;
   padding: 0;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   top: 6px;
   left: 1px;
   border-radius: 50%;

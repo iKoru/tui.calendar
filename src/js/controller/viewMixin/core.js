@@ -265,33 +265,35 @@ var Core = {
         var current = new TZDate(start);
 
         viewModelColl = new Collection(function(viewModel) {
-            return viewModel.cid();
+            return viewModel.cid ? viewModel.cid() : util.stamp(viewModel);
         });
 
         groupColl = modelColl.groupBy('calendarId');
         while (true) { // eslint-disable-line no-constant-condition
-            Object.keys(groupColl).forEach(function(calendarId) {
+            Object.keys(groupColl).forEach(function(calendarId) { // eslint-disable-line no-loop-func
                 var count = 0;
                 groupColl[calendarId].each(function(schedule) {
-                    if ((datetime.compare(schedule.start, start) < 0 || datetime.isSameDate(schedule.start, start))
-                        && (datetime.compare(schedule.end, end) > 0 || datetime.isSameDate(schedule.end, end))) {
+                    if ((datetime.compare(schedule.start, current) < 0 || datetime.isSameDate(schedule.start, current))
+                    && (datetime.compare(schedule.end, current) > 0 || datetime.isSameDate(schedule.end, current))) {
                         count += 1;
                     }
                 });
-                viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), count),
-                    calendars.find(function(calendar) {
-                        return calendar.calendarId === calendarId;
-                    }) ||
-                    {
-                        borderColor: '#334150',
-                        color: '#334150',
-                        bgColor: '#99a0a7'
-                    });
+                if (count > 0) {
+                    viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), count,
+                        calendars.find(function(calendar) {
+                            return calendar.id === calendarId;
+                        }) ||
+                        {
+                            borderColor: '#334150',
+                            color: '#334150',
+                            bgColor: '#99a0a7'
+                        }));
+                }
             });
             if (datetime.isSameDate(current, end)) {
                 break;
             } else {
-                current.addDays(1);
+                current = current.getDaysAfter(1);
             }
         }
 

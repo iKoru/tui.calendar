@@ -6,7 +6,7 @@
             <span class="{{CSS_PREFIX}}weekday-schedule-bullet"
                 style="top: {{@root.styles.scheduleBulletTop}}px;background:{{model.calendar.borderColor}}"
             ></span>
-            <span class="{{CSS_PREFIX}}weekday-schedule-title" style="color: {{model.calendar.color}}" data-title="예약 {{model.count}}건">{{{time-tmpl model}}}</span>
+            <span class="{{CSS_PREFIX}}weekday-schedule-title" style="color: {{model.calendar.color}}" data-title="{{model.calendar.name}} 예약 {{model.count}}건">{{{time-tmpl model}}}</span>
         </div>
     </div>
     {{/fi ~}}
