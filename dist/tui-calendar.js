@@ -14618,7 +14618,7 @@ MonthMoveGuide.prototype._onDragStart = function(dragStartEvent) {
         ),
         styles: {
             scheduleHeight: weekdayOptions.scheduleHeight,
-            scheduleBulletTop: weekdayOptions.scheduleHeight / 3,
+            scheduleBulletTop: weekdayOptions.scheduleHeight / 4,
             borderRadius: monthView.controller.theme.month.schedule.borderRadius
         }
     }));
@@ -19225,7 +19225,7 @@ function More(options, container, theme) {
         },
         scheduleHeight: parseInt(theme.month.schedule.height, 10) || 18,
         scheduleGutter: parseInt(theme.month.schedule.marginTop, 10) || 2,
-        scheduleBulletTop: (parseInt(theme.month.schedule.height, 10) || 18) / 3,
+        scheduleBulletTop: (parseInt(theme.month.schedule.height, 10) || 18) / 4,
         borderRadius: theme.month.schedule.borderRadius
     }, options);
 
@@ -19596,7 +19596,7 @@ WeekdayInMonth.prototype._getStyles = function(theme) {
         styles.borderRadius = theme.month.schedule.borderRadius;
         styles.marginLeft = theme.month.schedule.marginLeft;
         styles.marginRight = theme.month.schedule.marginRight;
-        styles.scheduleBulletTop = this.options.scheduleHeight / 3;
+        styles.scheduleBulletTop = this.options.scheduleHeight / 4;
     }
 
     return styles;
@@ -21863,8 +21863,6 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "weekday-schedule "
     + alias3(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "weekday-schedule-time\"\n            style=\"height:"
-    + alias3(alias5(((stack1 = (data && data.root)) && stack1.scheduleHeight), depth0))
-    + "px; line-height:"
     + alias3(alias5(((stack1 = (data && data.root)) && stack1.scheduleHeight), depth0))
     + "px;\" title=\""
     + alias3(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.calendar : stack1)) != null ? stack1.name : stack1), depth0))

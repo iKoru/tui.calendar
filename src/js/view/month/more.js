@@ -50,7 +50,7 @@ function More(options, container, theme) {
         },
         scheduleHeight: parseInt(theme.month.schedule.height, 10) || 18,
         scheduleGutter: parseInt(theme.month.schedule.marginTop, 10) || 2,
-        scheduleBulletTop: (parseInt(theme.month.schedule.height, 10) || 18) / 3,
+        scheduleBulletTop: (parseInt(theme.month.schedule.height, 10) || 18) / 4,
         borderRadius: theme.month.schedule.borderRadius
     }, options);
 

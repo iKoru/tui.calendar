@@ -146,7 +146,7 @@ MonthMoveGuide.prototype._onDragStart = function(dragStartEvent) {
         ),
         styles: {
             scheduleHeight: weekdayOptions.scheduleHeight,
-            scheduleBulletTop: weekdayOptions.scheduleHeight / 3,
+            scheduleBulletTop: weekdayOptions.scheduleHeight / 4,
             borderRadius: monthView.controller.theme.month.schedule.borderRadius
         }
     }));

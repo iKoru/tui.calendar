@@ -153,7 +153,7 @@ WeekdayInMonth.prototype._getStyles = function(theme) {
         styles.borderRadius = theme.month.schedule.borderRadius;
         styles.marginLeft = theme.month.schedule.marginLeft;
         styles.marginRight = theme.month.schedule.marginRight;
-        styles.scheduleBulletTop = this.options.scheduleHeight / 3;
+        styles.scheduleBulletTop = this.options.scheduleHeight / 4;
     }
 
     return styles;

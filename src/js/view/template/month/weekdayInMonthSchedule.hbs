@@ -2,7 +2,7 @@
     <div data-id="{{stamp model}}" class="{{CSS_PREFIX}}weekday-schedule-block {{CSS_PREFIX}}weekday-schedule-block-{{stamp model}}{{#if exceedLeft}} {{CSS_PREFIX}}weekday-exceed-left{{/if}}{{#if exceedRight}} {{CSS_PREFIX}}weekday-exceed-right{{/if}}{{#if isPast}} {{CSS_PREFIX}}past{{/if}}"
          style="{{month-scheduleBlock this @root.dates @root.scheduleBlockHeight @root.gridHeaderHeight}}; margin-top:{{@root.scheduleBlockGutter}}px">
         <div data-calendar-id="{{model.calendarId}}" class="{{CSS_PREFIX}}weekday-schedule {{CSS_PREFIX}}weekday-schedule-time"
-            style="height:{{@root.scheduleHeight}}px; line-height:{{@root.scheduleHeight}}px;" title="{{model.calendar.name}}">
+            style="height:{{@root.scheduleHeight}}px;" title="{{model.calendar.name}}">
             <span class="{{CSS_PREFIX}}weekday-schedule-bullet"
                 style="top: {{@root.styles.scheduleBulletTop}}px;background:{{model.calendar.borderColor}}"
             ></span>
