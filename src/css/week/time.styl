@@ -185,7 +185,8 @@
         right: 10px
         left: 1px
         padding: 3px
-        width: 100%
+        width: calc(100% - 10px)
+        margin:5px 0 0 5px
 
     .guide-move,
     .guide-resize
@@ -199,4 +200,17 @@
 
     .guide-bottom
         position: absolute
-        bottom: 3px
+        top: 50%
+        left: 0
+        right: 0
+        text-align: center
+        transform: translateY(-50%)
+
+.{css-prefix}week-day 
+    +prefix-classes(time)
+        .guide-bottom
+            left: unset 
+            right: 20px
+            top:15px
+            text-align: right
+            transform: none

@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Fri Mar 22 2019
+ * @version 1.11.0 | Tue Mar 26 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -15942,6 +15942,7 @@ TimeCreationGuide.prototype._refreshGuideElement = function(top, height, start, 
         domutil.removeClass(timeElement, config.classname('time-guide-bottom'));
     } else {
         domutil.addClass(timeElement, config.classname('time-guide-bottom'));
+        domutil.addClass(timeElement, 'montserrat'); // NMNS CUSTOMIZING
     }
 };
 
@@ -15986,7 +15987,7 @@ TimeCreationGuide.prototype._limitStyleData = function(top, height, start, end) 
     var unitData = this._styleUnit;
 
     top = common.limit(top, [0], [unitData[0]]);
-    height = common.limit(top + height, [0], [unitData[0]]) - top;
+    height = common.limit(top + height, [0], [unitData[0]]) - top - 10; // NMNS CUSTOMIZING
     start = common.limit(start, [unitData[2]], [unitData[3]]);
     end = common.limit(end, [unitData[2]], [unitData[3]]);
 

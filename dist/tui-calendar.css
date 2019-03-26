@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Fri Mar 22 2019
+ * @version 1.11.0 | Tue Mar 26 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -502,7 +502,8 @@
   right: 10px;
   left: 1px;
   padding: 3px;
-  width: 100%;
+  width: calc(100% - 10px);
+  margin: 5px 0 0 5px;
 }
 .tui-full-calendar-time-guide-move .tui-full-calendar-time-schedule,
 .tui-full-calendar-time-guide-resize .tui-full-calendar-time-schedule,
@@ -516,7 +517,18 @@
 }
 .tui-full-calendar-time-guide-bottom {
   position: absolute;
-  bottom: 3px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transform: translateY(-50%);
+}
+.tui-full-calendar-week-day .tui-full-calendar-time-guide-bottom {
+  left: unset;
+  right: 20px;
+  top: 15px;
+  text-align: right;
+  transform: none;
 }
 .tui-full-calendar-month {
   height: 100%;
@@ -581,10 +593,10 @@
   margin-top: 2px;
 }
 .tui-full-calendar-month-creation-guide {
-  top: 0;
-  bottom: -1px;
-  left: -1px;
-  right: 0;
+  top: 5px;
+  bottom: 4px;
+  left: 4px;
+  right: 5px;
   position: absolute;
   z-index: 20;
 }

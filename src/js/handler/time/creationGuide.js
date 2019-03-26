@@ -116,6 +116,7 @@ TimeCreationGuide.prototype._refreshGuideElement = function(top, height, start, 
         domutil.removeClass(timeElement, config.classname('time-guide-bottom'));
     } else {
         domutil.addClass(timeElement, config.classname('time-guide-bottom'));
+        domutil.addClass(timeElement, 'montserrat'); // NMNS CUSTOMIZING
     }
 };
 
@@ -160,7 +161,7 @@ TimeCreationGuide.prototype._limitStyleData = function(top, height, start, end) 
     var unitData = this._styleUnit;
 
     top = common.limit(top, [0], [unitData[0]]);
-    height = common.limit(top + height, [0], [unitData[0]]) - top;
+    height = common.limit(top + height, [0], [unitData[0]]) - top - 10; // NMNS CUSTOMIZING
     start = common.limit(start, [unitData[2]], [unitData[3]]);
     end = common.limit(end, [unitData[2]], [unitData[3]]);
 
