@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Tue Mar 26 2019
+ * @version 1.11.0 | Thu Mar 28 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -9347,24 +9347,9 @@ Calendar.prototype._onClickDayname = function(clickScheduleData) {
  */
 Calendar.prototype._onBeforeCreate = function(createScheduleData) {
     if (this._options.useCreationPopup && !createScheduleData.useCreationPopup) {
-        // NMNS CUSTOMIZING START
-        if (this._showCreationPopup && createScheduleData.category !== 'task') {
-            this._showCreationPopup(createScheduleData);
+        this._showCreationPopup(createScheduleData);
 
-            document.body.style.paddingRight = (window.innerWidth - document.documentElement.clientWidth) + 'px';
-            document.body.classList.add('modal-open');
-            document.getElementsByClassName(config.classname('screen'))[0].style.visibility = 'visible';// show screen
-            document.getElementsByClassName(config.classname('screen'))[0].style.opacity = 0.5;// show screen
-
-            return;
-        }
-        if (this._showCreationPopup) {
-            NMNS.initTaskModal(createScheduleData);
-            $('#taskModal').modal('show');
-
-            return;
-        }
-        // NMNS CUSTOMIZING END
+        return;
     }
     /**
      * Fire this event when select time period in daily, weekly, monthly.
@@ -19741,13 +19726,7 @@ ScheduleCreationPopup.prototype._closePopup = function(target) {
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
         this.hide();
-        // NMNS CUSTOMIZING START
-        document.body.style.paddingRight = '0px';
-        document.body.classList.remove('modal-open');
-        domutil.find(config.classname('.screen')).style.opacity = 0; // hide screen
-        domutil.find(config.classname('.screen')).style.visibility = 'hidden'; // hide screen
 
-        // NMNS CUSTOMIZING END
         return true;
     }
 
@@ -20488,12 +20467,7 @@ ScheduleCreationPopup.prototype.hide = function() {
         this.guide.clearGuideElement();
         this.guide = null;
     }
-    // NMNS CUSTOMIZING START
-    document.body.style.paddingRight = '0px';
-    document.body.classList.remove('modal-open');
-    domutil.find(config.classname('.screen')).style.opacity = 0; // hide screen
-    domutil.find(config.classname('.screen')).style.visibility = 'hidden'; // hide screen
-    // NMNS CUSTOMIZING END
+
     domevent.off(document.body, 'mousedown', this._onMouseDown, this);
 };
 
@@ -20618,21 +20592,11 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
         // NMNS CUSTOMIZING START
-        if (this._schedule.category !== 'task') {
-            this.fire('beforeUpdateSchedule', {
-                schedule: this._schedule,
-                triggerEventName: 'click',
-                target: this._scheduleEl
-            });
-            document.body.style.paddingRight = (window.innerWidth - document.documentElement.clientWidth) + 'px';
-            document.body.classList.add('modal-open');
-            domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
-            domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
-        } else {
-            NMNS.initTaskModal(this._schedule);
-            domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
-            $('#taskModal').modal('show');
-        }
+        this.fire('beforeUpdateSchedule', {
+            schedule: this._schedule,
+            triggerEventName: 'click',
+            target: this._scheduleEl
+        });
         // NMNS CUSTOMIZING END
         this.hide();
     }
@@ -20645,7 +20609,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
 ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
     var className = config.classname('popup-delete');
 
-    if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
+    if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 ' + (this._schedule.category === 'task' ? '일정' : '예약') + '을 삭제하시겠어요?')) {
         this.fire('beforeDeleteSchedule', {
             schedule: this._schedule
         });
@@ -20663,10 +20627,20 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
 ScheduleDetailPopup.prototype.render = function (viewModel) {
     var layer = this.layer;
     var self = this;
+    var contents;
 
+    try {
+        contents = JSON.parse(viewModel.schedule.raw ? viewModel.schedule.raw.contents : viewModel.schedule.contents)
+            .map(function(item) {
+                return item.value;
+            }).join(', ');
+    } catch (error) {
+        contents = viewModel.schedule.raw.contents;
+    }
     layer.setContent(tmpl({
         schedule: viewModel.schedule,
-        calendar: viewModel.calendar
+        calendar: viewModel.calendar,
+        contents: contents
     }));
     layer.show();
     // NMNS CUSTOMIZING START
@@ -22045,7 +22019,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-detail\">\n"
     + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(11, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.contents : depth0),{"name":"if","hash":{},"fn":container.program(11, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.etc : stack1),{"name":"if","hash":{},"fn":container.program(13, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(15, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n    <div class=\""
@@ -22078,11 +22052,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.contents : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "");
 },"5":function(container,depth0,helpers,partials,data) {
-    var stack1;
+    var helper;
 
-  return container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1), depth0));
+  return container.escapeExpression(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"contents","hash":{},"data":data}) : helper)));
 },"7":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -22098,14 +22072,14 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4((helpers["dash-contact"] || (depth0 && depth0["dash-contact"]) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"dash-contact","hash":{},"data":data}))
     + "</span>\n        <button id=\"detailPopupResendAlrim\" type=\"button\" class=\"btn btn-primary btn-sm py-0 ml-1\">알림톡 다시 보내기</button>\n      </div>\n";
 },"11":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-detail-item\" title=\"예약 내용\">\n        <i class=\"fas fa-list-ul fa-fw align-middle\"></i>\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content\">"
-    + alias4(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1), depth0))
+    + alias4(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"contents","hash":{},"data":data}) : helper)))
     + "</span>\n      </div>\n";
 },"13":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
@@ -22161,7 +22135,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "</div>\n    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-detail\">\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(29, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(31, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(15, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
@@ -22189,14 +22163,18 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 },"26":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(27, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(27, data, 0),"inverse":container.program(29, data, 0),"data":data})) != null ? stack1 : "");
 },"27":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1), depth0));
+},"29":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "dashContact("
     + container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1), depth0))
     + ")";
-},"29":function(container,depth0,helpers,partials,data) {
+},"31":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
@@ -22591,18 +22569,16 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "time-schedule-content "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "time-schedule-content-time\" style=\"height: "
-    + alias4(((helper = (helper = helpers.modelDurationHeight || (depth0 != null ? depth0.modelDurationHeight : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"modelDurationHeight","hash":{},"data":data}) : helper)))
-    + "px;\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(22, data, 0),"inverse":container.program(24, data, 0),"data":data})) != null ? stack1 : "")
-    + "                "
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasComingDuration : depth0),{"name":"if","hash":{},"fn":container.program(26, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "time-schedule-content-time\" style=\""
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(26, data, 0),"inverse":container.program(28, data, 0),"data":data})) != null ? stack1 : "")
+    + "\n                "
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasComingDuration : depth0),{"name":"if","hash":{},"fn":container.program(30, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\">\n                    "
     + ((stack1 = (helpers["time-tmpl"] || (depth0 && depth0["time-tmpl"]) || alias2).call(alias1,(depth0 != null ? depth0.model : depth0),{"name":"time-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "\n                </div>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasComingDuration : depth0),{"name":"if","hash":{},"fn":container.program(28, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasComingDuration : depth0),{"name":"if","hash":{},"fn":container.program(32, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "            </div>\n            "
-    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.croppedEnd : depth0),{"name":"unless","hash":{},"fn":container.program(31, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.croppedEnd : depth0),{"name":"unless","hash":{},"fn":container.program(35, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n        </div>\n";
 },"5":function(container,depth0,helpers,partials,data) {
     var helper;
@@ -22690,12 +22666,24 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.borderColor : stack1), depth0))
     + ";\n";
 },"26":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "border-color:"
+    + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.color : stack1), depth0))
+    + ";";
+},"28":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "border-color:"
+    + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.borderColor : stack1), depth0))
+    + ";";
+},"30":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "border-bottom: 1px dashed "
     + container.escapeExpression(((helper = (helper = helpers.travelBorderColor || (depth0 != null ? depth0.travelBorderColor : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"travelBorderColor","hash":{},"data":data}) : helper)))
     + ";";
-},"28":function(container,depth0,helpers,partials,data) {
+},"32":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "                <div class=\""
@@ -22705,17 +22693,17 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "time-schedule-content-travel-time\" style=\"height: "
     + alias4(((helper = (helper = helpers.comingDurationHeight || (depth0 != null ? depth0.comingDurationHeight : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"comingDurationHeight","hash":{},"data":data}) : helper)))
     + "px;\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(22, data, 0),"inverse":container.program(29, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.isFocused : stack1),{"name":"if","hash":{},"fn":container.program(22, data, 0),"inverse":container.program(33, data, 0),"data":data})) != null ? stack1 : "")
     + ";\">"
     + ((stack1 = (helpers["comingDuration-tmpl"] || (depth0 && depth0["comingDuration-tmpl"]) || alias2).call(alias1,(depth0 != null ? depth0.model : depth0),{"name":"comingDuration-tmpl","hash":{},"data":data})) != null ? stack1 : "")
     + "</div>\n";
-},"29":function(container,depth0,helpers,partials,data) {
+},"33":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "                    border-color:"
     + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.borderColor : stack1), depth0))
     + ";\n                ";
-},"31":function(container,depth0,helpers,partials,data) {
+},"35":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=container.escapeExpression;
 
   return "<div class=\""
@@ -24119,7 +24107,7 @@ Time.prototype._getScheduleViewBoundY = function(viewModel, options) {
     return {
         top: top,
         height: Math.max(height, this.options.minHeight) - this.options.defaultMarginBottom,
-        modelDurationHeight: modelDurationHeight,
+        modelDurationHeight: modelDurationHeight - this.options.defaultMarginBottom,
         goingDurationHeight: goingDurationHeight,
         comingDurationHeight: comingDurationHeight,
         hasGoingDuration: goingDuration > 0,

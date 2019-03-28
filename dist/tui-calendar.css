@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Tue Mar 26 2019
+ * @version 1.11.0 | Thu Mar 28 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -481,6 +481,7 @@
   border-left-width: 3px;
   border-left-style: solid;
   padding: 1px 0 0 3px;
+  height: 100%;
 }
 .tui-full-calendar-time-schedule-content-travel-time {
   font-weight: normal;

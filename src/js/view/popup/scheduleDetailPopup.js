@@ -89,21 +89,11 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
         // NMNS CUSTOMIZING START
-        if (this._schedule.category !== 'task') {
-            this.fire('beforeUpdateSchedule', {
-                schedule: this._schedule,
-                triggerEventName: 'click',
-                target: this._scheduleEl
-            });
-            document.body.style.paddingRight = (window.innerWidth - document.documentElement.clientWidth) + 'px';
-            document.body.classList.add('modal-open');
-            domutil.find(config.classname('.screen')).style.opacity = 0.5;// show screen
-            domutil.find(config.classname('.screen')).style.visibility = 'visible';// show screen
-        } else {
-            NMNS.initTaskModal(this._schedule);
-            domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
-            $('#taskModal').modal('show');
-        }
+        this.fire('beforeUpdateSchedule', {
+            schedule: this._schedule,
+            triggerEventName: 'click',
+            target: this._scheduleEl
+        });
         // NMNS CUSTOMIZING END
         this.hide();
     }
@@ -116,7 +106,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
 ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
     var className = config.classname('popup-delete');
 
-    if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 예약(일정)을 삭제하시겠어요?')) {
+    if ((domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) && confirm('정말 이 ' + (this._schedule.category === 'task' ? '일정' : '예약') + '을 삭제하시겠어요?')) {
         this.fire('beforeDeleteSchedule', {
             schedule: this._schedule
         });
@@ -134,10 +124,20 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
 ScheduleDetailPopup.prototype.render = function (viewModel) {
     var layer = this.layer;
     var self = this;
+    var contents;
 
+    try {
+        contents = JSON.parse(viewModel.schedule.raw ? viewModel.schedule.raw.contents : viewModel.schedule.contents)
+            .map(function(item) {
+                return item.value;
+            }).join(', ');
+    } catch (error) {
+        contents = viewModel.schedule.raw.contents;
+    }
     layer.setContent(tmpl({
         schedule: viewModel.schedule,
-        calendar: viewModel.calendar
+        calendar: viewModel.calendar,
+        contents: contents
     }));
     layer.show();
     // NMNS CUSTOMIZING START

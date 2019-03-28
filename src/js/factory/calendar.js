@@ -1284,24 +1284,9 @@ Calendar.prototype._onClickDayname = function(clickScheduleData) {
  */
 Calendar.prototype._onBeforeCreate = function(createScheduleData) {
     if (this._options.useCreationPopup && !createScheduleData.useCreationPopup) {
-        // NMNS CUSTOMIZING START
-        if (this._showCreationPopup && createScheduleData.category !== 'task') {
-            this._showCreationPopup(createScheduleData);
+        this._showCreationPopup(createScheduleData);
 
-            document.body.style.paddingRight = (window.innerWidth - document.documentElement.clientWidth) + 'px';
-            document.body.classList.add('modal-open');
-            document.getElementsByClassName(config.classname('screen'))[0].style.visibility = 'visible';// show screen
-            document.getElementsByClassName(config.classname('screen'))[0].style.opacity = 0.5;// show screen
-
-            return;
-        }
-        if (this._showCreationPopup) {
-            NMNS.initTaskModal(createScheduleData);
-            $('#taskModal').modal('show');
-
-            return;
-        }
-        // NMNS CUSTOMIZING END
+        return;
     }
     /**
      * Fire this event when select time period in daily, weekly, monthly.

@@ -104,13 +104,7 @@ ScheduleCreationPopup.prototype._closePopup = function(target) {
 
     if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
         this.hide();
-        // NMNS CUSTOMIZING START
-        document.body.style.paddingRight = '0px';
-        document.body.classList.remove('modal-open');
-        domutil.find(config.classname('.screen')).style.opacity = 0; // hide screen
-        domutil.find(config.classname('.screen')).style.visibility = 'hidden'; // hide screen
 
-        // NMNS CUSTOMIZING END
         return true;
     }
 
@@ -851,12 +845,7 @@ ScheduleCreationPopup.prototype.hide = function() {
         this.guide.clearGuideElement();
         this.guide = null;
     }
-    // NMNS CUSTOMIZING START
-    document.body.style.paddingRight = '0px';
-    document.body.classList.remove('modal-open');
-    domutil.find(config.classname('.screen')).style.opacity = 0; // hide screen
-    domutil.find(config.classname('.screen')).style.visibility = 'hidden'; // hide screen
-    // NMNS CUSTOMIZING END
+
     domevent.off(document.body, 'mousedown', this._onMouseDown, this);
 };
 

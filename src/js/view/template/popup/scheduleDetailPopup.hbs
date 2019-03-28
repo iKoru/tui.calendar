@@ -3,7 +3,7 @@
     {{#fi schedule.category '!==' 'task'}}
     <div class="{{CSS_PREFIX}}popup-section {{CSS_PREFIX}}section-header">
       <div title="고객이름">
-        <span class="{{CSS_PREFIX}}schedule-title">{{#if schedule.title}}{{schedule.title}}{{else if schedule.raw.contents}}{{schedule.raw.contents}}{{else}}{{{dashContact schedule.raw.contact}}}{{/if}}</span>
+        <span class="{{CSS_PREFIX}}schedule-title">{{#if schedule.title}}{{schedule.title}}{{else if contents}}{{contents}}{{else}}{{{dashContact schedule.raw.contact}}}{{/if}}</span>
       </div>
       <div class="{{CSS_PREFIX}}popup-detail-date {{CSS_PREFIX}}content" title="예약 시간">{{popupDetailDate-tmpl schedule.isAllDay schedule.start schedule.end}}</div>
     </div>
@@ -15,10 +15,10 @@
         <button id="detailPopupResendAlrim" type="button" class="btn btn-primary btn-sm py-0 ml-1">알림톡 다시 보내기</button>
       </div>
       {{/if}}
-      {{#if schedule.raw.contents}}
+      {{#if contents}}
       <div class="{{CSS_PREFIX}}popup-detail-item" title="예약 내용">
         <i class="fas fa-list-ul fa-fw align-middle"></i>
-        <span class="{{CSS_PREFIX}}content">{{schedule.raw.contents}}</span>
+        <span class="{{CSS_PREFIX}}content">{{contents}}</span>
       </div>
       {{/if}}
       {{#if schedule.raw.etc}}

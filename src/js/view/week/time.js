@@ -141,7 +141,7 @@ Time.prototype._getScheduleViewBoundY = function(viewModel, options) {
     return {
         top: top,
         height: Math.max(height, this.options.minHeight) - this.options.defaultMarginBottom,
-        modelDurationHeight: modelDurationHeight,
+        modelDurationHeight: modelDurationHeight - this.options.defaultMarginBottom,
         goingDurationHeight: goingDurationHeight,
         comingDurationHeight: comingDurationHeight,
         hasGoingDuration: goingDuration > 0,
