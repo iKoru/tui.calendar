@@ -94,6 +94,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
             triggerEventName: 'click',
             target: this._scheduleEl
         });
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
         // NMNS CUSTOMIZING END
         this.hide();
     }

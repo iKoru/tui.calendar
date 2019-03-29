@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Thu Mar 28 2019
+ * @version 1.11.0 | Fri Mar 29 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -20597,6 +20597,7 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
             triggerEventName: 'click',
             target: this._scheduleEl
         });
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
         // NMNS CUSTOMIZING END
         this.hide();
     }
