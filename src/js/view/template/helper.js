@@ -376,6 +376,10 @@ Handlebars.registerHelper({
         return model.label;
     },
 
+    'monthlyDetailPopup-tmpl': function(schedules, date) {
+        return '';
+    },
+
     'weekDayname-tmpl': function(model) {
         var classDate = config.classname('dayname-date');
         var className = config.classname('dayname-name');

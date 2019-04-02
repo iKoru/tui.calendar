@@ -129,7 +129,7 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
     if (options.useDetailPopup) {
         detailView = new ScheduleDetailPopup(layoutContainer, baseController.calendars);
         onShowDetailPopup = function (eventData) {
-            var scheduleId = eventData.schedule.calendarId;
+            var scheduleId = eventData.schedule.getCalendarId();
             eventData.calendar = common.find(baseController.calendars, function (calendar) {
                 return calendar.id === scheduleId;
             });

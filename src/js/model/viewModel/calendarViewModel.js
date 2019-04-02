@@ -13,10 +13,10 @@ var datetime = require('../../common/datetime');
  * @constructor
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
- * @param {number} count number of schedules of the given calendar id on the date
+ * @param {array} schedules array of schedules of the given calendar id on the date
  * @param {object} calendar calendar
  */
-function CalendarViewModel(calendarId, date, count, calendar) {
+function CalendarViewModel(calendarId, date, schedules, calendar) {
     /**
      * The model of schedule.
      * @type {object}
@@ -24,7 +24,8 @@ function CalendarViewModel(calendarId, date, count, calendar) {
     this.model = {
         calendarId: calendarId,
         date: date,
-        count: count,
+        schedules: schedules,
+        count: schedules.length,
         calendar: calendar
     };
 
@@ -112,12 +113,12 @@ function CalendarViewModel(calendarId, date, count, calendar) {
  * CalendarViewModel factory method.
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
- * @param {number} count number of schedules of the given calendar id on the date
+ * @param {array} schedules array of schedules of the given calendar id on the date
  * @param {object} calendar calendar.
  * @returns {CalendarViewModel} CalendarViewModel instance.
  */
-CalendarViewModel.create = function(calendarId, date, count, calendar) {
-    return new CalendarViewModel(calendarId, date, count, calendar);
+CalendarViewModel.create = function(calendarId, date, schedules, calendar) {
+    return new CalendarViewModel(calendarId, date, schedules, calendar);
 };
 
 /**********
@@ -167,6 +168,15 @@ CalendarViewModel.prototype.getEnds = function() {
  */
 CalendarViewModel.prototype.getCount = function() {
     return this.model.count;
+};
+
+/**
+ * return schedules property to render
+ *
+ * @returns {array} schedules property.
+ */
+CalendarViewModel.prototype.getSchedules = function() {
+    return this.model.schedules;
 };
 
 /**

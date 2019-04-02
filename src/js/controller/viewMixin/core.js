@@ -271,15 +271,15 @@ var Core = {
         groupColl = modelColl.groupBy('calendarId');
         while (true) { // eslint-disable-line no-constant-condition
             Object.keys(groupColl).forEach(function(calendarId) { // eslint-disable-line no-loop-func
-                var count = 0;
+                var list = [];
                 groupColl[calendarId].each(function(schedule) {
                     if ((datetime.compare(schedule.start, current) < 0 || datetime.isSameDate(schedule.start, current))
                     && (datetime.compare(schedule.end, current) > 0 || datetime.isSameDate(schedule.end, current))) {
-                        count += 1;
+                        list.push(schedule);
                     }
                 });
-                if (count > 0) {
-                    viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), count,
+                if (list.length > 0) {
+                    viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), list,
                         calendars.find(function(calendar) {
                             return calendar.id === calendarId;
                         }) ||

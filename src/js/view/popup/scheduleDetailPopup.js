@@ -11,6 +11,7 @@ var config = require('../../config'),
     domevent = require('../../common/domevent'),
     domutil = require('../../common/domutil');
 var tmpl = require('../template/popup/scheduleDetailPopup.hbs');
+var CalendarViewModel = require('../../model/viewModel/calendarViewModel');// NMNS CUSTOMIZING
 var ARROW_WIDTH_HALF = 8;
 
 /**
@@ -75,14 +76,53 @@ ScheduleDetailPopup.prototype.destroy = function () {
 ScheduleDetailPopup.prototype._onClick = function (clickEvent) {
     var target = (clickEvent.target || clickEvent.srcElement);
 
-    this._onClickEditSchedule(target);
+    if (!this._closePopup(target) && !this._onClickEditSchedule(target) && !this._onClickDeleteSchedule(target)) {
+        this._showDetail(target);
+    }
+};
 
-    this._onClickDeleteSchedule(target);
+/**
+ * Test click event target is close button, and return layer is closed(hidden)
+ * @param {HTMLElement} target click event target
+ * @returns {boolean} whether popup layer is closed or not
+ */
+ScheduleDetailPopup.prototype._closePopup = function(target) {
+    var className = config.classname('popup-close');
+
+    if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+        this.hide();
+
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * Test click event target is detail text, and change the calendar view to target date
+ * @param {HTMLElement} target click event target
+ * @returns {boolean} whether popup layer is closed or not
+ */
+ScheduleDetailPopup.prototype._showDetail = function(target) {
+    if (domutil.hasClass(target, 'monthlyDetailPopupTitle') || domutil.closest(target, '.monthlyDetailPopupTitle') || domutil.hasClass(target, 'monthlyDetailPopupTime') || domutil.closest(target, '.monthlyDetailPopupTime')) {
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+        this.hide();
+        this.fire('beforeChangeView', {
+            date: this._schedule.getStarts(),
+            viewName: 'day'
+        });
+
+        return true;
+    }
+
+    return false;
 };
 
 /**
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
+ * @returns {boolean} whether popup layer is treated or not
  */
 ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
     var className = config.classname('popup-edit');
@@ -97,12 +137,17 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
         domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
         // NMNS CUSTOMIZING END
         this.hide();
+
+        return true;
     }
+
+    return false;
 };
 
 /**
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
+ * @returns {boolean} whether popup layer is treated or not
  */
 ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
     var className = config.classname('popup-delete');
@@ -115,7 +160,11 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
         domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
         // NMNS CUSTOMIZING END
         this.hide();
+
+        return true;
     }
+
+    return false;
 };
 
 /**
@@ -127,34 +176,46 @@ ScheduleDetailPopup.prototype.render = function (viewModel) {
     var self = this;
     var contents;
 
-    try {
-        contents = JSON.parse(viewModel.schedule.raw ? viewModel.schedule.raw.contents : viewModel.schedule.contents)
-            .map(function(item) {
-                return item.value;
-            }).join(', ');
-    } catch (error) {
-        contents = viewModel.schedule.raw.contents;
-    }
-    layer.setContent(tmpl({
-        schedule: viewModel.schedule,
-        calendar: viewModel.calendar,
-        contents: contents
-    }));
-    layer.show();
-    // NMNS CUSTOMIZING START
-    if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
-        if (viewModel.schedule.end.getTime() > new Date().getTime()) {
-            $('#detailPopupResendAlrim').off('click').on('click', function () {
-                NMNS.socket.emit('resend alrimtalk', {
-                    id: viewModel.schedule.id
-                });
-                $(this).addClass('disabled', true);
-            });
-        } else {
-            $('#detailPopupResendAlrim').addClass('d-none');// hide button
+    if (viewModel.schedule instanceof CalendarViewModel) {
+        layer.setContent(tmpl({
+            schedule: viewModel.schedule.getSchedules(),
+            date: viewModel.schedule.getStarts().toDate(),
+            calendar: viewModel.calendar,
+            isWeek: false
+        }));
+        layer.show();
+    } else {
+        try {
+            contents = JSON.parse(viewModel.schedule.raw ?
+                viewModel.schedule.raw.contents : viewModel.schedule.contents)
+                .map(function(item) {
+                    return item.value;
+                }).join(', ');
+        } catch (error) {
+            contents = viewModel.schedule.raw.contents;
         }
+        layer.setContent(tmpl({
+            schedule: viewModel.schedule,
+            calendar: viewModel.calendar,
+            contents: contents,
+            isWeek: true
+        }));
+        layer.show();
+        // NMNS CUSTOMIZING START
+        if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
+            if (viewModel.schedule.end.getTime() > new Date().getTime()) {
+                $('#detailPopupResendAlrim').off('click').on('click', function () {
+                    NMNS.socket.emit('resend alrimtalk', {
+                        id: viewModel.schedule.id
+                    });
+                    $(this).addClass('disabled', true);
+                });
+            } else {
+                $('#detailPopupResendAlrim').addClass('d-none');// hide button
+            }
+        }
+        // NMNS CUSTOMIZING END
     }
-    // NMNS CUSTOMIZING END
     this._setPopupPositionAndArrowDirection(viewModel.event);
 
     this._schedule = viewModel.schedule;

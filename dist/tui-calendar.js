@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Fri Mar 29 2019
+ * @version 1.11.0 | Tue Apr 02 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -7435,15 +7435,15 @@ var Core = {
         groupColl = modelColl.groupBy('calendarId');
         while (true) { // eslint-disable-line no-constant-condition
             Object.keys(groupColl).forEach(function(calendarId) { // eslint-disable-line no-loop-func
-                var count = 0;
+                var list = [];
                 groupColl[calendarId].each(function(schedule) {
                     if ((datetime.compare(schedule.start, current) < 0 || datetime.isSameDate(schedule.start, current))
                     && (datetime.compare(schedule.end, current) > 0 || datetime.isSameDate(schedule.end, current))) {
-                        count += 1;
+                        list.push(schedule);
                     }
                 });
-                if (count > 0) {
-                    viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), count,
+                if (list.length > 0) {
+                    viewModelColl.add(CalendarViewModel.create(calendarId, new TZDate(current), list,
                         calendars.find(function(calendar) {
                             return calendar.id === calendarId;
                         }) ||
@@ -7620,6 +7620,7 @@ var Month = {
         var ctrlCore = this.Core,
             ctrlMonth = this.Month,
             filter = ctrlCore.getScheduleInDateRangeFilter(start, end),
+            schedules = this.schedules,
             coll, vColl, vList,
             collisionGroup,
             matrices;
@@ -7629,11 +7630,15 @@ var Month = {
         filter = Collection.and.apply(null, [filter].concat(andFilters));
 
         // NMNS CUSTIMOZING START
-        coll = this.schedules.find(filter);
+        coll = schedules.find(filter);
         vColl = ctrlCore.convertToCalendarViewModel(coll, start, end, this.calendars);
         // ctrlMonth._addMultiDatesInfo(vColl);
         // ctrlMonth._adjustRenderRange(start, end, vColl);
         vList = vColl.sort(array.compare.calendar.asc);
+        vColl.each(function(item) {
+            schedules.add(item);
+        });
+        // NMNS CUSTOMIZING END
 
         collisionGroup = ctrlCore.getCollisionGroup(vList);
         matrices = ctrlCore.getMatrices(vColl, collisionGroup);
@@ -8220,6 +8225,9 @@ var mmin = Math.min;
  *         },
  *         monthDayname: function(model) {
  *             return (model.label).toString().toLocaleUpperCase();
+ *         },
+ *         monthlyDetailPopup: function(schedules) {
+ *             return '';
  *         },
  *         weekDayname: function(model) {
  *             return '<span class="tui-full-calendar-dayname-date">' + model.date + '</span>&nbsp;&nbsp;<span class="tui-full-calendar-dayname-name">' + model.dayName + '</span>';
@@ -9454,6 +9462,28 @@ Calendar.prototype._onAfterRenderSchedule = function(scheduleData) {
 };
 
 /**
+ * @fires Calendar#beforeChangeView
+ * @param {Schedule} scheduleData - The schedule data
+ * @private
+ */
+Calendar.prototype._onBeforeChangeView = function(scheduleData) {
+    /**
+     * Fire this event by every single schedule before changing view of calendar.
+     * @event Calendar#beforeChangeView
+     * @type {object}
+     * @property {Schedule} schedule - A rendered {@link Schedule} instance
+     * @example
+     * calendar.on('beforeChangeView', function(event) {
+     *     var schedule = event.schedule;
+     *     var element = calendar.getElement(schedule.id, schedule.calendarId);
+     *     // use the element
+     *     console.log(element);
+     * });
+     */
+    this.fire('beforeChangeView', scheduleData);
+};
+
+/**
  * @fires Calendar#clickTimezonesCollapseBtn
  * @param {boolean} timezonesCollapsed - timezones collapsed flag
  * @private
@@ -10101,7 +10131,7 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
     if (options.useDetailPopup) {
         detailView = new ScheduleDetailPopup(layoutContainer, baseController.calendars);
         onShowDetailPopup = function (eventData) {
-            var scheduleId = eventData.schedule.calendarId;
+            var scheduleId = eventData.schedule.getCalendarId();
             eventData.calendar = common.find(baseController.calendars, function (calendar) {
                 return calendar.id === scheduleId;
             });
@@ -17750,10 +17780,10 @@ var datetime = __webpack_require__(/*! ../../common/datetime */ "./src/js/common
  * @constructor
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
- * @param {number} count number of schedules of the given calendar id on the date
+ * @param {array} schedules array of schedules of the given calendar id on the date
  * @param {object} calendar calendar
  */
-function CalendarViewModel(calendarId, date, count, calendar) {
+function CalendarViewModel(calendarId, date, schedules, calendar) {
     /**
      * The model of schedule.
      * @type {object}
@@ -17761,7 +17791,8 @@ function CalendarViewModel(calendarId, date, count, calendar) {
     this.model = {
         calendarId: calendarId,
         date: date,
-        count: count,
+        schedules: schedules,
+        count: schedules.length,
         calendar: calendar
     };
 
@@ -17849,12 +17880,12 @@ function CalendarViewModel(calendarId, date, count, calendar) {
  * CalendarViewModel factory method.
  * @param {string} calendarId calendarId.
  * @param {TZDate} date date of calendar
- * @param {number} count number of schedules of the given calendar id on the date
+ * @param {array} schedules array of schedules of the given calendar id on the date
  * @param {object} calendar calendar.
  * @returns {CalendarViewModel} CalendarViewModel instance.
  */
-CalendarViewModel.create = function(calendarId, date, count, calendar) {
-    return new CalendarViewModel(calendarId, date, count, calendar);
+CalendarViewModel.create = function(calendarId, date, schedules, calendar) {
+    return new CalendarViewModel(calendarId, date, schedules, calendar);
 };
 
 /**********
@@ -17904,6 +17935,15 @@ CalendarViewModel.prototype.getEnds = function() {
  */
 CalendarViewModel.prototype.getCount = function() {
     return this.model.count;
+};
+
+/**
+ * return schedules property to render
+ *
+ * @returns {array} schedules property.
+ */
+CalendarViewModel.prototype.getSchedules = function() {
+    return this.model.schedules;
 };
 
 /**
@@ -20514,6 +20554,7 @@ var config = __webpack_require__(/*! ../../config */ "./src/js/config.js"),
     domevent = __webpack_require__(/*! ../../common/domevent */ "./src/js/common/domevent.js"),
     domutil = __webpack_require__(/*! ../../common/domutil */ "./src/js/common/domutil.js");
 var tmpl = __webpack_require__(/*! ../template/popup/scheduleDetailPopup.hbs */ "./src/js/view/template/popup/scheduleDetailPopup.hbs");
+var CalendarViewModel = __webpack_require__(/*! ../../model/viewModel/calendarViewModel */ "./src/js/model/viewModel/calendarViewModel.js");// NMNS CUSTOMIZING
 var ARROW_WIDTH_HALF = 8;
 
 /**
@@ -20578,14 +20619,53 @@ ScheduleDetailPopup.prototype.destroy = function () {
 ScheduleDetailPopup.prototype._onClick = function (clickEvent) {
     var target = (clickEvent.target || clickEvent.srcElement);
 
-    this._onClickEditSchedule(target);
+    if (!this._closePopup(target) && !this._onClickEditSchedule(target) && !this._onClickDeleteSchedule(target)) {
+        this._showDetail(target);
+    }
+};
 
-    this._onClickDeleteSchedule(target);
+/**
+ * Test click event target is close button, and return layer is closed(hidden)
+ * @param {HTMLElement} target click event target
+ * @returns {boolean} whether popup layer is closed or not
+ */
+ScheduleDetailPopup.prototype._closePopup = function(target) {
+    var className = config.classname('popup-close');
+
+    if (domutil.hasClass(target, className) || domutil.closest(target, '.' + className)) {
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+        this.hide();
+
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * Test click event target is detail text, and change the calendar view to target date
+ * @param {HTMLElement} target click event target
+ * @returns {boolean} whether popup layer is closed or not
+ */
+ScheduleDetailPopup.prototype._showDetail = function(target) {
+    if (domutil.hasClass(target, 'monthlyDetailPopupTitle') || domutil.closest(target, '.monthlyDetailPopupTitle') || domutil.hasClass(target, 'monthlyDetailPopupTime') || domutil.closest(target, '.monthlyDetailPopupTime')) {
+        domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
+        this.hide();
+        this.fire('beforeChangeView', {
+            date: this._schedule.getStarts(),
+            viewName: 'day'
+        });
+
+        return true;
+    }
+
+    return false;
 };
 
 /**
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
+ * @returns {boolean} whether popup layer is treated or not
  */
 ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
     var className = config.classname('popup-edit');
@@ -20600,12 +20680,17 @@ ScheduleDetailPopup.prototype._onClickEditSchedule = function (target) {
         domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
         // NMNS CUSTOMIZING END
         this.hide();
+
+        return true;
     }
+
+    return false;
 };
 
 /**
  * @fires ScheduleDetailPopup#clickEditSchedule
  * @param {HTMLElement} target - event target
+ * @returns {boolean} whether popup layer is treated or not
  */
 ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
     var className = config.classname('popup-delete');
@@ -20618,7 +20703,11 @@ ScheduleDetailPopup.prototype._onClickDeleteSchedule = function (target) {
         domutil.find(config.classname('.screen')).style.visibility = 'hidden';// hide screen
         // NMNS CUSTOMIZING END
         this.hide();
+
+        return true;
     }
+
+    return false;
 };
 
 /**
@@ -20630,34 +20719,46 @@ ScheduleDetailPopup.prototype.render = function (viewModel) {
     var self = this;
     var contents;
 
-    try {
-        contents = JSON.parse(viewModel.schedule.raw ? viewModel.schedule.raw.contents : viewModel.schedule.contents)
-            .map(function(item) {
-                return item.value;
-            }).join(', ');
-    } catch (error) {
-        contents = viewModel.schedule.raw.contents;
-    }
-    layer.setContent(tmpl({
-        schedule: viewModel.schedule,
-        calendar: viewModel.calendar,
-        contents: contents
-    }));
-    layer.show();
-    // NMNS CUSTOMIZING START
-    if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
-        if (viewModel.schedule.end.getTime() > new Date().getTime()) {
-            $('#detailPopupResendAlrim').off('click').on('click', function () {
-                NMNS.socket.emit('resend alrimtalk', {
-                    id: viewModel.schedule.id
-                });
-                $(this).addClass('disabled', true);
-            });
-        } else {
-            $('#detailPopupResendAlrim').addClass('d-none');// hide button
+    if (viewModel.schedule instanceof CalendarViewModel) {
+        layer.setContent(tmpl({
+            schedule: viewModel.schedule.getSchedules(),
+            date: viewModel.schedule.getStarts().toDate(),
+            calendar: viewModel.calendar,
+            isWeek: false
+        }));
+        layer.show();
+    } else {
+        try {
+            contents = JSON.parse(viewModel.schedule.raw ?
+                viewModel.schedule.raw.contents : viewModel.schedule.contents)
+                .map(function(item) {
+                    return item.value;
+                }).join(', ');
+        } catch (error) {
+            contents = viewModel.schedule.raw.contents;
         }
+        layer.setContent(tmpl({
+            schedule: viewModel.schedule,
+            calendar: viewModel.calendar,
+            contents: contents,
+            isWeek: true
+        }));
+        layer.show();
+        // NMNS CUSTOMIZING START
+        if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
+            if (viewModel.schedule.end.getTime() > new Date().getTime()) {
+                $('#detailPopupResendAlrim').off('click').on('click', function () {
+                    NMNS.socket.emit('resend alrimtalk', {
+                        id: viewModel.schedule.id
+                    });
+                    $(this).addClass('disabled', true);
+                });
+            } else {
+                $('#detailPopupResendAlrim').addClass('d-none');// hide button
+            }
+        }
+        // NMNS CUSTOMIZING END
     }
-    // NMNS CUSTOMIZING END
     this._setPopupPositionAndArrowDirection(viewModel.event);
 
     this._schedule = viewModel.schedule;
@@ -21212,6 +21313,10 @@ Handlebars.registerHelper({
 
     'monthDayname-tmpl': function(model) {
         return model.label;
+    },
+
+    'monthlyDetailPopup-tmpl': function(schedules, date) {
+        return '';
     },
 
     'weekDayname-tmpl': function(model) {
@@ -22000,6 +22105,17 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
 
 var Handlebars = __webpack_require__(/*! ./node_modules/handlebars/runtime.js */ "./node_modules/handlebars/runtime.js");
 module.exports = (Handlebars['default'] || Handlebars).template({"1":function(container,depth0,helpers,partials,data) {
+    var helper;
+
+  return " "
+    + container.escapeExpression(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
+    + "month-popup-detail";
+},"3":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing;
+
+  return ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.category : stack1),"!==","task",{"name":"fi","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.category : stack1),"===","task",{"name":"fi","hash":{},"fn":container.program(28, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+},"4":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "    <div class=\""
@@ -22009,7 +22125,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "section-header\">\n      <div title=\"고객이름\">\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "schedule-title\">"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(4, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
     + "</span>\n      </div>\n      <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-detail-date "
@@ -22019,10 +22135,10 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "</div>\n    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-detail\">\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.contents : depth0),{"name":"if","hash":{},"fn":container.program(11, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.etc : stack1),{"name":"if","hash":{},"fn":container.program(13, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(15, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"if","hash":{},"fn":container.program(12, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.contents : depth0),{"name":"if","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.etc : stack1),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(18, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-button\">\n      <button class=\""
@@ -22034,11 +22150,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "\n        </span>\n      </button>\n      <div class=\"detailPopupLabel dropup d-inline-block text-center\">\n        <span id=\"detailPopupLabelDropdown\" class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content dropdown-toggle dropdown-toggle-up\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" data-reference=\"parent\">\n"
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","NOSHOW",{"name":"fi","hash":{},"fn":container.program(17, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","RESERVED",{"name":"fi","hash":{},"fn":container.program(19, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CANCELED",{"name":"fi","hash":{},"fn":container.program(21, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CUSTOMERCANCELED",{"name":"fi","hash":{},"fn":container.program(21, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","DELETED",{"name":"fi","hash":{},"fn":container.program(23, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","NOSHOW",{"name":"fi","hash":{},"fn":container.program(20, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","RESERVED",{"name":"fi","hash":{},"fn":container.program(22, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CANCELED",{"name":"fi","hash":{},"fn":container.program(24, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CUSTOMERCANCELED",{"name":"fi","hash":{},"fn":container.program(24, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","DELETED",{"name":"fi","hash":{},"fn":container.program(26, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </span>\n        <div class=\"dropdown-menu text-center\" aria-labelledby=\"detailPopupLabelDropdown\">\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"light\"><span class=\"badge badge-light\">삭제</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"danger\"><span class=\"badge badge-danger\">노쇼</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"secondary\"><span class=\"badge badge-secondary\">취소</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"success\"><span class=\"badge badge-success\">정상</span></a>\n        </div>\n      </div>\n      <button class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-delete\" aria-label=\"삭제\">\n        <span class=\""
@@ -22046,23 +22162,23 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">\n          <i class=\"fas fa-trash fa-fw\"></i>"
     + alias4(((helper = (helper = helpers["popupDelete-tmpl"] || (depth0 != null ? depth0["popupDelete-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupDelete-tmpl","hash":{},"data":data}) : helper)))
     + "</span>\n      </button>\n    </div>\n";
-},"2":function(container,depth0,helpers,partials,data) {
+},"5":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1), depth0));
-},"4":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.contents : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "");
-},"5":function(container,depth0,helpers,partials,data) {
-    var helper;
-
-  return container.escapeExpression(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"contents","hash":{},"data":data}) : helper)));
 },"7":function(container,depth0,helpers,partials,data) {
     var stack1;
 
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.contents : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0),"inverse":container.program(10, data, 0),"data":data})) != null ? stack1 : "");
+},"8":function(container,depth0,helpers,partials,data) {
+    var helper;
+
+  return container.escapeExpression(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"contents","hash":{},"data":data}) : helper)));
+},"10":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
   return ((stack1 = (helpers.dashContact || (depth0 && depth0.dashContact) || helpers.helperMissing).call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"dashContact","hash":{},"data":data})) != null ? stack1 : "");
-},"9":function(container,depth0,helpers,partials,data) {
+},"12":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
@@ -22072,7 +22188,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">"
     + alias4((helpers["dash-contact"] || (depth0 && depth0["dash-contact"]) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1),{"name":"dash-contact","hash":{},"data":data}))
     + "</span>\n        <button id=\"detailPopupResendAlrim\" type=\"button\" class=\"btn btn-primary btn-sm py-0 ml-1\">알림톡 다시 보내기</button>\n      </div>\n";
-},"11":function(container,depth0,helpers,partials,data) {
+},"14":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
@@ -22082,7 +22198,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">"
     + alias4(((helper = (helper = helpers.contents || (depth0 != null ? depth0.contents : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"contents","hash":{},"data":data}) : helper)))
     + "</span>\n      </div>\n";
-},"13":function(container,depth0,helpers,partials,data) {
+},"16":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
@@ -22092,7 +22208,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">"
     + alias4(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.etc : stack1), depth0))
     + "</span>\n      </div>\n";
-},"15":function(container,depth0,helpers,partials,data) {
+},"18":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda;
 
   return "      <div class=\""
@@ -22108,15 +22224,15 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">"
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.calendar : depth0)) != null ? stack1.name : stack1), depth0))
     + "</span>\n      </div>\n";
-},"17":function(container,depth0,helpers,partials,data) {
+},"20":function(container,depth0,helpers,partials,data) {
     return "          <span class=\"badge badge-danger\">노쇼</span>\n";
-},"19":function(container,depth0,helpers,partials,data) {
+},"22":function(container,depth0,helpers,partials,data) {
     return "          <span class=\"badge badge-success\">정상</span>\n";
-},"21":function(container,depth0,helpers,partials,data) {
+},"24":function(container,depth0,helpers,partials,data) {
     return "          <span class=\"badge badge-secondary\">취소</span>\n";
-},"23":function(container,depth0,helpers,partials,data) {
+},"26":function(container,depth0,helpers,partials,data) {
     return "          <span class=\"badge badge-light\">삭제</span>\n";
-},"25":function(container,depth0,helpers,partials,data) {
+},"28":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "    <div class=\""
@@ -22126,7 +22242,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "section-header\">\n      <div title=\"일정이름\">\n        <span class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "schedule-title\">"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(26, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(29, data, 0),"data":data})) != null ? stack1 : "")
     + "</span>\n      </div>\n      <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-detail-date "
@@ -22136,8 +22252,8 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "</div>\n    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-detail\">\n"
-    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(31, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(15, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(34, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.calendar : depth0),{"name":"if","hash":{},"fn":container.program(18, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "section-button\">\n      <button class=\""
@@ -22149,11 +22265,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "\n        </span>\n      </button>\n      <div class=\"detailPopupLabel dropup d-inline-block text-center\">\n        <span id=\"detailPopupLabelDropdown\" class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "content dropdown-toggle dropdown-toggle-up\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" data-reference=\"parent\">\n"
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","NOSHOW",{"name":"fi","hash":{},"fn":container.program(17, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","RESERVED",{"name":"fi","hash":{},"fn":container.program(19, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CANCELED",{"name":"fi","hash":{},"fn":container.program(21, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CUSTOMERCANCELED",{"name":"fi","hash":{},"fn":container.program(21, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","DELETED",{"name":"fi","hash":{},"fn":container.program(23, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","NOSHOW",{"name":"fi","hash":{},"fn":container.program(20, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","RESERVED",{"name":"fi","hash":{},"fn":container.program(22, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CANCELED",{"name":"fi","hash":{},"fn":container.program(24, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","CUSTOMERCANCELED",{"name":"fi","hash":{},"fn":container.program(24, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.status : stack1),"===","DELETED",{"name":"fi","hash":{},"fn":container.program(26, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </span>\n        <div class=\"dropdown-menu text-center\" aria-labelledby=\"detailPopupLabelDropdown\">\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"light\" aria-label=\"삭제\"><span class=\"badge badge-light\">삭제</span></a>\n          <a href=\"#\" class=\"dropdown-item\" data-badge=\"success\" aria-label=\"정상\"><span class=\"badge badge-success\">정상</span></a>\n        </div>\n      </div>\n      <button class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-delete\">\n        <span class=\""
@@ -22161,21 +22277,21 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">\n          <i class=\"fas fa-trash fa-fw\"></i>"
     + alias4(((helper = (helper = helpers["popupDelete-tmpl"] || (depth0 != null ? depth0["popupDelete-tmpl"] : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"popupDelete-tmpl","hash":{},"data":data}) : helper)))
     + "</span>\n      </button>\n    </div>\n";
-},"26":function(container,depth0,helpers,partials,data) {
+},"29":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(27, data, 0),"inverse":container.program(29, data, 0),"data":data})) != null ? stack1 : "");
-},"27":function(container,depth0,helpers,partials,data) {
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1),{"name":"if","hash":{},"fn":container.program(30, data, 0),"inverse":container.program(32, data, 0),"data":data})) != null ? stack1 : "");
+},"30":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1), depth0));
-},"29":function(container,depth0,helpers,partials,data) {
+},"32":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "dashContact("
     + container.escapeExpression(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contact : stack1), depth0))
     + ")";
-},"31":function(container,depth0,helpers,partials,data) {
+},"34":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "      <div class=\""
@@ -22185,6 +22301,11 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + "content\">"
     + alias4(container.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.raw : stack1)) != null ? stack1.contents : stack1), depth0))
     + "</span>\n      </div>\n";
+},"36":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = (helpers["monthlyDetailPopup-tmpl"] || (depth0 && depth0["monthlyDetailPopup-tmpl"]) || helpers.helperMissing).call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.schedule : depth0),(depth0 != null ? depth0.date : depth0),{"name":"monthlyDetailPopup-tmpl","hash":{},"data":data})) != null ? stack1 : "")
+    + "\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
@@ -22192,11 +22313,12 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup "
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "popup-detail\">\n  <div class=\""
+    + "popup-detail"
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.isWeek : depth0),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n  <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-container\">\n"
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.category : stack1),"!==","task",{"name":"fi","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.fi || (depth0 && depth0.fi) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.schedule : depth0)) != null ? stack1.category : stack1),"===","task",{"name":"fi","hash":{},"fn":container.program(25, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isWeek : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.program(36, data, 0),"data":data})) != null ? stack1 : "")
     + "  </div>\n  <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "popup-top-line\" style=\"background-color: "

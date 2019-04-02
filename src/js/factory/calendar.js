@@ -158,6 +158,9 @@ var mmin = Math.min;
  *         monthDayname: function(model) {
  *             return (model.label).toString().toLocaleUpperCase();
  *         },
+ *         monthlyDetailPopup: function(schedules) {
+ *             return '';
+ *         },
  *         weekDayname: function(model) {
  *             return '<span class="tui-full-calendar-dayname-date">' + model.date + '</span>&nbsp;&nbsp;<span class="tui-full-calendar-dayname-name">' + model.dayName + '</span>';
  *         },
@@ -1388,6 +1391,28 @@ Calendar.prototype._onAfterRenderSchedule = function(scheduleData) {
      * });
      */
     this.fire('afterRenderSchedule', scheduleData);
+};
+
+/**
+ * @fires Calendar#beforeChangeView
+ * @param {Schedule} scheduleData - The schedule data
+ * @private
+ */
+Calendar.prototype._onBeforeChangeView = function(scheduleData) {
+    /**
+     * Fire this event by every single schedule before changing view of calendar.
+     * @event Calendar#beforeChangeView
+     * @type {object}
+     * @property {Schedule} schedule - A rendered {@link Schedule} instance
+     * @example
+     * calendar.on('beforeChangeView', function(event) {
+     *     var schedule = event.schedule;
+     *     var element = calendar.getElement(schedule.id, schedule.calendarId);
+     *     // use the element
+     *     console.log(element);
+     * });
+     */
+    this.fire('beforeChangeView', scheduleData);
 };
 
 /**

@@ -122,6 +122,7 @@ declare namespace tuiCalendar {
         monthGridFooter?: (model: IGridDateModel) => string;
         monthGridFooterExceed?: (hiddenSchedules: number) => string;
         monthDayname?: (model: IMonthDayNameInfo) => string;
+        monthlyDetailPopop?: (schedules: Array<ISchedule>, date: DateType) => string;
         weekDayname?: (model: IWeekDayNameInfo) => string;
         weekGridFooterExceed?: (hiddenSchedules: number) => string;
         dayGridTitle?: (viewName: string) => string;

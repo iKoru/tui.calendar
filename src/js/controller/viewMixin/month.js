@@ -139,6 +139,7 @@ var Month = {
         var ctrlCore = this.Core,
             ctrlMonth = this.Month,
             filter = ctrlCore.getScheduleInDateRangeFilter(start, end),
+            schedules = this.schedules,
             coll, vColl, vList,
             collisionGroup,
             matrices;
@@ -148,11 +149,15 @@ var Month = {
         filter = Collection.and.apply(null, [filter].concat(andFilters));
 
         // NMNS CUSTIMOZING START
-        coll = this.schedules.find(filter);
+        coll = schedules.find(filter);
         vColl = ctrlCore.convertToCalendarViewModel(coll, start, end, this.calendars);
         // ctrlMonth._addMultiDatesInfo(vColl);
         // ctrlMonth._adjustRenderRange(start, end, vColl);
         vList = vColl.sort(array.compare.calendar.asc);
+        vColl.each(function(item) {
+            schedules.add(item);
+        });
+        // NMNS CUSTOMIZING END
 
         collisionGroup = ctrlCore.getCollisionGroup(vList);
         matrices = ctrlCore.getMatrices(vColl, collisionGroup);
