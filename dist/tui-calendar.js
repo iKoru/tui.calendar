@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.11.0 | Tue Apr 02 2019
+ * @version 1.11.0 | Wed Apr 03 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -9515,6 +9515,7 @@ Calendar.prototype._toggleViewSchedule = function(isAttach, view) {
 
     util.forEach(handler.click, function(clickHandler) {
         clickHandler[method]('clickSchedule', self._onClick, self);
+        clickHandler[method]('beforeChangeView', self._onBeforeChangeView, self);// NMNS CUSTOMIZING
     });
 
     util.forEach(handler.dayname, function(clickHandler) {
@@ -10202,6 +10203,9 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
 
         clickHandler.on('clickSchedule', onShowDetailPopup);
 
+        detailView.on('beforeChangeView', function (eventData) { // NMNS CUSTOMIZING
+            clickHandler.fire('beforeChangeView', eventData);
+        });
         detailView.on('beforeDeleteSchedule', onDeleteSchedule);
 
         if (options.useCreationPopup) {
@@ -19098,7 +19102,6 @@ Month.prototype.render = function() {
             theme: theme
         };
         // NMNS CUSTOMIZING START
-        console.log('eventsInDateRange : ', eventsInDateRange);
         util.forEach(eventsInDateRange, function(matrix) {
             util.forEach(matrix, function(row) {
                 util.forEach(row, function(data) {
@@ -19594,7 +19597,6 @@ WeekdayInMonth.prototype.render = function(viewModel) {
         return;
     }
 
-    console.log('baseViewModel', baseViewModel);
     scheduleContainer.innerHTML = scheduleTmpl(baseViewModel);
 
     common.setAutoEllipsis(

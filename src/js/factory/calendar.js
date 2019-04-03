@@ -1447,6 +1447,7 @@ Calendar.prototype._toggleViewSchedule = function(isAttach, view) {
 
     util.forEach(handler.click, function(clickHandler) {
         clickHandler[method]('clickSchedule', self._onClick, self);
+        clickHandler[method]('beforeChangeView', self._onBeforeChangeView, self);// NMNS CUSTOMIZING
     });
 
     util.forEach(handler.dayname, function(clickHandler) {

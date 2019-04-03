@@ -125,7 +125,6 @@ WeekdayInMonth.prototype.render = function(viewModel) {
         return;
     }
 
-    console.log('baseViewModel', baseViewModel);
     scheduleContainer.innerHTML = scheduleTmpl(baseViewModel);
 
     common.setAutoEllipsis(

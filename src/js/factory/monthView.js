@@ -200,6 +200,9 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
 
         clickHandler.on('clickSchedule', onShowDetailPopup);
 
+        detailView.on('beforeChangeView', function (eventData) { // NMNS CUSTOMIZING
+            clickHandler.fire('beforeChangeView', eventData);
+        });
         detailView.on('beforeDeleteSchedule', onDeleteSchedule);
 
         if (options.useCreationPopup) {
