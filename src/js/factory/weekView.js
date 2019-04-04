@@ -257,7 +257,7 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
     baseController.on('setCalendars', onSetCalendars);
 
     // binding popup for schedule detail
-    if (options.useDetailPopup) {
+    if (options.useWeekDetailPopup) {
         detailView = new ScheduleDetailPopup(layoutContainer, baseController.calendars);
         onShowDetailPopup = function (eventData) {
             var scheduleId = eventData.schedule.calendarId;
@@ -392,7 +392,7 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
             createView.destroy();
         }
 
-        if (options.useDetailPopup) {
+        if (options.useWeekDetailPopup) {
             detailView.off('beforeDeleteSchedule', onDeleteSchedule);
             detailView.destroy();
         }

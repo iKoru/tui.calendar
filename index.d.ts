@@ -245,6 +245,7 @@ declare namespace tuiCalendar {
         calendars?: Calendar[];
         useCreationPopup?: boolean;
         useDetailPopup?: boolean;
+        useWeekDetailPopup?: boolean;
         timezones?: ITimezone[];
         disableDblClick?: boolean;
         disableClick?: boolean;

@@ -413,6 +413,7 @@ var mmin = Math.min;
  * @property {Array.<CalendarProps>} [calendars=[]] - {@link CalendarProps} List that can be used to add new schedule. The default value is [].
  * @property {boolean} [useCreationPopup=false] - Whether use default creation popup or not. The default value is false.
  * @property {boolean} [useDetailPopup=false] - Whether use default detail popup or not. The default value is false.
+ * @property {boolean} [useWeekDetailPopup=false] - Whether use default week detail popup or not. The default value is false.
  * @property {Array.<Timezone>} [timezones] - {@link Timezone} array.
  *  The first Timezone element is primary and can override Calendar#setTimezoneOffset function
  *  The rest timezone elements are shown in left timegrid of weekly/daily view
@@ -645,6 +646,7 @@ Calendar.prototype._initialize = function(options) {
         calendars: [],
         useCreationPopup: false,
         useDetailPopup: false,
+        useWeekDetailPopup: false,
         timezones: options.timezones || [{
             timezoneOffset: 0,
             displayLabel: '',
