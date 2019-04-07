@@ -13,8 +13,8 @@ var config = require('../config'),
     Month = require('../view/month/month'),
     MonthClick = require('../handler/month/click'),
     MonthCreation = require('../handler/month/creation'),
-    MonthResize = require('../handler/month/resize'),
-    MonthMove = require('../handler/month/move'),
+    // MonthResize = require('../handler/month/resize'),
+    // MonthMove = require('../handler/month/move'),
     More = require('../view/month/more'),
     ScheduleCreationPopup = require('../view/popup/scheduleCreationPopup'),
     ScheduleDetailPopup = require('../view/popup/scheduleDetailPopup'),
@@ -51,7 +51,7 @@ function getViewModelForMoreLayer(date, target, schedules, daynames) {
  */
 function createMonthView(baseController, layoutContainer, dragHandler, options) {
     var monthViewContainer, monthView, moreView, createView;
-    var clickHandler, creationHandler, resizeHandler, moveHandler, clearSchedulesHandler, onUpdateSchedule;
+    var clickHandler, creationHandler, moveHandler, clearSchedulesHandler, onUpdateSchedule;
     var onShowCreationPopup, onSaveNewSchedule, onShowEditPopup;
     var detailView, onShowDetailPopup, onDeleteSchedule, onEditSchedule;
 
@@ -65,8 +65,8 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
     clickHandler = new MonthClick(dragHandler, monthView, baseController);
     if (!options.isReadOnly) {
         creationHandler = new MonthCreation(dragHandler, monthView, baseController, options);
-        resizeHandler = new MonthResize(dragHandler, monthView, baseController);
-        moveHandler = new MonthMove(dragHandler, monthView, baseController);
+        // resizeHandler = new MonthResize(dragHandler, monthView, baseController);
+        // moveHandler = new MonthMove(dragHandler, monthView, baseController);
     }
 
     clearSchedulesHandler = function () {
@@ -194,9 +194,6 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
                 creationHandler.fire('beforeDeleteSchedule', eventData);
             }
         };
-        onEditSchedule = function (eventData) {
-            moveHandler.fire('beforeUpdateSchedule', eventData);
-        };
 
         clickHandler.on('clickSchedule', onShowDetailPopup);
 
@@ -239,12 +236,6 @@ function createMonthView(baseController, layoutContainer, dragHandler, options) 
         monthView.handler = util.extend(monthView.handler, {
             creation: {
                 'default': creationHandler
-            },
-            resize: {
-                'default': resizeHandler
-            },
-            move: {
-                'default': moveHandler
             }
         });
     }
