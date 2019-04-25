@@ -1,6 +1,6 @@
 /**
  * @fileoverview Handler module for WeekdayInWeek view's creation actions.
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -148,7 +148,7 @@ DayGridCreation.prototype._createSchedule = function(scheduleData) {
         startXIndex = startXIndex - xIndex;
     }
 
-    start = new TZDate(dateRange[startXIndex].getTime());
+    start = new TZDate(dateRange[startXIndex]);
     end = datetime.end(dateRange[xIndex]);
 
     /**

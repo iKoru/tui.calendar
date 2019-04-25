@@ -1,6 +1,6 @@
 /**
  * @fileoverview Core methods for dragging actions
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -9,6 +9,7 @@ var common = require('../../common/common');
 var datetime = require('../../common/datetime');
 var domevent = require('../../common/domevent');
 var Point = require('../../common/point');
+var TZDate = require('../../common/timezone').Date;
 
 /**
  * @mixin Time.Core
@@ -41,7 +42,7 @@ var timeCore = {
             container = timeView.container,
             options = timeView.options,
             viewHeight = timeView.getViewBound().height,
-            viewTime = Number(timeView.getDate()),
+            viewTime = timeView.getDate(),
             hourLength = options.hourEnd - options.hourStart,
             baseMil = datetime.millisecondsFrom('hour', hourLength);
 
@@ -53,9 +54,11 @@ var timeCore = {
         return util.bind(function(mouseEvent, extend) {
             var mouseY = Point.n(domevent.getMousePosition(mouseEvent, container)).y,
                 gridY = common.ratio(viewHeight, hourLength, mouseY),
-                timeY = viewTime + datetime.millisecondsFrom('hour', gridY),
+                timeY = new TZDate(viewTime).addMinutes(datetime.minutesFromHours(gridY)),
                 nearestGridY = self._calcGridYIndex(baseMil, viewHeight, mouseY),
-                nearestGridTimeY = viewTime + datetime.millisecondsFrom('hour', nearestGridY + options.hourStart);
+                nearestGridTimeY = new TZDate(viewTime).addMinutes(
+                    datetime.minutesFromHours(nearestGridY + options.hourStart)
+                );
 
             return util.extend({
                 target: mouseEvent.target || mouseEvent.srcElement,
@@ -78,7 +81,7 @@ var timeCore = {
      * @returns {function} - Function that return event data from mouse event.
      */
     _retriveScheduleDataFromDate: function(timeView) {
-        var viewTime = Number(timeView.getDate());
+        var viewTime = new TZDate(timeView.getDate());
 
         /**
          * @param {TZDate} startDate - start date
@@ -91,12 +94,14 @@ var timeCore = {
             // NMNS CUSTOMIZING START
             gridY = startDate.getHours() + getNearestHour(startDate.getMinutes())
              - (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 0);
-            timeY = viewTime + startDate.getHours() + getNearestHour(startDate.getMinutes());
+            timeY = viewTime.addMinutes(datetime.minutesFromHours(startDate.getHours()
+             + getNearestHour(startDate.getMinutes())));
             nearestGridY = gridY;
-            nearestGridTimeY = viewTime + datetime.millisecondsFrom('hour', timeY - viewTime);
+            nearestGridTimeY = viewTime.addMinutes(datetime.minutesFromHours(timeY - viewTime));
             nearestGridEndY = endDate.getHours() + getNearestHour(endDate.getMinutes())
              - (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 0);
-            nearestGridEndTimeY = viewTime + datetime.millisecondsFrom('hour', endDate.getHours() + getNearestHour(endDate.getMinutes()));
+            nearestGridEndTimeY = viewTime.addMinutes(datetime.minutesFromHours(endDate.getHours()
+             + getNearestHour(endDate.getMinutes())));
             // NMNS CUSTOMIZING END
 
             return util.extend({
@@ -149,4 +154,3 @@ function getNearestHour(minutes) {
 }
 
 module.exports = timeCore;
-

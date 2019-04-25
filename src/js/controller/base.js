@@ -1,6 +1,6 @@
 /**
  * @fileoverview Base calendar controller
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -332,8 +332,8 @@ Base.prototype.splitScheduleByDateRange = function(start, end, scheduleCollectio
  * Return schedules in supplied date range.
  *
  * available only YMD.
- * @param {Date} start start date.
- * @param {Date} end end date.
+ * @param {TZDate} start start date.
+ * @param {TZDate} end end date.
  * @returns {object.<string, Collection>} schedule collection grouped by dates.
  */
 Base.prototype.findByDateRange = function(start, end) {

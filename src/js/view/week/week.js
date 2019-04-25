@@ -1,6 +1,6 @@
 /**
  * @fileoverview View of days UI.
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -10,20 +10,6 @@ var domutil = require('../../common/domutil');
 var datetime = require('../../common/datetime');
 var TZDate = require('../../common/timezone').Date;
 var View = require('../view');
-
-/**
- * FullCalendar uses only date information (YYYY-MM-DD)
- * SplitTimeCalendar uses a string containing time zone information, so it branches.
- * @param {String} dateString - date string
- * @returns {TZDate}
- */
-function parseRangeDateString(dateString) {
-    if (dateString.length === 10) {
-        return datetime.parse(dateString);
-    }
-
-    return new TZDate(dateString);
-}
 
 /**
  * @constructor
@@ -118,8 +104,8 @@ Week.prototype.render = function() {
         state = this.state;
     var renderStartDate, renderEndDate, schedulesInDateRange, viewModel, grids, range;
 
-    renderStartDate = parseRangeDateString(options.renderStartDate);
-    renderEndDate = parseRangeDateString(options.renderEndDate);
+    renderStartDate = new TZDate(options.renderStartDate);
+    renderEndDate = new TZDate(options.renderEndDate);
 
     if (datetime.isSameDate(renderStartDate, renderEndDate)) {
         domutil.addClass(this.container, config.classname('week-day'));
@@ -240,4 +226,3 @@ Week.prototype._getRenderDateRange = function(baseDate) {
 util.CustomEvents.mixin(Week);
 
 module.exports = Week;
-

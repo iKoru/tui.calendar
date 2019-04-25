@@ -1,6 +1,6 @@
 /**
  * @fileoverview Core methods for schedule block placing
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -196,8 +196,8 @@ var Core = {
 
     /**
      * Limit start, end date each view model for render properly
-     * @param {Date} start - start date to render
-     * @param {Date} end - end date to render
+     * @param {TZDate} start - start date to render
+     * @param {TZDate} end - end date to render
      * @param {Collection|ScheduleViewModel} viewModelColl - schedule view
      *  model collection or ScheduleViewModel
      * @returns {ScheduleViewModel} return view model when third parameter is
@@ -212,12 +212,12 @@ var Core = {
         function limit(viewModel) {
             if (viewModel.getStarts() < start) {
                 viewModel.exceedLeft = true;
-                viewModel.renderStarts = new TZDate(start.getTime());
+                viewModel.renderStarts = new TZDate(start);
             }
 
             if (viewModel.getEnds() > end) {
                 viewModel.exceedRight = true;
-                viewModel.renderEnds = new TZDate(end.getTime());
+                viewModel.renderEnds = new TZDate(end);
             }
 
             return viewModel;
@@ -302,4 +302,3 @@ var Core = {
 };
 
 module.exports = Core;
-

@@ -1,6 +1,6 @@
 /**
  * @fileoverview View for rendered schedules by times.
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -35,10 +35,10 @@ var SIXTY_MINUTES = 60;
 function getHoursLabels(opt, hasHourMarker, timezoneOffset, styles) {
     var hourStart = opt.hourStart;
     var hourEnd = opt.hourEnd;
-    var renderEndDate = datetime.parse(opt.renderEndDate);
+    var renderEndDate = new TZDate(opt.renderEndDate);
     var shiftByOffset = parseInt(timezoneOffset / SIXTY_MINUTES, 10);
     var shiftMinutes = Math.abs(timezoneOffset % SIXTY_MINUTES);
-    var now = new TZDate();
+    var now = new TZDate().toLocalTime();
     var nowMinutes = now.getMinutes();
     var hoursRange = util.range(0, 24);
     var nowAroundHours = null;
@@ -257,8 +257,6 @@ TimeGrid.prototype._getHourmarkerViewModel = function(now, grids, range) {
     var timezones = opt.timezones;
     var viewModel;
 
-    now = now || new TZDate();
-
     util.forEach(range, function(date, index) {
         if (datetime.isSameDate(now, date)) {
             todaymarkerLeft = grids[index] ? grids[index].left : 0;
@@ -308,7 +306,7 @@ TimeGrid.prototype._getTimezoneViewModel = function(currentHours, timezonesColla
     var timezoneViewModel = [];
     var collapsed = timezonesCollapsed;
     var width = collapsed ? 100 : 100 / timezonesLength;
-    var now = new TZDate();
+    var now = new TZDate().toLocalTime();
     var backgroundColor = styles.displayTimezoneLabelBackgroundColor;
 
     util.forEach(timezones, function(timezone, index) {
@@ -355,7 +353,7 @@ TimeGrid.prototype._getBaseViewModel = function(viewModel) {
     var grids = viewModel.grids;
     var range = viewModel.range;
     var opt = this.options;
-    var baseViewModel = this._getHourmarkerViewModel(new TZDate(), grids, range);
+    var baseViewModel = this._getHourmarkerViewModel(new TZDate().toLocalTime(), grids, range);
     var timezonesCollapsed = util.pick(viewModel, 'state', 'timezonesCollapsed');
     var styles = this._getStyles(viewModel.theme, timezonesCollapsed);
 

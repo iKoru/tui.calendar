@@ -1,14 +1,14 @@
 /**
  * @fileoverview View of time.
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
 var util = require('tui-code-snippet');
 var config = require('../../config');
 var datetime = require('../../common/datetime');
-var domutil = require('../../common/domutil');
 var TZDate = require('../../common/timezone').Date;
+var domutil = require('../../common/domutil');
 var View = require('../view');
 var timeTmpl = require('../template/week/time.hbs');
 
@@ -72,8 +72,13 @@ Time.prototype._parseDateGroup = function(str) {
     var y = parseInt(str.substr(0, 4), 10),
         m = parseInt(str.substr(4, 2), 10),
         d = parseInt(str.substr(6, 2), 10);
+    var date = datetime.start();
 
-    return new TZDate(y, m - 1, d);
+    date.setFullYear(y);
+    date.setMonth(m - 1);
+    date.setDate(d);
+
+    return datetime.start(date);
 };
 
 /**
@@ -112,7 +117,7 @@ Time.prototype._getScheduleViewBoundY = function(viewModel, options) {
     var offsetStart = viewModel.valueOf().start - goingDuration - options.todayStart;
     // containerHeight : milliseconds in day = x : schedule's milliseconds
     var top = (baseHeight * offsetStart) / baseMS;
-    var modelDuration = viewModel.duration().getTime();
+    var modelDuration = viewModel.duration();
     var height;
     var duration;
     var goingDurationHeight;
@@ -141,7 +146,7 @@ Time.prototype._getScheduleViewBoundY = function(viewModel, options) {
     return {
         top: top,
         height: Math.max(height, this.options.minHeight) - this.options.defaultMarginBottom,
-        modelDurationHeight: modelDurationHeight - this.options.defaultMarginBottom,
+        modelDurationHeight: modelDurationHeight,
         goingDurationHeight: goingDurationHeight,
         comingDurationHeight: comingDurationHeight,
         hasGoingDuration: goingDuration > 0,

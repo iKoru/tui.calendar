@@ -167,8 +167,7 @@
           templates.push('[' + timezone.dateDifferenceSign + timezone.dateDifference + ']<br>');
       }
 
-      templates.push(moment(timezone.hourmarker).format('HH:mm a'));
-
+      templates.push(moment(timezone.hourmarker.toUTCString()).format('HH:mm'));
       return templates.join('');
     }
   };

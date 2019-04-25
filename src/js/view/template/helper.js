@@ -1,7 +1,7 @@
 /* eslint complexity: 0 */
 /**
  * @fileoverview Helpers for handlebar templates.
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -12,56 +12,7 @@ var common = require('../../common/common');
 var config = require('../../config');
 var mmax = Math.max;
 var SIXTY_MINUTES = 60;
-
-/**
- * Get CSS syntax for element size
- * @param {number} value - size value to apply element
- * @param {string} postfix - postfix string ex) px, em, %
- * @param {string} prefix - property name ex) width, height
- * @returns {string} CSS syntax
- */
-function getElSize(value, postfix, prefix) {
-    prefix = prefix || '';
-    if (util.isNumber(value)) {
-        return prefix + ':' + value + postfix;
-    }
-
-    return prefix + ':auto';
-}
-
-/**
- * Get element left based on narrowWeekend
- * @param {object} viewModel - view model
- * @param {Array} grids - dates information
- * @returns {number} element left
- */
-function getElLeft(viewModel, grids) {
-    return grids[viewModel.left] ? grids[viewModel.left].left : 0;
-}
-
-/**
- * Get element width based on narrowWeekend
- * @param {object} viewModel - view model
- * @param {Array} grids - dates information
- * @returns {number} element width
- */
-function getElWidth(viewModel, grids) {
-    var width = 0;
-    var i = 0;
-    var length = grids.length;
-    var left;
-    for (; i < viewModel.width; i += 1) {
-        left = (viewModel.left + i) % length;
-        left += parseInt((viewModel.left + i) / length, 10);
-        if (left < length) {
-            width += grids[left] ? grids[left].width : 0;
-        }
-    }
-
-    return width;
-}
-
-Handlebars.registerHelper({
+var helpers = {
     /**
      * Stamp supplied object
      *
@@ -430,16 +381,20 @@ Handlebars.registerHelper({
     },
 
     'timegridDisplayPrimayTime-tmpl': function(time) {
-        /* TODO: 1.11.0 이후 버전부터 삭제 필요 (will be deprecate) */
-        var meridiem = time.hour < 12 ? 'am' : 'pm';
-
-        return time.hour + ' ' + meridiem;
+        /* TODO: 삭제 필요 (will be deprecated) */
+        return helpers['timegridDisplayPrimaryTime-tmpl'](time);
     },
 
     'timegridDisplayPrimaryTime-tmpl': function(time) {
-        var meridiem = time.hour < 12 ? 'am' : 'pm';
+        var meridiem = 'am';
+        var hour = time.hour;
 
-        return time.hour + ' ' + meridiem;
+        if (time.hour > 12) {
+            meridiem = 'pm';
+            hour = time.hour - 12;
+        }
+
+        return hour + ' ' + meridiem;
     },
 
     'timegridDisplayTime-tmpl': function(time) {
@@ -522,4 +477,54 @@ Handlebars.registerHelper({
     'popupDelete-tmpl': function() {
         return 'Delete';
     }
-});
+};
+
+/**
+ * Get CSS syntax for element size
+ * @param {number} value - size value to apply element
+ * @param {string} postfix - postfix string ex) px, em, %
+ * @param {string} prefix - property name ex) width, height
+ * @returns {string} CSS syntax
+ */
+function getElSize(value, postfix, prefix) {
+    prefix = prefix || '';
+    if (util.isNumber(value)) {
+        return prefix + ':' + value + postfix;
+    }
+
+    return prefix + ':auto';
+}
+
+/**
+ * Get element left based on narrowWeekend
+ * @param {object} viewModel - view model
+ * @param {Array} grids - dates information
+ * @returns {number} element left
+ */
+function getElLeft(viewModel, grids) {
+    return grids[viewModel.left] ? grids[viewModel.left].left : 0;
+}
+
+/**
+ * Get element width based on narrowWeekend
+ * @param {object} viewModel - view model
+ * @param {Array} grids - dates information
+ * @returns {number} element width
+ */
+function getElWidth(viewModel, grids) {
+    var width = 0;
+    var i = 0;
+    var length = grids.length;
+    var left;
+    for (; i < viewModel.width; i += 1) {
+        left = (viewModel.left + i) % length;
+        left += parseInt((viewModel.left + i) / length, 10);
+        if (left < length) {
+            width += grids[left] ? grids[left].width : 0;
+        }
+    }
+
+    return width;
+}
+
+Handlebars.registerHelper(helpers);

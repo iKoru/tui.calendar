@@ -1,18 +1,18 @@
 /**
  * @fileoverview Floating layer for writing new schedules
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
 var View = require('../../view/view');
 var FloatingLayer = require('../../common/floatingLayer');
 var util = require('tui-code-snippet');
-var TZDate = require('../../common/timezone').Date;
 var config = require('../../config'),
     domevent = require('../../common/domevent'),
     datetime = require('../../common/datetime'),
     domutil = require('../../common/domutil');
 var tmpl = require('../template/popup/scheduleCreationPopup.hbs');
+var TZDate = require('../../common/timezone').Date;
 var MAX_WEEK_OF_MONTH = 6;
 var ARROW_WIDTH_HALF = 8;
 
@@ -804,6 +804,7 @@ ScheduleCreationPopup.prototype._setArrowDirection = function(arrow) {
  * Create date range picker using start date and end date
  * @param {TZDate} start - start date
  * @param {TZDate} end - end date
+ * @param {boolean} isAllDay - isAllDay
  */
 ScheduleCreationPopup.prototype._createDatepicker = function(start, end) {
     // NMNS CUSTOMIZING START

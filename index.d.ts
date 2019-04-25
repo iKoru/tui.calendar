@@ -1,4 +1,4 @@
-// Type definitions for TOAST UI Calendar v1.11.0
+// Type definitions for TOAST UI Calendar v1.12.0
 // TypeScript Version: 3.2.1
 
 declare namespace tuiCalendar {
@@ -250,6 +250,7 @@ declare namespace tuiCalendar {
         disableDblClick?: boolean;
         disableClick?: boolean;
         isReadOnly?: boolean;
+        usageStatistics?: boolean;
     }
 
     class Calendar {

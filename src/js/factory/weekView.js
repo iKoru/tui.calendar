@@ -1,6 +1,6 @@
 /**
  * @fileoverview Factory module for WeekView
- * @author NHN Ent. FE Development Team <dl_javascript@nhnent.com>
+ * @author NHN FE Development Lab <dl_javascript@nhn.com>
  */
 'use strict';
 
@@ -362,16 +362,16 @@ module.exports = function (baseController, layoutContainer, dragHandler, options
     }
 
     weekView.on('afterRender', function () {
-        var area = $('.tui-full-calendar-timegrid-container');
+        // var area = $('.tui-full-calendar-timegrid-container');
         vLayout.refresh();
         // NMNS CUSTOMIZING START
-        if (area) {
-            if (area.data('scroll')) {
-                area.data('scroll').update();
-            } else {
-                area.data('scroll', new PerfectScrollbar('.tui-full-calendar-timegrid-container', { suppressScrollX: true }));
-            }
-        }
+        // if (area) {
+        //     if (area.data('scroll')) {
+        //         area.data('scroll').update();
+        //     } else {
+        //         area.data('scroll', new PerfectScrollbar('.tui-full-calendar-timegrid-container', { suppressScrollX: true }));
+        //     }
+        // }
         // NMNS CUSTOMIZING END
     });
 
