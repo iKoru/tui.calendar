@@ -57,7 +57,8 @@ var timeCore = {
                 timeY = new TZDate(viewTime).addMinutes(datetime.minutesFromHours(gridY)),
                 nearestGridY = self._calcGridYIndex(baseMil, viewHeight, mouseY),
                 nearestGridTimeY = new TZDate(viewTime).addMinutes(
-                    datetime.minutesFromHours(nearestGridY + options.hourStart)
+                    // datetime.minutesFromHours(nearestGridY + options.hourStart)
+                    datetime.minutesFromHours(nearestGridY) // NMNS CUSTOMIZING
                 );
 
             return util.extend({

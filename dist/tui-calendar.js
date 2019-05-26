@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.12.0 | Thu Apr 25 2019
+ * @version 1.12.0 | Sun May 26 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -14528,7 +14528,8 @@ var timeCore = {
                 timeY = new TZDate(viewTime).addMinutes(datetime.minutesFromHours(gridY)),
                 nearestGridY = self._calcGridYIndex(baseMil, viewHeight, mouseY),
                 nearestGridTimeY = new TZDate(viewTime).addMinutes(
-                    datetime.minutesFromHours(nearestGridY + options.hourStart)
+                    // datetime.minutesFromHours(nearestGridY + options.hourStart)
+                    datetime.minutesFromHours(nearestGridY) // NMNS CUSTOMIZING
                 );
 
             return util.extend({
