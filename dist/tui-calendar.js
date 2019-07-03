@@ -22201,7 +22201,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.halfHourHeight), depth0))
     + "); height: "
     + alias4(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.halfHourHeight), depth0))
-    + ";\">\n<<<<<<< HEAD\n                    <div class=\""
+    + ";\">\n                    <div class=\""
     + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
     + "timegrid-hourmarker-time montserrat\" style=\"color: "
     + alias4(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.currentTimeColor), depth0))
@@ -22209,15 +22209,7 @@ module.exports = (Handlebars['default'] || Handlebars).template({"1":function(co
     + alias4(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.currentTimeFontSize), depth0))
     + ";\">"
     + ((stack1 = (helpers["timegridCurrentTime-tmpl"] || (depth0 && depth0["timegridCurrentTime-tmpl"]) || alias2).call(alias1,depth0,{"name":"timegridCurrentTime-tmpl","hash":{},"data":data})) != null ? stack1 : "")
-    + "</div>\n=======\n                    <div class=\""
-    + alias4(((helper = (helper = helpers.CSS_PREFIX || (depth0 != null ? depth0.CSS_PREFIX : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"CSS_PREFIX","hash":{},"data":data}) : helper)))
-    + "timegrid-hourmarker-time\" style=\"color: "
-    + alias4(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.currentTimeColor), depth0))
-    + "; font-size: "
-    + alias4(alias5(((stack1 = ((stack1 = (data && data.root)) && stack1.styles)) && stack1.currentTimeFontSize), depth0))
-    + ";\">"
-    + ((stack1 = (helpers["timegridCurrentTime-tmpl"] || (depth0 && depth0["timegridCurrentTime-tmpl"]) || alias2).call(alias1,depth0,{"name":"timegridCurrentTime-tmpl","hash":{},"data":data})) != null ? stack1 : "")
-    + "</div>\n>>>>>>> 3bc463ba6e4bae6d3ca89f1fce9a6d677d072331\n                </div>\n";
+    + "</div>\n                </div>\n";
 },"17":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda;
 
@@ -23886,7 +23878,7 @@ TimeGrid.prototype._getTopPercentByTime = function(time) {
     topPercent = common.ratio(maxMilliseconds, 100, hmsMilliseconds);
     topPercent -= common.ratio(maxMilliseconds, 100, datetime.millisecondsFrom('hour', opt.hourStart));
 
-    return common.limit(topPercent, [0], [100]);
+    return common.limit(topPercent, [1], [99]);// NMNS CUSTOMIZING
 };
 
 /**
