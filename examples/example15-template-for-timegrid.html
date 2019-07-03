@@ -152,8 +152,24 @@
 
       return displayLabel;
     },
+    timegridDisplayPrimayTime: function(time) {
+      /* will be deprecated. use 'timegridDisplayPrimaryTime' */
+      var hour = time.hour;
+      var meridiem = hour >= 12 ? 'pm' : 'am';
+
+      if (hour > 12) {
+        hour = hour - 12;
+      }
+
+      return hour + ' ' + meridiem;
+    },
     timegridDisplayPrimaryTime: function(time) {
-      var meridiem = time.hour < 12 ? 'am' : 'pm';
+      var hour = time.hour;
+      var meridiem = hour >= 12 ? 'pm' : 'am';
+
+      if (hour > 12) {
+        hour = hour - 12;
+      }
 
       return time.hour + ' ' + meridiem;
     },

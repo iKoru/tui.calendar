@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.12.0 | Sun May 26 2019
+ * @version 1.12.1 | Wed Jul 03 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -8525,7 +8525,7 @@ var mmin = Math.min;
  * @property {Array.<string>} [daynames] - The day names in monthly. Default values are ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
  * @property {number} [startDayOfWeek=0] - The start day of week
  * @property {boolean} [narrowWeekend=false] - Make weekend column narrow(1/2 width)
- * @property {boolean} [visibleWeeksCount=6] - The visible week count in monthly(0 or null are same with 6)
+ * @property {number} [visibleWeeksCount=6] - The visible week count in monthly(0 or null are same with 6)
  * @property {boolean} [isAlways6Week=true] - Always show 6 weeks. If false, show 5 weeks or 6 weeks based on the month.
  * @property {boolean} [workweek=false] - Show only 5 days except for weekend
  * @property {number} [visibleScheduleCount] - The visible schedule count in monthly grid
@@ -20560,12 +20560,11 @@ var helpers = {
     },
 
     'timegridDisplayPrimaryTime-tmpl': function(time) {
-        var meridiem = 'am';
         var hour = time.hour;
+        var meridiem = hour >= 12 ? 'pm' : 'am';
 
-        if (time.hour > 12) {
-            meridiem = 'pm';
-            hour = time.hour - 12;
+        if (hour > 12) {
+            hour = hour - 12;
         }
 
         return hour + ' ' + meridiem;
@@ -23410,9 +23409,7 @@ Time.prototype._parseDateGroup = function(str) {
         d = parseInt(str.substr(6, 2), 10);
     var date = datetime.start();
 
-    date.setFullYear(y);
-    date.setMonth(m - 1);
-    date.setDate(d);
+    date.setFullYear(y, m - 1, d);
 
     return datetime.start(date);
 };

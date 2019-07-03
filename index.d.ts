@@ -1,4 +1,4 @@
-// Type definitions for TOAST UI Calendar v1.12.0
+// Type definitions for TOAST UI Calendar v1.12.1
 // TypeScript Version: 3.2.1
 
 declare namespace tuiCalendar {
@@ -167,7 +167,7 @@ declare namespace tuiCalendar {
         daynames?: string[];
         startDayOfWeek?: number;
         narrowWeekend?: boolean;
-        visibleWeeksCount?: boolean;
+        visibleWeeksCount?: number;
         isAlways6Week?: boolean;
         workweek?: boolean;
         visibleScheduleCount?: number;
