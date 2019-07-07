@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.12.1 | Wed Jul 03 2019
+ * @version 1.12.1 | Sun Jul 07 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -13101,6 +13101,7 @@ MonthClick.prototype._onClick = function(clickEvent) {
              * @property {MouseEvent} event - MouseEvent object
              */
             self.fire('clickSchedule', {
+                type: 'monthlyClickSchedule',
                 schedule: schedule,
                 event: clickEvent.originEvent
             });

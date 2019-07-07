@@ -82,6 +82,7 @@ MonthClick.prototype._onClick = function(clickEvent) {
              * @property {MouseEvent} event - MouseEvent object
              */
             self.fire('clickSchedule', {
+                type: 'monthlyClickSchedule',
                 schedule: schedule,
                 event: clickEvent.originEvent
             });
