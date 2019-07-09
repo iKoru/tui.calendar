@@ -196,19 +196,19 @@ Base.prototype.updateSchedule = function(schedule, options) {
         schedule.set('isFocused', options.isFocused);
     }
     // NMNS CUSTOMIZING START
-    if (options.raw && options.raw.contents) {
+    if (options.raw && typeof options.raw.contents !== 'undefined') {
         schedule.setRaw('contents', options.raw.contents);
     }
 
-    if (options.raw && options.raw.contact) {
+    if (options.raw && typeof options.raw.contact !== 'undefined') {
         schedule.setRaw('contact', options.raw.contact);
     }
 
-    if (options.raw && options.raw.etc) {
+    if (options.raw && typeof options.raw.etc !== 'undefined') {
         schedule.setRaw('etc', options.raw.etc);
     }
 
-    if (options.raw && options.raw.status) {
+    if (options.raw && typeof options.raw.status !== 'undefined') {
         schedule.setRaw('status', options.raw.status);
     }
     // NMNS CUSTOMIZING END
@@ -411,7 +411,7 @@ Base.prototype.setCalendar = function(calendarId, calendar) {
 /**
  * NMNS CUSTOMIZING
  * get calendars
- * @returns {Array.<Calendars>} 
+ * @returns {Array.<Calendars>}
  */
 Base.prototype.getCalendars = function() {
     return this.calendars;
