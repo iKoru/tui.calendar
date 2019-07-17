@@ -6898,9 +6898,9 @@ function Base(options) {
             return 'allday';
         }
 
-        if (model.category === 'time' && (model.end - model.start > datetime.MILLISECONDS_PER_DAY)) {
-            return 'allday';
-        }
+        // if (model.category === 'time' && (model.end - model.start > datetime.MILLISECONDS_PER_DAY)) {
+        //     return 'allday';
+        // }
 
         return model.category;
     };
