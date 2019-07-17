@@ -494,11 +494,11 @@ var mmin = Math.min;
  * });
  */
 function Calendar(container, options) {
-    var opt = util.extend({
+    options = util.extend({
         usageStatistics: true
     }, options);
 
-    if (opt.usageStatistics === true && util.sendHostname) {
+    if (options.usageStatistics === true && util.sendHostname) {
         util.sendHostname('calendar', GA_TRACKING_ID);
     }
 
@@ -558,7 +558,7 @@ function Calendar(container, options) {
      * @default 'week'
      * @private
      */
-    this._viewName = opt.defaultView || 'week';
+    this._viewName = options.defaultView || 'week';
 
     /**
      * Refresh method. it can be ref different functions for each view modes.

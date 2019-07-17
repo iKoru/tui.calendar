@@ -27,11 +27,19 @@ Initialize the Calendar class with given element to make an Calendar.
 ```javascript
 var Calendar = require('tui-calendar'); /* CommonJS */
 require("tui-calendar/dist/tui-calendar.css");
+
+// If you use the default popups, use this.
+require("tui-date-picker/dist/tui-date-picker.css");
+require("tui-time-picker/dist/tui-time-picker.css");
 ```
 
 ```javascript
 import Calendar from 'tui-calendar'; /* ES6 */
 import "tui-calendar/dist/tui-calendar.css";
+
+// If you use the default popups, use this.
+import 'tui-date-picker/dist/tui-date-picker.css';
+import 'tui-time-picker/dist/tui-time-picker.css';
 ```
 
 Then you can create a calendar instance with [options](https://nhn.github.io/tui.calendar/latest/Options) to set configuration.
@@ -473,4 +481,17 @@ var cal = new Calendar('#calendar', {
         timezonesCollapsed: false
     }
 });
+```
+
+### Fit the calendar size for parent element
+TOAST UI Calendar's default height is 600px. If you want this calendar to fit to parent element, write container element's css like this. 
+
+```css
+#calendar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    top: 64px;
+}
 ```

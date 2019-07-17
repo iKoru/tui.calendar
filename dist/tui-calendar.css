@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.12.1 | Tue Jul 09 2019
+ * @version 1.12.3 | Wed Jul 17 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -274,6 +274,7 @@
   height: inherit;
   display: inline-block;
   font-size: 10px;
+  min-height: 600px;
 }
 .tui-full-calendar-week-container .tui-full-calendar-today {
   background: none;
@@ -533,6 +534,7 @@
 }
 .tui-full-calendar-month {
   height: 100%;
+  min-height: 600px;
 }
 .tui-full-calendar-month-dayname {
   width: 100%;
