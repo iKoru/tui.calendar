@@ -274,7 +274,6 @@
   height: inherit;
   display: inline-block;
   font-size: 10px;
-  min-height: 600px;
 }
 .tui-full-calendar-week-container .tui-full-calendar-today {
   background: none;
@@ -534,7 +533,6 @@
 }
 .tui-full-calendar-month {
   height: 100%;
-  min-height: 600px;
 }
 .tui-full-calendar-month-dayname {
   width: 100%;
