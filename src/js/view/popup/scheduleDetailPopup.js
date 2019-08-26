@@ -205,7 +205,7 @@ ScheduleDetailPopup.prototype.render = function (viewModel) {
         if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
             if (viewModel.schedule.end.getTime() > new Date().getTime()) {
                 $('#detailPopupResendAlrim').off('click').on('click', function () {
-                    NMNS.socket.emit('resend alrimtalk', {
+                    NMNS.emit('resend alrimtalk', {
                         id: viewModel.schedule.id
                     });
                     $(this).addClass('disabled', true);
@@ -368,7 +368,7 @@ ScheduleDetailPopup.prototype.refresh = function () {
         if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
             if (viewModel.schedule.end.getTime() > new Date().getTime()) {
                 $('#detailPopupResendAlrim').off('click').on('click', function () {
-                    NMNS.socket.emit('resend alrimtalk', {
+                    NMNS.emit('resend alrimtalk', {
                         id: viewModel.schedule.id
                     });
                     $(this).addClass('disabled', true);

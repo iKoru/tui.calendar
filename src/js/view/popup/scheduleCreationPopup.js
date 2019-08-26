@@ -418,7 +418,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
     function onContactBlur() {
         clearTimeout(timeout);
         if ($('#creationPopupContact').val().length > 9 || $('#creationPopupName').val() !== '') {
-            NMNS.socket.emit('get customer', {
+            NMNS.emit('get customer', {
                 name: $('#creationPopupName').val(),
                 contact: $('#creationPopupContact').val()
             });
@@ -498,7 +498,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('#creationPopupEtc').prop('readonly', true);
                 $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket).on('blur', function() {
+        }, NMNS).on('blur', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 onContactBlur();
@@ -535,7 +535,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('#creationPopupEtc').prop('readonly', true);
                 $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket).on('blur', function() {
+        }, NMNS).on('blur', function() {
             filterNonNumericCharacter($('#creationPopupContact'));
             clearTimeout(timeout);
             timeout = setTimeout(function() {

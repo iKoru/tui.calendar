@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar
- * @version 1.12.3 | Tue Jul 23 2019
+ * @version 1.12.3 | Mon Aug 26 2019
  * @author iKoru based on NHNEnt FE Development Lab <dl_javascript@nhnent.com>
  * @license MIT
  */
@@ -19319,7 +19319,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
     function onContactBlur() {
         clearTimeout(timeout);
         if ($('#creationPopupContact').val().length > 9 || $('#creationPopupName').val() !== '') {
-            NMNS.socket.emit('get customer', {
+            NMNS.emit('get customer', {
                 name: $('#creationPopupName').val(),
                 contact: $('#creationPopupContact').val()
             });
@@ -19399,7 +19399,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('#creationPopupEtc').prop('readonly', true);
                 $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket).on('blur', function() {
+        }, NMNS).on('blur', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 onContactBlur();
@@ -19436,7 +19436,7 @@ ScheduleCreationPopup.prototype.render = function(viewModel) {
                 $('#creationPopupEtc').prop('readonly', true);
                 $('.creationPopupEtcNotice').show();
             }
-        }, NMNS.socket).on('blur', function() {
+        }, NMNS).on('blur', function() {
             filterNonNumericCharacter($('#creationPopupContact'));
             clearTimeout(timeout);
             timeout = setTimeout(function() {
@@ -19990,7 +19990,7 @@ ScheduleDetailPopup.prototype.render = function (viewModel) {
         if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
             if (viewModel.schedule.end.getTime() > new Date().getTime()) {
                 $('#detailPopupResendAlrim').off('click').on('click', function () {
-                    NMNS.socket.emit('resend alrimtalk', {
+                    NMNS.emit('resend alrimtalk', {
                         id: viewModel.schedule.id
                     });
                     $(this).addClass('disabled', true);
@@ -20153,7 +20153,7 @@ ScheduleDetailPopup.prototype.refresh = function () {
         if (viewModel.schedule.raw.contact && $('#detailPopupResendAlrim').length) {
             if (viewModel.schedule.end.getTime() > new Date().getTime()) {
                 $('#detailPopupResendAlrim').off('click').on('click', function () {
-                    NMNS.socket.emit('resend alrimtalk', {
+                    NMNS.emit('resend alrimtalk', {
                         id: viewModel.schedule.id
                     });
                     $(this).addClass('disabled', true);
