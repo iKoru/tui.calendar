@@ -396,8 +396,8 @@ datetime = {
     start: function(date) {
         var d = date ? new TZDate(date) : new TZDate();
         // NMNS CUSTOMIZING START
-        d.setHours((NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 9),
-            (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(2), 10) : 0), 0, 0);
+        d.setHours((NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 9)
+            , 0, 0, 0);
 
         // NMNS CUSTOMIZING END
         return d;

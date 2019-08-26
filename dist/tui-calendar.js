@@ -3301,8 +3301,8 @@ datetime = {
     start: function(date) {
         var d = date ? new TZDate(date) : new TZDate();
         // NMNS CUSTOMIZING START
-        d.setHours((NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 9),
-            (NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(2), 10) : 0), 0, 0);
+        d.setHours((NMNS.info && NMNS.info.bizBeginTime ? parseInt(NMNS.info.bizBeginTime.substring(0, 2), 10) : 9)
+            , 0, 0, 0);
 
         // NMNS CUSTOMIZING END
         return d;
@@ -14534,7 +14534,7 @@ var timeCore = {
                 nearestGridY = self._calcGridYIndex(baseMil, viewHeight, mouseY),
                 nearestGridTimeY = new TZDate(viewTime).addMinutes(
                     // datetime.minutesFromHours(nearestGridY + options.hourStart)
-                    datetime.minutesFromHours(nearestGridY) + (NMNS.info && NMNS.info.bizBeginTime.substring(2) !== '00' ? -30 : 0)// NMNS CUSTOMIZING
+                    datetime.minutesFromHours(nearestGridY) // NMNS CUSTOMIZING
                 );
 
             return util.extend({
